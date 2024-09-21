@@ -4,7 +4,7 @@ const http = require("http");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const whiteboardRoutes = require("./routes/whiteboardRoutes");
-const NotificationRoutes = require("./routes/notificationRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const BaseRoutes = require("./routes/baseRoutes");
 const cookieParser = require("cookie-parser");
 const { setupSocket } = require("./config/socket");
@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use("", BaseRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/whiteboards", whiteboardRoutes);
-app.use("/api/notifications", NotificationRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Create HTTP server
 const server = http.createServer(app);
