@@ -5,7 +5,7 @@
     "buildCommand": "echo building!"
   },
   "deploy": {
-    "startCommand": "echo starting!",
+    "startCommand": "medusa migrations run && medusa develop",
     "healthcheckPath": "/",
     "healthcheckTimeout": 100,
     "restartPolicyType": "never"
