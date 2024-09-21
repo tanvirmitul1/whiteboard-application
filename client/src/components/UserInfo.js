@@ -26,7 +26,7 @@ import NotificationList from "./NotificationList";
 import { useNavigate } from "react-router-dom";
 import UserPopover from "./UserPopover";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://whiteboard-application-production.up.railway.app/");
 
 const UserInfo = () => {
   const { userName, role, isAdmin, userId } = useAuth();
