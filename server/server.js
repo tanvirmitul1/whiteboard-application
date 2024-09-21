@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const whiteboardRoutes = require("./routes/whiteboardRoutes");
 const NotificationRoutes = require("./routes/notificationRoutes");
+const BaseRoutes = require("./routes/baseRoutes");
 const cookieParser = require("cookie-parser");
 const { setupSocket } = require("./config/socket");
 
@@ -21,6 +22,7 @@ connectDB();
 app.use(cookieParser());
 
 // Routes
+app.use("/", BaseRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/whiteboards", whiteboardRoutes);
 app.use("/api/notifications", NotificationRoutes);
