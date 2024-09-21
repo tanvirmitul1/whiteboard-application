@@ -22,7 +22,7 @@ connectDB();
 app.use(cookieParser());
 
 // Routes
-app.use("/", BaseRoutes);
+app.use("", BaseRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/whiteboards", whiteboardRoutes);
 app.use("/api/notifications", NotificationRoutes);
