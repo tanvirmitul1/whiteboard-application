@@ -4,7 +4,7 @@ const {
   getNotificationsByUser,
   getAllNotification,
   updateNotification,
-} = require("../controllers/NotificationController");
+} = require("../controllers/notificationController");
 const router = express.Router();
 
 // Create a new notification
