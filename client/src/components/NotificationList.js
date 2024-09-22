@@ -64,28 +64,16 @@ const NotificationList = ({
                     addSuffix: true,
                   })}
                 </Typography>
-                {notification.code === "new_drawing" && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                    href={notification.redirectUrl}
-                  >
-                    View
-                  </Button>
-                )}
-                {notification.code === "update_drawing" && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                    href={notification.redirectUrl}
-                  >
-                    View
-                  </Button>
-                )}
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  sx={{ textTransform: "none" }}
+                  href={notification.redirectUrl}
+                >
+                  View
+                </Button>
               </ListItem>
               {index < notifications.length - 1 && <Divider />}
             </div>

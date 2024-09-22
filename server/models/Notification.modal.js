@@ -11,7 +11,7 @@ const notificationSchema = new mongoose.Schema(
     code: {
       type: String,
       required: true,
-      enum: ["new_drawing", "update_drawing"],
+      enum: ["new_drawing", "update_drawing", "new_comment"],
     },
     redirectUrl: {
       type: String,
