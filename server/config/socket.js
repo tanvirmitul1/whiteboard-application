@@ -23,6 +23,13 @@ const setupSocket = (server) => {
   });
 };
 
+// Function to emit a new comment
+const emitNewComment = (comment) => {
+  if (io) {
+    io.emit("newComment", comment);
+  }
+};
+
 // Function to emit notifications
 const emitNotification = (notification) => {
   if (io) {
@@ -33,4 +40,5 @@ const emitNotification = (notification) => {
 module.exports = {
   setupSocket,
   emitNotification,
+  emitNewComment, // Export the new function
 };

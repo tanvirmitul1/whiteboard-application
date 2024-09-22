@@ -3,42 +3,39 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useGetDrawingByIdQuery } from "../Apis/whiteboardApiSlice";
 import {
   Box,
+  Container,
   Typography,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { drawShapes } from "../components/DrawShapes";
-import DownloadIcon from "@mui/icons-material/Download";
+
+import CommentsSection from "../components/viewSinglePage/CommentsSection";
+import Download from "../components/viewSinglePage/Download";
 
 const ViewSingleDrawingPage = () => {
   const { drawingId } = useParams();
-  const navigate = useNavigate();
   const [resolution, setResolution] = useState(1);
   const { data: drawing, error, isLoading } = useGetDrawingByIdQuery(drawingId);
 
   useEffect(() => {
     const canvas = document.getElementById("drawingCanvas");
 
-    // Function to draw shapes
     const draw = () => {
       if (drawing) {
         drawShapes(canvas, drawing.shapes);
       }
     };
 
-    // Function to resize canvas
     const resizeCanvas = () => {
-      if (!canvas) return; // Check if canvas is null
+      if (!canvas) return;
       const container = canvas.parentElement;
-      canvas.width = container.clientWidth; // Set canvas width
-      canvas.height = container.clientHeight; // Set canvas height
-      draw(); // Redraw shapes after resizing
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+      draw();
     };
 
-    resizeCanvas(); // Initial size
+    resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
     return () => {
@@ -75,69 +72,46 @@ const ViewSingleDrawingPage = () => {
   return (
     <Box
       sx={{
-        textAlign: "center",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        flexDirection: {
+          xs: "column",
+          md: "row",
+        },
+        gap: {
+          xs: "10px",
+          md: "20px",
+        },
+        justifyContent: "flex-start",
       }}
     >
-      <Typography variant="h4">{drawing.drawingTitle}</Typography>
-
       <Box
         sx={{
           border: "1px solid #ddd",
           backgroundColor: "#f5f5f5",
-          width: "90vw",
-          height: "70vh",
           position: "relative",
+          maxHeight: "100vh",
+          width: { xs: "100%", md: "60%" },
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
         }}
       >
         <canvas
           id="drawingCanvas"
-          style={{ width: "100%", height: "100%", display: "block" }}
+          style={{ maxHeight: "80vh", width: "100%" }}
+        />
+
+        <Download
+          resolution={resolution}
+          setResolution={setResolution}
+          handleDownload={handleDownload}
         />
       </Box>
 
-      <Box
-        sx={{
-          marginTop: 2,
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "10px",
-          height: "40px",
-        }}
-      >
-        <FormControl sx={{ marginBottom: 2, width: 100 }} size="small">
-          <InputLabel>Resolution</InputLabel>
-          <Select
-            value={resolution}
-            onChange={(e) => setResolution(e.target.value)}
-          >
-            <MenuItem value={1}>1x</MenuItem>
-            <MenuItem value={2}>2x</MenuItem>
-            <MenuItem value={3}>3x</MenuItem>
-            <MenuItem value={4}>4x</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleDownload}
-          size="small"
-        >
-          <DownloadIcon /> <span>Download</span>
-        </Button>
-
-        <Button
-          size="small"
-          variant="contained"
-          onClick={() => navigate(-1)}
-          color="secondary"
-        >
-          Back
-        </Button>
+      <Box sx={{ width: { xs: "100%", md: "40%" } }}>
+        <CommentsSection />
       </Box>
     </Box>
   );

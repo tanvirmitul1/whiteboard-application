@@ -26,9 +26,12 @@ import NotificationList from "./NotificationList";
 import { useNavigate } from "react-router-dom";
 import UserPopover from "./UserPopover";
 
-const socket = io("https://whiteboard-application-production.up.railway.app/");
+const URL = process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL;
+const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
+const socket = io(URL);
 
 const UserInfo = () => {
+  console.log({ URL, apiBaseUrl });
   const { userName, role, isAdmin, userId } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);

@@ -19,6 +19,7 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log({ username, password });
     const user = await User.findOne({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
