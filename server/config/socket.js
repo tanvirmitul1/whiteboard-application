@@ -6,7 +6,8 @@ const setupSocket = (server) => {
   // Initialize Socket.IO
   io = new Server(server, {
     cors: {
-      origin: "https://whiteboard-mitul.netlify.app",
+      // origin: "https://whiteboard-mitul.netlify.app",
+      origin: "*",
       methods: ["GET", "POST"],
     },
   });
