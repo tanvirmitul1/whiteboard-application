@@ -5,8 +5,12 @@ const {
   loginUser,
   changePassword,
   getAllUsers,
-  deleteUser
+  deleteUser,
 } = require("../controllers/userController");
+const {
+  validateCreateUser,
+  validateLogin,
+} = require("../middlewares/userValidation");
 const router = express.Router();
 
 const adminMiddleware = (req, res, next) => {
@@ -17,8 +21,8 @@ const adminMiddleware = (req, res, next) => {
   }
 };
 
-router.post("/create", createUser);
-router.post("/login", loginUser);
+router.post("/create", validateCreateUser, createUser);
+router.post("/login", validateLogin, loginUser);
 router.post("/update-password", changePassword);
 router.get("/get-all-users", getAllUsers);
 router.delete("/delete/:id", deleteUser);

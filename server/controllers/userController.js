@@ -1,22 +1,47 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.modal");
-
-// Register User (Admin only)
+const { validationResult } = require("express-validator");
 exports.createUser = async (req, res) => {
+  // Run validation checks
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const { username, password, role } = req.body;
+
+    // Check if username already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({ message: "Username already exists" });
+    }
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
     const newUser = new User({ username, password: hashedPassword, role });
     await newUser.save();
-    res.status(201).json(newUser);
+
+    // Respond with newly created user data
+    res.status(201).json({ user: newUser });
   } catch (error) {
-    res.status(500).json({ message: "Error creating user", error });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error creating user", error: error.message });
   }
 };
 
 // Login User
 exports.loginUser = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const { username, password } = req.body;
     console.log({ username, password });
