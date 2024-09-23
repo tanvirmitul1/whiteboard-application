@@ -16,6 +16,8 @@ import UserPage from "./pages/UsersPage";
 import ViewDrawingPage from "./pages/ViewDrawingPage";
 import EditDrawingPage from "./pages/EditDrawingPage";
 import ViewSingleDrawingPage from "./pages/ViewSingleDrawingPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import RegisterPublic from "./pages/RegisterPublic";
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
             path="/drawing/:drawingId"
             element={<ViewSingleDrawingPage />}
           />
+          <Route path="/register/public" element={<RegisterPublic />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>
       <ToastContainer />
