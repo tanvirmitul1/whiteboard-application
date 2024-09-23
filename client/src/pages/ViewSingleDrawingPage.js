@@ -77,30 +77,30 @@ const ViewSingleDrawingPage = () => {
           xs: "column",
           md: "row",
         },
-        gap: {
-          xs: "10px",
-          md: "20px",
-        },
-        justifyContent: "flex-start",
+        gap: "10px",
+        justifyContent: "center",
+        overflow: "hidden",
+        margin: "10px",
       }}
     >
       <Box
         sx={{
-          border: "1px solid #ddd",
           backgroundColor: "#f5f5f5",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
           position: "relative",
-          maxHeight: "100vh",
-          width: { xs: "100%", md: "60%" },
+          width: { xs: "100vw", md: "65vw" },
           overflow: "hidden",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
+          borderRadius: 1,
+          padding: 2,
         }}
       >
         <canvas
           id="drawingCanvas"
-          style={{ maxHeight: "80vh", width: "100%" }}
+          style={{ maxHeight: "70vh", width: "100%", minHeight: "70vh" }}
         />
 
         <Download
@@ -110,7 +110,7 @@ const ViewSingleDrawingPage = () => {
         />
       </Box>
 
-      <Box sx={{ width: { xs: "100%", md: "40%" } }}>
+      <Box sx={{ width: { xs: "100vw", md: "35vw" } }}>
         <CommentsSection />
       </Box>
     </Box>
