@@ -18,18 +18,18 @@ const CommentList = ({ comments }) => {
   };
 
   return (
-    <Box>
-      <List
-        sx={{
-          width: { xs: "95vw", md: "30vw" },
-          maxHeight: "45vh",
-          overflow: "auto",
-          borderRadius: 2,
-          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-          backgroundColor: "#f9f9f9",
-          padding: 2,
-        }}
-      >
+    <Box
+      sx={{
+        width: { xs: "95vw", md: "30vw" },
+        maxHeight: "45vh",
+        overflow: "auto",
+        borderRadius: 2,
+
+        backgroundColor: "#f9f9f9",
+        padding: 2,
+      }}
+    >
+      <List>
         {comments.slice(0, visibleCount).map((comment) => (
           <React.Fragment key={comment._id}>
             <ListItem

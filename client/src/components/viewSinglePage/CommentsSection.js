@@ -114,11 +114,11 @@ const CommentsSection = () => {
   };
 
   const handleEmojiClick = (event) => {
-    setAnchorEl(event.currentTarget); // Show popover on emoji icon click
+    setAnchorEl(event.currentTarget);
   };
 
   const handleEmojiClose = () => {
-    setAnchorEl(null); // Close popover
+    setAnchorEl(null);
   };
 
   const open = Boolean(anchorEl);
@@ -137,7 +137,6 @@ const CommentsSection = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        paddingBottom: 4,
       }}
     >
       <Box
@@ -145,7 +144,7 @@ const CommentsSection = () => {
           display: "flex",
           justifyContent: "center",
           gap: 1,
-          marginTop: 2,
+          marginTop: 1,
         }}
       >
         <IconButton onClick={() => handleReaction("like")} color="primary">
@@ -178,29 +177,25 @@ const CommentsSection = () => {
         <TextField
           placeholder="Write a comment..."
           variant="outlined"
+          size="small"
           multiline
           maxRows={4}
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           helperText={`${newComment.length}/200`}
-          sx={{
-            backgroundColor: "white",
-            borderRadius: 1,
-            padding: 1,
-          }}
         />
 
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-around",
+            justifyContent: "space-between",
             alignItems: "center",
-            width: { xs: "95vw", md: "30vw" },
           }}
         >
           <Button
             variant="contained"
             color="primary"
+            size="small"
             onClick={handlePostComment}
             sx={{ textTransform: "none" }}
             disabled={isCommentPosting}
