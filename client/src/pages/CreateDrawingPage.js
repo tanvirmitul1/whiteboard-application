@@ -146,8 +146,8 @@ const CreateDrawingPage = () => {
         flexDirection: "row",
         padding: 1,
         gap: 1,
-        backgroundColor: "#e0f6ff",
-        height: "100vh",
+
+        maxHeight: "100vh",
         overflowX: "hidden",
       }}
     >

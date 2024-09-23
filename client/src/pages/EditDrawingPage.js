@@ -4,13 +4,7 @@ import {
   useGetDrawingByIdQuery,
   useUpdateDrawingMutation,
 } from "../Apis/whiteboardApiSlice";
-import {
-  Button,
-  Typography,
-  Box,
-
-  CircularProgress,
-} from "@mui/material";
+import { Button, Typography, Box, CircularProgress } from "@mui/material";
 
 import LeftSidebar from "../components/createPage/LeftSidebar";
 import Whiteboard from "../components/Whiteboard";
@@ -23,7 +17,7 @@ const EditDrawingPage = () => {
 
   const [isSaved, setIsSaved] = useState(false);
   const [shapes, setShapes] = useState([]);
-  const [history, setHistory] = useState([]); 
+  const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
 
   const { userId } = useAuth();
@@ -43,7 +37,7 @@ const EditDrawingPage = () => {
   useEffect(() => {
     if (data) {
       setDrawingTitle(data.drawingTitle || "");
-      setShapes(data.shapes|| []);
+      setShapes(data.shapes || []);
     }
   }, [data]);
 
@@ -58,7 +52,6 @@ const EditDrawingPage = () => {
     setRedoStack([]);
   };
 
-  
   const handleUndo = () => {
     if (history.length > 0) {
       const prevState = history[history.length - 1];
@@ -77,25 +70,25 @@ const EditDrawingPage = () => {
     }
   };
 
-      // Ctrl+Z for Undo and Ctrl+Y for Redo
-      useEffect(() => {
-        const handleKeyDown = (e) => {
-          if (e.ctrlKey && e.key === 'z') {
-            e.preventDefault(); // prevent the default browser undo action
-            handleUndo();
-          }
-          if (e.ctrlKey && e.key === 'y') {
-            e.preventDefault(); // prevent the default browser redo action
-            handleRedo();
-          }
-        };
-    
-        window.addEventListener('keydown', handleKeyDown);
-        
-        return () => {
-          window.removeEventListener('keydown', handleKeyDown);
-        };
-      }, [handleUndo, handleRedo, history, redoStack, shapes]);
+  // Ctrl+Z for Undo and Ctrl+Y for Redo
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === "z") {
+        e.preventDefault(); // prevent the default browser undo action
+        handleUndo();
+      }
+      if (e.ctrlKey && e.key === "y") {
+        e.preventDefault(); // prevent the default browser redo action
+        handleRedo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleUndo, handleRedo, history, redoStack, shapes]);
 
   const handleSave = async () => {
     try {
@@ -104,24 +97,21 @@ const EditDrawingPage = () => {
         shapes: shapes,
         drawingTitle,
         userId,
-      }).unwrap()
-      .then(res=>{
-
-        setIsSaved(true);
-       
-        Swal.fire({
-          title: "Saved!",
-          text: "Your drawing has been saved.",
-          icon: "success",
-          timer: 1000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
-        navigate("/drawing-list");
       })
+        .unwrap()
+        .then((res) => {
+          setIsSaved(true);
 
-
-     
+          Swal.fire({
+            title: "Saved!",
+            text: "Your drawing has been saved.",
+            icon: "success",
+            timer: 1000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+          navigate("/drawing-list");
+        });
     } catch (error) {
       console.error("Failed to save drawing", error);
     }
@@ -147,9 +137,8 @@ const EditDrawingPage = () => {
         flexDirection: "row",
         padding: 1,
         gap: 1,
-        backgroundColor: "#e0f6ff",
-        height: "100vh",
-        overflowY: "auto",
+        maxHeight: "100vh",
+        overflowX: "hidden",
       }}
     >
       <Box
