@@ -8,17 +8,14 @@ const DrawPageLoader = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "80vh", // Adjust the height to vertically center the spinner
         flexDirection: "column",
       }}
     >
-      <CircularProgress />
-
       {/* Display skeletons while loading */}
-      <Box mt={2} sx={{ width: "100%", maxWidth: 1200 }}>
+      <Box sx={{ width: "100%", maxWidth: 1800 }}>
         <Grid container spacing={3}>
-          {Array.from(new Array(6)).map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+          {Array.from(new Array(9)).map((_, index) => (
+            <Grid item xs={12} sm={6} md={6} key={index}>
               <Paper
                 sx={{
                   padding: 2,

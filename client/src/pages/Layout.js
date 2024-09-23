@@ -7,11 +7,14 @@ const Layout = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Add the "/register" route to the list of public routes
   const isAuthRoute =
-    location.pathname === "/" || location.pathname === "/change-password";
+    location.pathname === "/" ||
+    location.pathname === "/change-password" ||
+    location.pathname === "/register/public";
 
   useEffect(() => {
-    // Redirect to homepage if there is no user and not on auth routes
     if (!user && !isAuthRoute) {
       navigate("/");
     }
