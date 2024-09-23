@@ -85,23 +85,25 @@ const ViewSingleDrawingPage = () => {
     >
       <Box
         sx={{
-          backgroundColor: "#f5f5f5",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
           position: "relative",
           width: { xs: "100vw", md: "65vw" },
           overflow: "hidden",
           display: "flex",
-          justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
-          borderRadius: 1,
-          padding: 2,
         }}
       >
-        <canvas
-          id="drawingCanvas"
-          style={{ maxHeight: "70vh", width: "100%", minHeight: "70vh" }}
-        />
+        <Box
+          sx={{
+            backgroundColor: "#f5f5f5",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+          }}
+        >
+          <canvas
+            id="drawingCanvas"
+            style={{ maxHeight: "70vh", minHeight: "70vh" }}
+          />
+        </Box>
 
         <Download
           resolution={resolution}

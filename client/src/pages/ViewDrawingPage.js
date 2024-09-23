@@ -118,7 +118,7 @@ const ViewDrawingPage = () => {
   };
 
   const handleViewSingleDrawing = (whiteboardId) => {
-    navigate(`/drawing/${whiteboardId}`); // Adjust the route as necessary
+    navigate(`/drawing/${whiteboardId}`);
   };
 
   if (usersError || error) {
@@ -179,7 +179,6 @@ const ViewDrawingPage = () => {
                       {whiteboard.drawingTitle}
                     </Typography>
 
-                    {/* Show the drawing */}
                     <Box
                       sx={{
                         border: "1px solid #ddd",
@@ -204,7 +203,6 @@ const ViewDrawingPage = () => {
                       />
                     </Box>
 
-                    {/* Edit and Delete buttons */}
                     <Box sx={{ marginTop: 2 }}>
                       <Button
                         variant="contained"
@@ -230,7 +228,6 @@ const ViewDrawingPage = () => {
             </Grid>
           )}
 
-          {/* Pagination */}
           <Box
             sx={{
               display: "flex",
