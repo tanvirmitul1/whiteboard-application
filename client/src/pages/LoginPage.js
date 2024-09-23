@@ -20,7 +20,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
   const { userId } = useAuth();
-
+  const [error, setError] = useState("");
   useEffect(() => {
     if (userId) {
       navigate("/create-drawing");
@@ -37,9 +37,8 @@ const LoginPage = () => {
       setTimeout(() => {
         navigate("/create-drawing");
       }, 500);
-    } catch (error) {
-      console.error("Login failed", error);
-      toast.error(error.data?.message || "Login failed!");
+    } catch (errors) {
+      setError(errors?.data?.message || errors?.data?.errors[0]?.msg);
     }
   };
 
@@ -108,9 +107,24 @@ const LoginPage = () => {
             "Login"
           )}
         </Button>
-        <Box textAlign="center" mt={2}>
+        <Typography
+          color="error"
+          sx={{
+            mt: 1,
+            visibility: error ? "visible" : "hidden",
+            minHeight: "14px",
+          }}
+        >
+          {error || ""}
+        </Typography>
+        <Box textAlign="center">
           <Link href="/change-password" variant="body2">
             Change Password?
+          </Link>
+        </Box>
+        <Box textAlign="center">
+          <Link href="/register/public" variant="body2">
+            Don't have an account? Register here.
           </Link>
         </Box>
       </Box>
