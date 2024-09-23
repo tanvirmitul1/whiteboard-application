@@ -2,6 +2,8 @@ const Whiteboard = require("../models/Whiteboard.modal");
 
 const User = require("../models/User.modal");
 const { createNotification } = require("../utils/notificationHelper");
+const Comment = require("../models/Comment.modal");
+const Notification = require("../models/Notification.modal");
 
 const authMiddleware = (req, res, next) => {
   req.user = { _id: "userId", role: "User" };
@@ -91,7 +93,7 @@ const updateDrawing = async (req, res) => {
   const { id } = req.params;
   const { shapes, drawingTitle, userId } = req.body;
 
-  console.log("req body",req.body)
+  console.log("req body", req.body);
 
   try {
     const whiteboard = await Whiteboard.findByIdAndUpdate(
@@ -121,14 +123,23 @@ const deleteDrawing = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Find the drawing by ID and delete it
+    // First, find the drawing by ID
     const whiteboard = await Whiteboard.findByIdAndDelete(id);
 
     if (!whiteboard) {
       return res.status(404).json({ message: "Drawing not found" });
     }
 
-    res.json({ message: "Drawing deleted successfully" });
+    // Delete comments associated with this drawing
+    await Comment.deleteMany({ drawingId: id });
+
+    // Delete notifications related to this drawing
+    await Notification.deleteMany({ redirectUrl: { $regex: id } });
+
+    res.json({
+      message:
+        "Drawing and associated comments and notifications deleted successfully",
+    });
   } catch (error) {
     console.error("Error deleting drawing:", error);
     res.status(500).json({ message: "Failed to delete drawing", error });
