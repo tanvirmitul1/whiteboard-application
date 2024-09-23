@@ -17,7 +17,7 @@ exports.postComment = async (req, res) => {
       return res.status(404).json({ message: "Drawing not found." });
     }
 
-    const { drawingTitle } = drawing; // Extract drawing title
+    const { drawingTitle } = drawing;
 
     const newComment = new Comment({
       drawingId,
@@ -25,7 +25,13 @@ exports.postComment = async (req, res) => {
       user,
     });
 
-    const savedComment = await newComment.save();
+    // Save the comment
+    let savedComment = await newComment.save();
+
+    // Populate the user details (including the username)
+    savedComment = await savedComment.populate("user", "username");
+
+    console.log({ savedComment });
 
     // Create a notification for the new comment
     await createNotification({
@@ -34,8 +40,6 @@ exports.postComment = async (req, res) => {
       redirectUrl: `/drawing/${drawingId}`,
       drawingTitle,
     });
-
-    // Emit the new comment to all connected clients
     emitNewComment(savedComment);
 
     res.status(201).json(savedComment);
@@ -51,7 +55,9 @@ exports.getAllComments = async (req, res) => {
 
   try {
     // Fetch all comments related to the drawing and populate the 'user' field
-    const comments = await Comment.find({ drawingId }).sort({ createdAt: -1 });
+    const comments = await Comment.find({ drawingId })
+      .sort({ createdAt: -1 })
+      .populate("user", "username"); // Populate the user field with only the username
 
     if (!comments.length) {
       return res
