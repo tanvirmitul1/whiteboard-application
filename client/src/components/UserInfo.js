@@ -31,7 +31,7 @@ const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 const socket = io(URL);
 
 const UserInfo = () => {
-  console.log({ URL, apiBaseUrl });
+  const NotificationSound = new Audio("/audio/notifications.mp3");
   const { userName, role, isAdmin, userId } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
@@ -60,6 +60,7 @@ const UserInfo = () => {
         setNotifications((prev) =>
           orderBy([...prev, notification], ["createdAt"], ["desc"])
         );
+        NotificationSound.play(); // Play sound on new notification
       }
     });
 
