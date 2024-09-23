@@ -37,7 +37,7 @@ const Download = ({ resolution, setResolution, handleDownload }) => {
         onClick={handleDownload}
         startIcon={<DownloadIcon />}
       >
-        Download Image
+        Download
       </Button>
     </Box>
   );
