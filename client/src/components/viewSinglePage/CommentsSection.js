@@ -11,47 +11,46 @@ import {
   IconButton,
   Avatar,
   Popover,
+  CircularProgress,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import EmojiPicker from "emoji-picker-react"; // For emoji picker
+import EmojiPicker from "emoji-picker-react";
 import io from "socket.io-client";
-import { format } from "timeago.js"; // For "time ago" formatting
+
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions"; // Emoji icon
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+
 import {
   useGetAllCommentsQuery,
   useStoreCommentsMutation,
 } from "../../Apis/commentsApiSlice";
-
 import useAuth from "../../customHooks/useAuth";
-
-// Initialize socket connection
+import CommentList from "./CommentLish";
 const socket = io(process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL, {
-  reconnectionAttempts: 5, // Attempt reconnection up to 5 times
+  reconnectionAttempts: 5,
 });
 
 const CommentsSection = () => {
   const { drawingId } = useParams();
-  const [storeComments] = useStoreCommentsMutation();
+  const [storeComments, { isLoading: isCommentPosting }] =
+    useStoreCommentsMutation();
   const { data: commentsData } = useGetAllCommentsQuery(drawingId);
   const { userId } = useAuth();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [anchorEl, setAnchorEl] = useState(null); // For emoji picker popover
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    // Real-time updates for new comments
     socket.on("newComment", (comment) => {
       setComments((prevComments) => [comment, ...prevComments]);
     });
 
-    // Real-time updates for reactions
     socket.on("updateReaction", (updatedComment) => {
       setComments((prevComments) =>
         prevComments.map((comment) =>
@@ -85,8 +84,10 @@ const CommentsSection = () => {
         user: userId,
       }).unwrap();
 
-      setNewComment(""); // Clear the input field
+      setNewComment("");
       toast.success("Comment posted successfully!");
+      const sound = new Audio("/audio/sendComment.mp3");
+      sound.play();
     } catch (error) {
       toast.error("Failed to post comment.");
     }
@@ -108,8 +109,8 @@ const CommentsSection = () => {
   };
 
   const onEmojiClick = (event, emojiObject) => {
+    console.log({ emojiObject });
     setNewComment((prevComment) => prevComment + emojiObject.emoji);
-    setAnchorEl(null); // Hide popover after emoji selection
   };
 
   const handleEmojiClick = (event) => {
@@ -126,39 +127,25 @@ const CommentsSection = () => {
   return (
     <Box
       sx={{
+        width: { xs: "95vw", md: "35vw" },
+        overflow: "auto",
         borderRadius: 2,
-        backgroundColor: "#fff",
         boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-        margin: "auto",
+        backgroundColor: "#f9f9f9",
         position: "relative",
-        padding: 2,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingBottom: 4,
       }}
     >
-      <Typography
-        variant="h5"
-        sx={{
-          marginBottom: 2,
-          textAlign: "center",
-          fontWeight: 600,
-          color: "#283593",
-          backgroundColor: "#f9f9f9",
-          padding: 1,
-          borderRadius: 1,
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        Comments
-      </Typography>
-
-      {/* Reaction Buttons for Drawing */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
           gap: 1,
-          marginBottom: 2,
+          marginTop: 2,
         }}
       >
         <IconButton onClick={() => handleReaction("like")} color="primary">
@@ -184,35 +171,48 @@ const CommentsSection = () => {
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          marginBottom: 3,
+          width: { xs: "90vw", md: "30vw" },
+          padding: 2,
         }}
       >
-        <Box sx={{ padding: 2, borderRadius: 2, backgroundColor: "#f9f9f9" }}>
-          <TextField
-            placeholder="Write a comment..."
-            variant="outlined"
-            fullWidth
-            multiline
-            maxRows={4}
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            helperText={`${newComment.length}/200`}
-            sx={{ backgroundColor: "white", borderRadius: 1 }}
-          />
-        </Box>
+        <TextField
+          placeholder="Write a comment..."
+          variant="outlined"
+          multiline
+          maxRows={4}
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          helperText={`${newComment.length}/200`}
+          sx={{
+            backgroundColor: "white",
+            borderRadius: 1,
+            padding: 1,
+          }}
+        />
+
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "space-around",
             alignItems: "center",
+            width: { xs: "95vw", md: "30vw" },
           }}
         >
           <Button
             variant="contained"
             color="primary"
             onClick={handlePostComment}
+            sx={{ textTransform: "none" }}
+            disabled={isCommentPosting}
           >
-            Post Comment
+            {isCommentPosting ? (
+              <>
+                <CircularProgress size={20} sx={{ color: "white", mr: 1 }} />
+                Processing...
+              </>
+            ) : (
+              "Add comment"
+            )}
           </Button>
           <IconButton onClick={handleEmojiClick}>
             <EmojiEmotionsIcon />
@@ -238,41 +238,7 @@ const CommentsSection = () => {
       </Box>
 
       {/* Comment List */}
-      <List>
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <React.Fragment key={comment._id}>
-              <ListItem alignItems="flex-start">
-                <Avatar sx={{ marginRight: 2 }}>{comment.userName}</Avatar>
-                <ListItemText
-                  primary={comment.userName}
-                  secondary={
-                    <>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="textPrimary"
-                        sx={{ display: "block", wordBreak: "break-word" }}
-                      >
-                        {comment.commentText}
-                      </Typography>
-                      <Typography variant="caption" color="textSecondary">
-                        {format(comment.createdAt)}{" "}
-                        {/* Time formatted as "time ago" */}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          ))
-        ) : (
-          <Typography sx={{ textAlign: "center", marginTop: 2 }}>
-            No comments yet.
-          </Typography>
-        )}
-      </List>
+      {commentsData && <CommentList comments={comments} />}
     </Box>
   );
 };
