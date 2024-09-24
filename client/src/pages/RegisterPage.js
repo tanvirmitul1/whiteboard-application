@@ -43,8 +43,8 @@ const RegisterPage = () => {
   return (
     <Box
       sx={{
-        backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
-        backgroundSize: "55%",
+        // backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
+        // backgroundSize: "55%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         minHeight: "100vh",
@@ -56,9 +56,9 @@ const RegisterPage = () => {
     >
       <Typography
         variant="h3"
-        sx={{ marginTop: "-100px", marginBottom: "20px" }}
+        sx={{ marginTop: "-100px", marginBottom: "20px", color: "white" }}
       >
-        Whiteboard Application
+        Chalk Board Application
       </Typography>
 
       <Box

@@ -45,8 +45,8 @@ const LoginPage = () => {
   return (
     <Box
       sx={{
-        backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
-        backgroundSize: "55%",
+        // backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
+        // backgroundSize: "55%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         minHeight: "100vh",
@@ -56,8 +56,8 @@ const LoginPage = () => {
         flexDirection: "column",
       }}
     >
-      <Typography variant="h3" sx={{ mt: -10 }}>
-        Whiteboard Application
+      <Typography variant="h3" sx={{ mt: 10, color: "white" }}>
+        Chalk Board Application
       </Typography>
       <Box
         component="form"
@@ -66,13 +66,10 @@ const LoginPage = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: 2,
-          mt: 5,
-          mb: 12,
-          p: 4,
-          bgcolor: "white",
           borderRadius: 2,
-          boxShadow: 3,
+          backgroundColor: "white",
+          padding: 8,
+          marginTop: "20px",
         }}
       >
         <Box sx={{ display: "flex", gap: 2 }}>
