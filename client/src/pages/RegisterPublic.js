@@ -42,8 +42,8 @@ const RegisterPublic = () => {
   return (
     <Box
       sx={{
-        backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
-        backgroundSize: "100%",
+        // backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
+        // backgroundSize: "100%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         minHeight: "100vh",
@@ -53,10 +53,7 @@ const RegisterPublic = () => {
         flexDirection: "column",
       }}
     >
-      <Typography
-        variant="h3"
-        sx={{ marginTop: "-100px", marginBottom: "20px" }}
-      >
+      <Typography variant="h3" sx={{ marginBottom: "20px", color: "white" }}>
         Whiteboard Application
       </Typography>
 
@@ -124,7 +121,7 @@ const RegisterPublic = () => {
           )}
         </Button>
 
-        <Box textAlign="center" mt={2}>
+        <Box textAlign="center">
           <Link to="/login" variant="body2" sx={{ textDecoration: "none" }}>
             Already have an account? Sign in here.
           </Link>

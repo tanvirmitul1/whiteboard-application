@@ -18,8 +18,9 @@ const DrawPageLoader = () => {
             <Grid item xs={12} sm={6} md={6} key={index}>
               <Paper
                 sx={{
+                  backgroundColor: "#7c7c7c",
                   padding: 2,
-                  border: "1px solid #ddd",
+
                   borderRadius: 2,
                   boxShadow: 3,
                 }}

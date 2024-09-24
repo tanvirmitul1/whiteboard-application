@@ -9,7 +9,7 @@ import Whiteboard from "../components/Whiteboard";
 
 const CreateDrawingPage = () => {
   const navigate = useNavigate();
-  const [drawingTitle, setDrawingTitle] = useState("New Drawing 1");
+  const [drawingTitle, setDrawingTitle] = useState("New drawing 1");
   const [shapeType, setShapeType] = useState("line");
 
   const [shapes, setShapes] = useState([]);

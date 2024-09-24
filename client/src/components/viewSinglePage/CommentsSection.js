@@ -128,10 +128,11 @@ const CommentsSection = () => {
     <Box
       sx={{
         width: { xs: "95vw", md: "35vw" },
-        overflow: "auto",
+        overflowX: "hidden",
+        overflowY: "auto",
         borderRadius: 2,
-        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-        backgroundColor: "#f9f9f9",
+        boxShadow: "0 4px 8px rgba(59, 59, 59, 0.1)",
+        backgroundColor: "#444242",
         position: "relative",
         display: "flex",
         flexDirection: "column",
@@ -182,7 +183,20 @@ const CommentsSection = () => {
           maxRows={4}
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          helperText={`${newComment.length}/200`}
+          sx={{
+            color: "white", // Text color
+            border: "3px solid grey",
+
+            borderRadius: 2,
+
+            "& .MuiInputBase-input": {
+              color: "white", // Input text color
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: "lightgrey",
+              opacity: 0.3,
+            },
+          }}
         />
 
         <Box

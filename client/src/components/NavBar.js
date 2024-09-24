@@ -13,7 +13,7 @@ const NavBar = () => {
     <Box
       sx={{
         padding: "10px 20px",
-        backgroundColor: "#283593",
+        backgroundColor: "#343434",
         color: "white",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         position: "sticky",
@@ -38,7 +38,7 @@ const NavBar = () => {
             </IconButton>
             {isPc && (
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                WhiteBoard App
+                Chalk Board App
               </Typography>
             )}
           </Box>

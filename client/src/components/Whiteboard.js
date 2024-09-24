@@ -205,6 +205,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
       for (let i = 1; i < path.length; i++) {
         ctx.lineTo(path[i].x, path[i].y);
       }
+      ctx.strokeStyle = "white";
       ctx.stroke();
     }
   };
@@ -235,7 +236,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
   const drawText = (ctx, text, position) => {
     if (position && text) {
       ctx.font = "16px Arial";
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "white";
       ctx.fillText(text, position.x, position.y);
     }
   };
@@ -244,10 +245,12 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     ctx.beginPath();
     ctx.moveTo(start.x, start.y);
     ctx.lineTo(end.x, end.y);
+    ctx.strokeStyle = "white";
     ctx.stroke();
   };
 
   const drawRectangle = (ctx, start, end) => {
+    ctx.strokeStyle = "white";
     ctx.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
   };
 
@@ -255,6 +258,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     const radius = distance(start, end);
     ctx.beginPath();
     ctx.arc(start.x, start.y, radius, 0, Math.PI * 2);
+    ctx.strokeStyle = "white";
     ctx.stroke();
   };
 
