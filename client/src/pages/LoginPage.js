@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+
 import { useLoginMutation } from "../Apis/userApiSlice";
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  CircularProgress,
-  Box,
-  Link,
-} from "@mui/material";
+
+import styled from "styled-components";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
 
+import Logo from "../../public/logo.svg";
 const LoginPage = () => {
   const [username, setUsername] = useState("tanvir");
   const [password, setPassword] = useState("tanvir");
@@ -27,7 +21,7 @@ const LoginPage = () => {
     }
   }, [navigate, userId]);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await login({ username, password }).unwrap();
@@ -43,93 +37,108 @@ const LoginPage = () => {
   };
 
   return (
-    <Box
-      sx={{
-        backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
-        backgroundSize: "55%",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-      }}
-    >
-      <Typography variant="h3" sx={{ mt: -10 }}>
-        Whiteboard Application
-      </Typography>
-      <Box
-        component="form"
-        onSubmit={handleLogin}
-        maxWidth="sm"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          mt: 5,
-          mb: 12,
-          p: 4,
-          bgcolor: "white",
-          borderRadius: 2,
-          boxShadow: 3,
-        }}
-      >
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <TextField
-            label="Username"
-            variant="outlined"
+    <>
+      <FormContainer>
+        <form action="" onSubmit={(e) => handleSubmit(e)}>
+          <div className="brand">
+            <img src={Logo} alt="logo" />
+            <h1>snappy</h1>
+          </div>
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            min="3"
           />
-          <TextField
-            label="Password"
+          <input
             type="password"
-            variant="outlined"
+            placeholder="Password"
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </Box>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          disabled={isLoading}
-          sx={{ mt: 2 }}
-        >
-          {isLoading ? (
-            <>
-              <CircularProgress size={20} sx={{ color: "white", mr: 1 }} />
-              Processing...
-            </>
-          ) : (
-            "Login"
-          )}
-        </Button>
-        <Typography
-          color="error"
-          sx={{
-            mt: 1,
-            visibility: error ? "visible" : "hidden",
-            minHeight: "14px",
-          }}
-        >
-          {error || ""}
-        </Typography>
-        <Box textAlign="center">
-          <Link href="/change-password" variant="body2">
-            Change Password?
-          </Link>
-        </Box>
-        <Box textAlign="center">
-          <Link href="/register/public" variant="body2">
-            Don't have an account? Register here.
-          </Link>
-        </Box>
-      </Box>
-    </Box>
+          <button type="submit">Log In</button>
+          <span>
+            <Link href="/register/public" variant="body2">
+              Don't have an account? Register here.
+            </Link>
+            <Link href="/change-password" variant="body2">
+              Change Password?
+            </Link>
+          </span>
+        </form>
+      </FormContainer>
+    </>
   );
 };
 
-export default LoginPage;
+const FormContainer = styled.div`
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  background-color: #131324;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    img {
+      height: 5rem;
+    }
+    h1 {
+      color: white;
+      text-transform: uppercase;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: #00000076;
+    border-radius: 2rem;
+    padding: 5rem;
+  }
+  input {
+    background-color: transparent;
+    padding: 1rem;
+    border: 0.1rem solid #4e0eff;
+    border-radius: 0.4rem;
+    color: white;
+    width: 100%;
+    font-size: 1rem;
+    &:focus {
+      border: 0.1rem solid #997af0;
+      outline: none;
+    }
+  }
+  button {
+    background-color: #4e0eff;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    &:hover {
+      background-color: #4e0eff;
+    }
+  }
+  span {
+    color: white;
+    text-transform: uppercase;
+    a {
+      color: #4e0eff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  }
+`;
