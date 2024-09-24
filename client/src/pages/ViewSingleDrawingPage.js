@@ -51,7 +51,7 @@ const ViewSingleDrawingPage = () => {
     scaledCanvas.height = canvas.height * resolution;
 
     const ctx = scaledCanvas.getContext("2d");
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "grey";
     ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
     ctx.scale(resolution, resolution);
     ctx.drawImage(canvas, 0, 0);
@@ -73,6 +73,7 @@ const ViewSingleDrawingPage = () => {
     <Box
       sx={{
         display: "flex",
+
         flexDirection: {
           xs: "column",
           md: "row",
@@ -80,7 +81,8 @@ const ViewSingleDrawingPage = () => {
         gap: "10px",
         justifyContent: "center",
         overflow: "hidden",
-        margin: "10px",
+        paddingX: { xs: "10px", md: "100px" },
+        paddingY: "20px",
       }}
     >
       <Box
@@ -99,10 +101,7 @@ const ViewSingleDrawingPage = () => {
             boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
           }}
         >
-          <canvas
-            id="drawingCanvas"
-            style={{ maxHeight: "70vh", minHeight: "70vh" }}
-          />
+          <canvas id="drawingCanvas" className="canvas-style-single-draw" />
         </Box>
 
         <Download

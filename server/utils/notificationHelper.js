@@ -24,8 +24,8 @@ const createNotification = async ({ ...args }) => {
           <p style="margin: 0; font-size: 14px; font-weight: bold; color: #4caf50;">
             New Drawing Created!
           </p>
-          <p style="margin: 2px 0; font-size: 12px; color: #555;">
-            <strong style="color: #000;">${drawingTitle}</strong> has been created by 
+          <p style="margin: 2px 0; font-size: 12px; color: grey;">
+            <strong style="color: #2196f3;">${drawingTitle}</strong> has been created by 
             <span style="font-weight: 600; color: #2196f3;">${username}</span>.
           </p>
         </div>
@@ -36,8 +36,8 @@ const createNotification = async ({ ...args }) => {
           <p style="margin: 0; font-size: 14px; font-weight: bold; color: #4caf50;">
             Drawing Updated!
           </p>
-          <p style="margin: 2px 0; font-size: 12px; color: #555;">
-            <strong style="color: #000;">${drawingTitle}</strong> has been updated by
+          <p style="margin: 2px 0; font-size: 12px; color: grey;">
+            <strong style="color: #2196f3;">${drawingTitle}</strong> has been updated by
             <span style="font-weight: 600; color: #2196f3;">${username}</span>.
           </p>
         </div>
@@ -48,8 +48,8 @@ const createNotification = async ({ ...args }) => {
           <p style="margin: 0; font-size: 14px; font-weight: bold; color: #4caf50;">
             New Comment!
           </p>
-          <p style="margin: 2px 0; font-size: 12px; color: #555;">
-            <strong style="color: #000;">${drawingTitle}</strong> has a new comment by
+          <p style="margin: 2px 0; font-size: 12px; color: grey;">
+            <strong style="color: #2196f3;">${drawingTitle}</strong> has a new comment by
             <span style="font-weight: 600; color: #2196f3;">${username}</span>.
           </p>
         </div>

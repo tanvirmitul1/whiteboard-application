@@ -8,7 +8,7 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import { format } from "timeago.js";
+import { formatDistanceToNow } from "date-fns";
 
 const CommentList = ({ comments }) => {
   const [visibleCount, setVisibleCount] = useState(10);
@@ -24,39 +24,44 @@ const CommentList = ({ comments }) => {
         maxHeight: "45vh",
         overflow: "auto",
         borderRadius: 2,
-
-        backgroundColor: "#f9f9f9",
+        backgroundColor: "#444242",
         padding: 2,
+        border: "2px solid #4e4c4c",
       }}
     >
       <List>
-        {comments.slice(0, visibleCount).map((comment) => (
+        {comments?.slice(0, visibleCount).map((comment) => (
           <React.Fragment key={comment._id}>
             <ListItem
               alignItems="flex-start"
-              sx={{ padding: 2, borderBottom: "1px solid #ddd" }}
+              sx={{ padding: 2, borderBottom: "1px solid #635e5e" }}
             >
               <Avatar sx={{ marginRight: 2, bgcolor: "primary.main" }}>
-                {comment.user.username.charAt(0)} {/* Initials */}
+                {comment?.user?.username.charAt(0)} {/* Initials */}
               </Avatar>
               <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="body1" fontWeight="bold">
-                  {comment.user.username}
+                <Typography
+                  variant="body1"
+                  fontWeight="bold"
+                  sx={{ color: "#ebeaea" }}
+                >
+                  {comment?.user?.username}
                 </Typography>
                 <Typography
                   component="span"
-                  variant="body2"
-                  color="textPrimary"
                   sx={{
                     display: "block",
                     wordBreak: "break-word",
                     marginBottom: 1,
+                    color: "grey",
                   }}
                 >
-                  {comment.commentText}
+                  {comment?.commentText}
                 </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  {format(comment.createdAt)}
+                <Typography sx={{ color: "grey", fontSize: "10px" }}>
+                  {formatDistanceToNow(new Date(comment?.createdAt), {
+                    addSuffix: true,
+                  })}
                 </Typography>
               </Box>
             </ListItem>
@@ -64,7 +69,7 @@ const CommentList = ({ comments }) => {
           </React.Fragment>
         ))}
       </List>
-      {comments.length > visibleCount && (
+      {comments?.length > visibleCount && (
         <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
           <Button variant="outlined" onClick={handleSeeMore}>
             See More

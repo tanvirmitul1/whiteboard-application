@@ -1,90 +1,120 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   List,
   ListItem,
   Divider,
   Button,
-  ListItemText,
   Typography,
+  Skeleton,
 } from "@mui/material";
-import { formatDistanceToNow } from "date-fns"; // Import from date-fns
+import { formatDistanceToNow } from "date-fns";
 
 const NotificationList = ({
   notifications,
   onNotificationClick,
   markAsRead,
+  isDarkMode, // New prop to toggle dark mode
 }) => {
-  const [visibleCount, setVisibleCount] = useState(5);
+  const [visibleNotifications, setVisibleNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const containerRef = useRef(null);
 
-  const handleShowMore = () => {
-    setVisibleCount((prev) => prev + 5);
+  useEffect(() => {
+    // Load the initial notifications
+    setVisibleNotifications(notifications.slice(0, 5));
+  }, [notifications]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = containerRef.current;
+      if (
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight
+      ) {
+        // Check if we have more notifications to load
+        if (visibleNotifications.length < notifications.length && !loading) {
+          loadMoreNotifications();
+        }
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [visibleNotifications, notifications, loading]);
+
+  const loadMoreNotifications = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setVisibleNotifications((prev) => [
+        ...prev,
+        ...notifications.slice(prev.length, prev.length + 5),
+      ]);
+      setLoading(false);
+    }, 1000);
   };
 
   return (
-    <Box
-      sx={{
-        maxHeight: "400px",
-        overflowY: "auto",
-        width: "320px",
-        overflowX: "none",
-      }}
-    >
-      <List sx={{ width: "300px", margin: "0 auto" }}>
-        {notifications.length === 0 ? (
+    <Box className="notification-container" ref={containerRef}>
+      <List className="notification-list">
+        {visibleNotifications.length === 0 ? (
           <ListItem>
-            <ListItemText primary="No notifications" />
+            <Typography>No notifications</Typography>
           </ListItem>
         ) : (
-          notifications.slice(0, visibleCount).map((notification, index) => (
+          visibleNotifications.map((notification, index) => (
             <div key={index}>
-              <ListItem
-                sx={{
-                  backgroundColor: notification.read ? "#f5f5f5" : "#e3f2fd",
-                  cursor: "pointer",
-                  width: "100%",
-                  marginBottom: "2px",
-                  borderRadius: "5px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "start",
-                  alignItems: "start",
-                }}
+              <div
+                className={`notification-item ${
+                  notification.read ? "read" : ""
+                }`}
                 onClick={() => {
                   onNotificationClick(notification);
-                  if (!notification.read) markAsRead(notification._id); // Mark as read when clicked
+                  if (!notification.read) markAsRead(notification._id);
                 }}
               >
                 <div
+                  className="notification-item-text"
                   dangerouslySetInnerHTML={{ __html: notification.message }}
                 />
-                {/* Display relative time */}
-                <Typography variant="caption" color="text.secondary">
+
+                <Typography variant="caption" sx={{ color: "gray" }}>
                   {formatDistanceToNow(new Date(notification.createdAt), {
                     addSuffix: true,
                   })}
                 </Typography>
-
                 <Button
                   variant="contained"
-                  color="primary"
                   size="small"
-                  sx={{ textTransform: "none" }}
+                  sx={{ textTransform: "none", border: "none" }}
                   href={notification.redirectUrl}
                 >
                   View
                 </Button>
-              </ListItem>
-              {index < notifications.length - 1 && <Divider />}
+              </div>
+              {index < visibleNotifications.length - 1 && <Divider />}
             </div>
           ))
         )}
+
+        {loading && (
+          <>
+            {[...Array(5)].map((_, index) => (
+              <ListItem key={index}>
+                <Skeleton variant="rectangular" width="100%" height={50} />
+              </ListItem>
+            ))}
+          </>
+        )}
       </List>
-      {notifications.length > visibleCount && (
-        <Button onClick={handleShowMore} fullWidth>
-          Show More
-        </Button>
-      )}
     </Box>
   );
 };

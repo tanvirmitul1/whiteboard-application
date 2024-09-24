@@ -33,7 +33,6 @@ const ViewDrawingPage = () => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Debounce the filter title change
   const handleTitleChange = useCallback(
     debounce((value) => {
       setFilterTitle(value);
@@ -42,14 +41,7 @@ const ViewDrawingPage = () => {
     []
   );
 
-  // Fetch all users
-  const {
-    data: usersData,
-    error: usersError,
-    isLoading: usersLoading,
-  } = useGetAllUsersQuery();
-
-  // Fetch drawings based on selected user, title filter, and pagination
+  const { data: usersData } = useGetAllUsersQuery();
   const { data, error, isLoading, refetch } = useGetAllDrawingsQuery({
     searchedUser: selectedUser,
     titleFilter: filterTitle,
@@ -57,7 +49,6 @@ const ViewDrawingPage = () => {
     limit: itemsPerPage,
   });
 
-  // Mutation for deleting a drawing
   const [deleteDrawing] = useDeleteDrawingMutation();
 
   const handleUserChange = (event) => {
@@ -66,14 +57,8 @@ const ViewDrawingPage = () => {
   };
 
   const handleEditClick = (whiteboard) => {
-    console.log(whiteboard);
     const whiteboardId = whiteboard._id;
-    const drawingUser = whiteboard.user;
-    console.log({
-      whiteboardId,
-      drawingUser,
-    });
-    if (drawingUser === user._id) {
+    if (whiteboard.user === user._id) {
       navigate(`/edit/${whiteboardId}`);
     }
   };
@@ -89,20 +74,9 @@ const ViewDrawingPage = () => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        try {
-          await deleteDrawing(whiteboardId);
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your drawing has been Deleted",
-            icon: "success",
-            timer: 500,
-            timerProgressBar: true,
-            showConfirmButton: false,
-          });
-          refetch();
-        } catch (error) {
-          Swal.fire("Error!", "Failed to delete the drawing.", "error");
-        }
+        await deleteDrawing(whiteboardId);
+        Swal.fire("Deleted!", "Your drawing has been deleted.", "success");
+        refetch();
       }
     });
   };
@@ -112,8 +86,7 @@ const ViewDrawingPage = () => {
   };
 
   const handleItemsPerPageChange = (event) => {
-    const newItemsPerPage = Number(event.target.value);
-    setItemsPerPage(newItemsPerPage);
+    setItemsPerPage(Number(event.target.value));
     setPage(1);
   };
 
@@ -121,19 +94,8 @@ const ViewDrawingPage = () => {
     navigate(`/drawing/${whiteboardId}`);
   };
 
-  if (usersError || error) {
-    return <Typography color="error">Failed to load data</Typography>;
-  }
-
   return (
-    <Box
-      sx={{
-        maxHeight: "90vh",
-        overflow: "auto",
-        paddingX: "2rem",
-        paddingY: "2rem",
-      }}
-    >
+    <Box className="page-container">
       <DrawingFilters
         selectedUser={selectedUser}
         onUserChange={handleUserChange}
@@ -143,12 +105,14 @@ const ViewDrawingPage = () => {
       />
 
       {data?.whiteboards.length === 0 ? (
-        <Typography align="center">No drawings found</Typography>
+        <Typography align="center" className="drawing-title">
+          No drawings found
+        </Typography>
       ) : (
         <>
-          <Typography align="center" marginBottom={2}>
+          {/* <Typography variant="h5" align="center" className="drawing-title">
             Total Drawings: {data?.totalDrawings}
-          </Typography>
+          </Typography> */}
 
           {isLoading ? (
             <DrawPageLoader />
@@ -156,41 +120,17 @@ const ViewDrawingPage = () => {
             <Grid container spacing={3} justifyContent="center">
               {data.whiteboards.map((whiteboard) => (
                 <Grid item xs={12} sm={6} md={4} key={whiteboard._id}>
-                  <Paper
-                    sx={{
-                      border: "1px solid #ddd",
-                      borderRadius: 2,
-                      boxShadow: 3,
-                      padding: 2,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: "#fff",
-                      textAlign: "center",
-                      cursor: "pointer",
-                      transition: "transform 0.3s ease",
-                      "&:hover": {
-                        transform: "scale(1.02)",
-                      },
-                    }}
-                  >
-                    <Typography variant="h6" gutterBottom>
+                  <Box className="drawing-card">
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      className="drawing-title"
+                    >
                       {whiteboard.drawingTitle}
                     </Typography>
 
                     <Box
-                      sx={{
-                        border: "1px solid #ddd",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "100%",
-                        height: 200,
-                        backgroundColor: "#f5f5f5",
-                        overflow: "hidden",
-                        borderRadius: 1,
-                      }}
+                      className="canvas-container"
                       onClick={() => handleViewSingleDrawing(whiteboard._id)}
                     >
                       <canvas
@@ -199,15 +139,14 @@ const ViewDrawingPage = () => {
                             drawShapes(canvas, whiteboard.shapes);
                           }
                         }}
-                        style={{ width: "100%", height: "100%" }}
+                        className="canvas-style"
                       />
                     </Box>
 
-                    <Box sx={{ marginTop: 2 }}>
+                    <Box className="button-container">
                       <Button
                         variant="contained"
                         color="primary"
-                        sx={{ marginRight: 1 }}
                         onClick={() => handleEditClick(whiteboard)}
                         disabled={user?._id !== whiteboard.user}
                       >
@@ -222,20 +161,13 @@ const ViewDrawingPage = () => {
                         Delete
                       </Button>
                     </Box>
-                  </Paper>
+                  </Box>
                 </Grid>
               ))}
             </Grid>
           )}
 
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: 3,
-              gap: 10,
-            }}
-          >
+          <Box className="pagination-container">
             <FormControl>
               <InputLabel>Items Per Page</InputLabel>
               <Select
@@ -243,7 +175,7 @@ const ViewDrawingPage = () => {
                 onChange={handleItemsPerPageChange}
                 label="Items per Page"
                 size="small"
-                sx={{ width: 120 }}
+                style={{ width: 120 }}
               >
                 <MenuItem value={5}>5</MenuItem>
                 <MenuItem value={10}>10</MenuItem>
@@ -265,7 +197,8 @@ const ViewDrawingPage = () => {
           </Box>
         </>
       )}
-      <Box sx={{ marginTop: 2 }}>
+
+      <Box className="back-button-container">
         <Button
           variant="contained"
           color="secondary"

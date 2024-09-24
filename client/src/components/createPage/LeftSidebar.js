@@ -23,37 +23,18 @@ const LeftSidebar = ({
 }) => {
   const { id } = useParams();
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        padding: 1,
-        borderRadius: 3,
-        boxShadow:
-          "0px 4px 8px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.05)",
-        backgroundColor: "#ffffff",
-        overflowY: "auto",
-      }}
-    >
+    <Box className="left-sidebar-container">
       <TextField
-        label="Title..."
-        variant="outlined"
+        // label="Title"
         value={drawingTitle}
         onChange={(e) => setDrawingTitle(e.target.value)}
-        fullWidth
         size="small"
-      />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          gap: 1,
+        sx={{ color: "white", label: { color: "white" } }}
+        InputProps={{
+          style: { color: "white", fontSize: "12px" },
         }}
-      >
+      />
+      <Box className="button-container">
         {/* Shape selection buttons */}
         <Tooltip title="Pen" arrow>
           <IconButton
@@ -105,7 +86,7 @@ const LeftSidebar = ({
         </Tooltip>
 
         {/* Undo and Redo buttons */}
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box className="undo-redo-container">
           <Tooltip title="Undo" arrow>
             <IconButton onClick={handleUndo}>
               <UndoTwoToneIcon />

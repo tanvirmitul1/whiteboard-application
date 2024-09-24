@@ -1,27 +1,213 @@
+:root {
+  --primary-bg-color: #404040;
+  --secondary-bg-color: #969696;
+  --scrollbar-thumb-color: #888;
+  --scrollbar-thumb-hover-color: #555;
+  --scrollbar-track-color: #f1f1f1;
+  --scrollbar-track-hover-color: #ddd;
+  --text-color: #c4c2c2;
+  --canvas-bg-color: #747272;
+  --drawing-card-background:#242526;
+  --title-text-color:#ffcc80;
+  --background-read: #292828;
+  --background-unread: #444647;
+  --text-color: #ffffff;
+  --button-bg: #90caf9;
+  --button-text: #000000;
+}
+
+
+
+
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background-color: var(--primary-bg-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.left-sidebar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: var(--secondary-bg-color);
+  overflow-y: auto;
 }
+.left-sidebar-title{
+  color: white !important;
+
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.undo-redo-container {
+  display: flex;
+  gap: 8px;
+}
+
 .canvas-style {
-  border-radius: 12px; 
-  box-shadow: 
-    0px 8px 16px rgba(0, 0, 0, 0.2), 
-    0px 4px 8px rgba(0, 0, 0, 0.15); 
+  border-radius: 12px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2), 0px 4px 8px rgba(0, 0, 0, 0.15);
   position: relative;
-  background-color: #fdf9f9;
-  
+  background-color: var(--canvas-bg-color);
+}
+.canvas-style-single-draw{
+  max-height: 70vh;
+  min-height: 70vh;
+  background-color: var(--canvas-bg-color);
+}
+
+
+/* General styles */
+.page-container {
+  max-height: 90vh;
+  overflow: auto;
+  padding: 2rem;
+}
+
+/* Drawing Filters container */
+.drawing-filters-container {
+  margin-bottom: 16px;
+}
+
+/* Paper (drawing card) styles */
+.drawing-card {
+ 
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--drawing-card-background);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.drawing-card:hover {
+  transform: scale(1.02);
+}
+
+/* Drawing Title */
+.drawing-title {
+  margin-bottom: 16px;
+  color: var(--text-color) ;
+}
+
+/* Canvas Container */
+.canvas-container {
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 200px;
+  background-color: var(--canvas-bg-color);
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+/* Buttons container */
+.button-container {
+  margin-top: 16px;
+}
+
+.button-container button {
+  margin-right: 8px;
+}
+
+/* Pagination and controls */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  gap: 10px;
+}
+
+/* Back button container */
+.back-button-container {
+  margin-top: 16px;
+}
+
+/* filter design */
+.filter-container{
+ padding: 10px;
+ color: white;
+background-color: var(--drawing-card-background);
+border-radius: 10px;
+}
+.filter-user-select{
+  color: #d1cfcf !important;
+  background-color: #686464;
+
+  border-radius: 5px;
+}
+
+.filter-user-list{
+  color: #332c2c !important;
+  background-color: #4b4646;
+  border-radius: 5px;
+}
+
+
+/* notification */
+
+.notification-container {
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 330px;
+  background-color:var(--primary-bg-color);
+  overflow-x: hidden;
   
 }
+
+.notification-list {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.notification-item {
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 2px;
+  border-radius: 5px;
+ padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: start;
+  background-color: var(--background-unread);
+}
+
+.notification-item.read {
+  background-color: var(--background-read);
+}
+
+.notification-item-text {
+  color: var(--text-color);
+}
+
+
+
+.notification-button:hover {
+  background-color: var(--button-bg-hover);
+}
+
+
 
 /* Custom scrollbar for WebKit browsers */
 ::-webkit-scrollbar {
@@ -42,7 +228,7 @@ code {
 
 ::-webkit-scrollbar-track {
   background-color: #f1f1f1; /* Background color of the track (part the thumb moves within) */
-  border-radius: 6px; /* Rounded corners for the scrollbar track */
+  border-radius: 10px; /* Rounded corners for the scrollbar track */
 }
 
 ::-webkit-scrollbar-track:hover {

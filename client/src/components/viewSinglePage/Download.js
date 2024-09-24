@@ -18,8 +18,19 @@ const Download = ({ resolution, setResolution, handleDownload }) => {
         marginTop: 2,
       }}
     >
-      <FormControl sx={{ width: 100 }} size="small">
-        <InputLabel>Resolution</InputLabel>
+      <FormControl
+        size="small"
+        sx={{
+          color: "white",
+          border: "3px solid grey",
+
+          borderRadius: 2,
+
+          "& .MuiInputBase-input": {
+            color: "white",
+          },
+        }}
+      >
         <Select
           value={resolution}
           onChange={(e) => setResolution(e.target.value)}
