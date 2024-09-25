@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
-import Logo from "../../public/logo.svg";
+import Logo from "../files/logo.svg";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("tanvir");
@@ -32,7 +32,7 @@ const LoginPage = () => {
       }, 500);
     } catch (errors) {
       setError(errors?.data?.message || errors?.data?.errors[0]?.msg);
-      toast.error(error); // Show error message with toast
+      toast.error(error);
     }
   };
 
@@ -41,7 +41,7 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit}>
         <div className="brand">
           <img src={Logo} alt="logo" />
-          <h1>snappy</h1>
+          <h1>Chalk Board</h1>
         </div>
         <input
           type="text"
@@ -58,14 +58,14 @@ const LoginPage = () => {
         <button type="submit" disabled={isLoading}>
           Log In
         </button>
-        <span>
+        <Links>
           <Link to="/register/public">
             Don't have an account? Register here.
           </Link>
           <Link to="/change-password">Change Password?</Link>
-        </span>
+        </Links>
       </form>
-      {error && <Error>{error}</Error>} {/* Display error if present */}
+      {error && <Error>{error}</Error>}
     </FormContainer>
   );
 };
@@ -150,6 +150,14 @@ const FormContainer = styled.div`
 const Error = styled.div`
   color: red;
   margin-top: 1rem;
+`;
+
+const Links = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default LoginPage;
