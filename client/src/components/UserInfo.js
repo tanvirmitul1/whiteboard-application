@@ -152,23 +152,8 @@ const UserInfo = () => {
         </IconButton>
       </Tooltip>
 
-      {isAdmin && (
-        <Tooltip title="Create user" arrow>
-          <LinkStyled
-            to="/register"
-            style={{
-              textDecoration: "none",
-              color: "#ffcc80",
-              fontWeight: 500,
-            }}
-          >
-            <AddIcon />
-          </LinkStyled>
-        </Tooltip>
-      )}
-
       <UserPopover
-        open={Boolean(anchorEl)}
+        openUserPopover={openUserPopover}
         anchorEl={anchorEl}
         onClose={handleUserPopoverClose}
         userName={userName}

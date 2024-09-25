@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, IconButton, Typography, useMediaQuery } from "@mui/material";
-import DashboardIcon from "@mui/icons-material/Dashboard"; // New Icon for a more professional look
+import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import UserInfo from "./UserInfo";
 import { Link } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
@@ -13,10 +13,9 @@ const NavBar = () => {
     <Box
       sx={{
         padding: "10px 20px",
-        backgroundColor: "#343434",
+        backgroundColor: "#131324",
         color: "white",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-        position: "sticky",
         top: 0,
         zIndex: 1000,
       }}
@@ -34,7 +33,7 @@ const NavBar = () => {
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton sx={{ color: "white", mr: 1 }}>
-              <DashboardIcon fontSize="large" /> {/* New Icon */}
+              <EditCalendarIcon sx={{ color: "#ea05ff", fontSize: 50 }} />
             </IconButton>
             {isPc && (
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>

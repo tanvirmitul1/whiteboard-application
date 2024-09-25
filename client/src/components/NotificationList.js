@@ -14,7 +14,6 @@ const NotificationList = ({
   notifications,
   onNotificationClick,
   markAsRead,
-  isDarkMode, // New prop to toggle dark mode
 }) => {
   const [visibleNotifications, setVisibleNotifications] = useState([]);
   const [loading, setLoading] = useState(false);

@@ -17,13 +17,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Avatar,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { drawShapes } from "../components/DrawShapes";
 import DrawPageLoader from "../components/DrawPageLoader";
 import Swal from "sweetalert2";
 import DrawingFilters from "../components/viewPage/DrawingFilters";
 import useAuth from "../customHooks/useAuth";
+import { formatDistanceToNow } from "date-fns";
+import ActionButton from "../components/viewPage/ActionButton";
 
 const ViewDrawingPage = () => {
   const { user } = useAuth();
@@ -128,39 +131,64 @@ const ViewDrawingPage = () => {
                     >
                       {whiteboard.drawingTitle}
                     </Typography>
-
-                    <Box
-                      className="canvas-container"
-                      onClick={() => handleViewSingleDrawing(whiteboard._id)}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                      }}
                     >
-                      <canvas
-                        ref={(canvas) => {
-                          if (canvas) {
-                            drawShapes(canvas, whiteboard.shapes);
-                          }
-                        }}
-                        className="canvas-style"
-                      />
-                    </Box>
+                      <Box
+                        className="canvas-container"
+                        onClick={() => handleViewSingleDrawing(whiteboard._id)}
+                      >
+                        <canvas
+                          ref={(canvas) => {
+                            if (canvas) {
+                              drawShapes(canvas, whiteboard.shapes);
+                            }
+                          }}
+                          className="canvas-style"
+                        />
+                      </Box>
 
-                    <Box className="button-container">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleEditClick(whiteboard)}
-                        disabled={user?._id !== whiteboard.user}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          gap: "10px",
+                        }}
                       >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleDeleteClick(whiteboard._id)}
-                        disabled={user?._id !== whiteboard.user}
-                      >
-                        Delete
-                      </Button>
-                    </Box>
+                        <Avatar sx={{ height: "15px", width: "15px" }} />
+                        <a
+                          style={{
+                            fontSize: "12px",
+                          }}
+                          href={`/user-list?type=profile&user_id=${whiteboard.user._id}`}
+                          className="user-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {whiteboard.user.username}
+                        </a>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            color: "gray",
+                            opacity: 0.5,
+                          }}
+                        >
+                          {formatDistanceToNow(
+                            new Date(whiteboard?.createdAt),
+                            {
+                              addSuffix: true,
+                            }
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <ActionButton />
                   </Box>
                 </Grid>
               ))}

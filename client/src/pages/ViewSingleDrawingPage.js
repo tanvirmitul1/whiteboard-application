@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetDrawingByIdQuery } from "../Apis/whiteboardApiSlice";
 import {
+  Avatar,
   Box,
   Container,
   Typography,
@@ -12,6 +13,7 @@ import { drawShapes } from "../components/DrawShapes";
 
 import CommentsSection from "../components/viewSinglePage/CommentsSection";
 import Download from "../components/viewSinglePage/Download";
+import { formatDistanceToNow } from "date-fns";
 
 const ViewSingleDrawingPage = () => {
   const { drawingId } = useParams();
@@ -51,7 +53,7 @@ const ViewSingleDrawingPage = () => {
     scaledCanvas.height = canvas.height * resolution;
 
     const ctx = scaledCanvas.getContext("2d");
-    ctx.fillStyle = "grey";
+    ctx.fillStyle = "#242526";
     ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
     ctx.scale(resolution, resolution);
     ctx.drawImage(canvas, 0, 0);
@@ -95,14 +97,42 @@ const ViewSingleDrawingPage = () => {
           flexDirection: "column",
         }}
       >
-        <Box
-          sx={{
-            backgroundColor: "#f5f5f5",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        <canvas id="drawingCanvas" className="canvas-style-single-draw" />
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-start",
+            gap: "10px",
+            alignSelf: "flex-start",
+            marginLeft: "40px",
+            marginTop: "10px",
           }}
         >
-          <canvas id="drawingCanvas" className="canvas-style-single-draw" />
-        </Box>
+          <Avatar sx={{ height: "20px", width: "20px" }} />
+          <a
+            style={{
+              fontSize: "12px",
+            }}
+            href={`/user-list?type=profile&user_id=${drawing?.user._id}`}
+            className="user-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {drawing?.user?.username}
+          </a>
+          <div
+            style={{
+              fontSize: "12px",
+              color: "gray",
+              opacity: 0.5,
+            }}
+          >
+            {formatDistanceToNow(new Date(drawing?.createdAt), {
+              addSuffix: true,
+            })}
+          </div>
+        </div>
 
         <Download
           resolution={resolution}

@@ -9,53 +9,68 @@ import {
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-const UserPopover = ({ open, anchorEl, onClose, userName, role, onLogout }) => {
+import SettingsIcon from "@mui/icons-material/Settings";
+import { toast } from "react-toastify";
+
+const UserPopover = ({
+  openUserPopover,
+  anchorEl,
+  onClose,
+  userName,
+  role,
+  email,
+  onLogout,
+}) => {
+  const onSettings = () => {
+    toast.success("Settings page coming soon!");
+  };
   return (
     <Popover
-      open={open}
+      open={openUserPopover}
       anchorEl={anchorEl}
       onClose={onClose}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "left",
       }}
-      sx={{
-        "& .MuiPopover-paper": {
-          borderRadius: 2,
-          boxShadow: "0px 4px 24px rgba(0, 0, 0, 0.2)",
-          width: 200,
-        },
-      }}
     >
-      <Box
-        sx={{
-          padding: 2,
-          bgcolor: "#ffffff",
-          borderRadius: 2,
-        }}
-      >
+      <Box className="user-popover">
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Avatar src={"https://via.placeholder.com/150"} alt={userName} />
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            <Typography className="user-name" variant="h6">
               {userName}
             </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
+            <Typography className="user-role" variant="body2">
               {role}
+            </Typography>
+            <Typography className="user-role" variant="body2">
+              {email}
             </Typography>
           </Box>
         </Box>
 
         <Divider sx={{ mb: 1 }} />
-        <Button
-          onClick={onLogout}
-          variant="contained"
-          color="error"
-          size="small"
-          sx={{ textTransform: "none", padding: 1, marginLeft: "90px" }}
-        >
-          <LogoutIcon /> <span>Logout</span>
-        </Button>
+
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Button
+            onClick={onSettings}
+            variant="outlined"
+            size="small"
+            startIcon={<SettingsIcon />}
+          >
+            Settings
+          </Button>
+          <Button
+            onClick={onLogout}
+            variant="contained"
+            color="error"
+            size="small"
+            className="logout-button"
+          >
+            <LogoutIcon /> <span>Logout</span>
+          </Button>
+        </Box>
       </Box>
     </Popover>
   );

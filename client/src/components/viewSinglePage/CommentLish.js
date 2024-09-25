@@ -9,6 +9,7 @@ import {
   Divider,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
+import useColors from "../../customHooks/useColors";
 
 const CommentList = ({ comments }) => {
   const [visibleCount, setVisibleCount] = useState(10);
@@ -16,6 +17,7 @@ const CommentList = ({ comments }) => {
   const handleSeeMore = () => {
     setVisibleCount((prevCount) => prevCount + 10); // Show 10 more comments
   };
+  const { colors } = useColors();
 
   return (
     <Box
@@ -24,7 +26,7 @@ const CommentList = ({ comments }) => {
         maxHeight: "45vh",
         overflow: "auto",
         borderRadius: 2,
-        backgroundColor: "#444242",
+        backgroundColor: colors.primaryBgColor,
         padding: 2,
         border: "2px solid #4e4c4c",
       }}

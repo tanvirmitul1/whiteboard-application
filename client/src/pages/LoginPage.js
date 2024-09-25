@@ -4,11 +4,11 @@ import styled from "styled-components";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
-import Logo from "../files/logo.svg";
+import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("tanvir");
-  const [password, setPassword] = useState("tanvir");
+  const [username, setUsername] = useState("mitul");
+  const [password, setPassword] = useState("12345678");
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
   const { userId } = useAuth();
@@ -40,7 +40,7 @@ const LoginPage = () => {
     <FormContainer>
       <form onSubmit={handleSubmit}>
         <div className="brand">
-          <img src={Logo} alt="logo" />
+          <EditCalendarIcon sx={{ color: "#ea05ff", fontSize: 50 }} />
           <h1>Chalk Board</h1>
         </div>
         <input
@@ -56,14 +56,14 @@ const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit" disabled={isLoading}>
-          Log In
+          {isLoading ? "Processing..." : "Login"}
         </button>
-        <Links>
-          <Link to="/register/public">
+        <div>
+          <Links href="/register/public">
             Don't have an account? Register here.
-          </Link>
-          <Link to="/change-password">Change Password?</Link>
-        </Links>
+          </Links>
+          <Links href="/change-password">Change Password?</Links>
+        </div>
       </form>
       {error && <Error>{error}</Error>}
     </FormContainer>
@@ -99,6 +99,8 @@ const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    justify-content: center;
+    align-items: center;
     background-color: #00000076;
     border-radius: 2rem;
     padding: 5rem;
@@ -152,12 +154,14 @@ const Error = styled.div`
   margin-top: 1rem;
 `;
 
-const Links = styled.div`
+const Links = styled.a`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
+  text-decoration: none;
+  color: blue;
 `;
 
 export default LoginPage;

@@ -1,37 +1,30 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Typography,
   TextField,
   Button,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
   IconButton,
-  Avatar,
   Popover,
   CircularProgress,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
 import EmojiPicker from "emoji-picker-react";
 import io from "socket.io-client";
-
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-
+import axios from "axios";
 import {
   useGetAllCommentsQuery,
   useStoreCommentsMutation,
 } from "../../Apis/commentsApiSlice";
 import useAuth from "../../customHooks/useAuth";
 import CommentList from "./CommentLish";
+
 const socket = io(process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL, {
   reconnectionAttempts: 5,
 });
@@ -59,7 +52,6 @@ const CommentsSection = () => {
       );
     });
 
-    // Clean up the socket connection when the component is unmounted
     return () => {
       socket.off("newComment");
       socket.off("updateReaction");
@@ -93,6 +85,17 @@ const CommentsSection = () => {
     }
   };
 
+  const onEmojiClick = (event, emojiObject) => {
+    setNewComment((prevComment) => prevComment + emojiObject.emoji);
+  };
+
+  const handleEmojiClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleEmojiClose = () => {
+    setAnchorEl(null);
+  };
   const handleReaction = async (reactionType) => {
     try {
       await axios.post(
@@ -107,47 +110,12 @@ const CommentsSection = () => {
       toast.error("Failed to add reaction.");
     }
   };
-
-  const onEmojiClick = (event, emojiObject) => {
-    console.log({ emojiObject });
-    setNewComment((prevComment) => prevComment + emojiObject.emoji);
-  };
-
-  const handleEmojiClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleEmojiClose = () => {
-    setAnchorEl(null);
-  };
-
   const open = Boolean(anchorEl);
   const id = open ? "emoji-popover" : undefined;
 
   return (
-    <Box
-      sx={{
-        width: { xs: "95vw", md: "35vw" },
-        overflowX: "hidden",
-        overflowY: "auto",
-        borderRadius: 2,
-        boxShadow: "0 4px 8px rgba(59, 59, 59, 0.1)",
-        backgroundColor: "#444242",
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 1,
-          marginTop: 1,
-        }}
-      >
+    <Box className="comments-container">
+      <Box className="comments-reactions">
         <IconButton onClick={() => handleReaction("like")} color="primary">
           <ThumbUpAltIcon />
         </IconButton>
@@ -165,53 +133,20 @@ const CommentsSection = () => {
         </IconButton>
       </Box>
 
-      {/* New Comment Input */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          width: { xs: "90vw", md: "30vw" },
-          padding: 2,
-        }}
-      >
-        <TextField
+      <Box className="new-comment-input">
+        <textarea
           placeholder="Write a comment..."
-          variant="outlined"
-          size="small"
-          multiline
-          maxRows={4}
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          sx={{
-            color: "white", // Text color
-            border: "3px solid grey",
-
-            borderRadius: 2,
-
-            "& .MuiInputBase-input": {
-              color: "white", // Input text color
-            },
-            "& .MuiInputBase-input::placeholder": {
-              color: "lightgrey",
-              opacity: 0.3,
-            },
-          }}
+          className="text-field"
         />
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <Box className="comment-action-buttons">
           <Button
             variant="contained"
             color="primary"
             size="small"
             onClick={handlePostComment}
-            sx={{ textTransform: "none" }}
             disabled={isCommentPosting}
           >
             {isCommentPosting ? (
@@ -223,7 +158,7 @@ const CommentsSection = () => {
               "Add comment"
             )}
           </Button>
-          <IconButton onClick={handleEmojiClick}>
+          <IconButton onClick={handleEmojiClick} className="emoji-button">
             <EmojiEmotionsIcon />
           </IconButton>
 
@@ -246,7 +181,6 @@ const CommentsSection = () => {
         </Box>
       </Box>
 
-      {/* Comment List */}
       {commentsData && <CommentList comments={comments} />}
     </Box>
   );

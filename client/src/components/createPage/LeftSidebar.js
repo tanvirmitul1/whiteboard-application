@@ -10,6 +10,7 @@ import UndoTwoToneIcon from "@mui/icons-material/UndoTwoTone";
 import RedoTwoToneIcon from "@mui/icons-material/RedoTwoTone";
 import CreatePageButtons from "./CreatePageButtons";
 import { useParams } from "react-router-dom";
+import useColors from "../../customHooks/useColors";
 
 const LeftSidebar = ({
   drawingTitle,
@@ -21,86 +22,97 @@ const LeftSidebar = ({
   handleUndo,
   handleRedo,
 }) => {
+  const { colors } = useColors();
+
+  //remove save button for edit mode
   const { id } = useParams();
+
   return (
     <Box className="left-sidebar-container">
-      <TextField
-        // label="Title"
+      <input
         value={drawingTitle}
         onChange={(e) => setDrawingTitle(e.target.value)}
-        size="small"
-        sx={{ color: "white", label: { color: "white" } }}
-        InputProps={{
-          style: { color: "white", fontSize: "12px" },
-        }}
+        className="text-field"
+        placeholder="Enter Title..."
       />
       <Box className="button-container">
         {/* Shape selection buttons */}
         <Tooltip title="Pen" arrow>
-          <IconButton
-            color={shapeType === "pen" ? "primary" : "default"}
-            onClick={() => setShapeType("pen")}
-          >
-            <GestureTwoToneIcon />
+          <IconButton onClick={() => setShapeType("pen")}>
+            <GestureTwoToneIcon
+              sx={{
+                color: shapeType === "pen" ? colors.buttonBg : colors.textColor,
+              }}
+            />
           </IconButton>
         </Tooltip>
         <Tooltip title="Line" arrow>
-          <IconButton
-            color={shapeType === "line" ? "primary" : "default"}
-            onClick={() => setShapeType("line")}
-          >
-            <DriveFileRenameOutlineTwoToneIcon />
+          <IconButton onClick={() => setShapeType("line")}>
+            <DriveFileRenameOutlineTwoToneIcon
+              sx={{
+                color:
+                  shapeType === "line" ? colors.buttonBg : colors.textColor,
+              }}
+            />
           </IconButton>
         </Tooltip>
         <Tooltip title="Circle" arrow>
-          <IconButton
-            color={shapeType === "circle" ? "primary" : "default"}
-            onClick={() => setShapeType("circle")}
-          >
-            <CircleTwoToneIcon />
+          <IconButton onClick={() => setShapeType("circle")}>
+            <CircleTwoToneIcon
+              sx={{
+                color:
+                  shapeType === "circle" ? colors.buttonBg : colors.textColor,
+              }}
+            />
           </IconButton>
         </Tooltip>
         <Tooltip title="Rectangle" arrow>
-          <IconButton
-            color={shapeType === "rectangle" ? "primary" : "default"}
-            onClick={() => setShapeType("rectangle")}
-          >
-            <RectangleTwoToneIcon />
+          <IconButton onClick={() => setShapeType("rectangle")}>
+            <RectangleTwoToneIcon
+              sx={{
+                color:
+                  shapeType === "rectangle"
+                    ? colors.buttonBg
+                    : colors.textColor,
+              }}
+            />
           </IconButton>
         </Tooltip>
         <Tooltip title="Eraser" arrow>
-          <IconButton
-            color={shapeType === "eraser" ? "primary" : "default"}
-            onClick={() => setShapeType("eraser")}
-          >
-            <LuEraser />
+          <IconButton onClick={() => setShapeType("eraser")}>
+            <LuEraser
+              style={{
+                color:
+                  shapeType === "eraser" ? colors.buttonBg : colors.textColor,
+              }}
+            />
           </IconButton>
         </Tooltip>
         <Tooltip title="Text" arrow>
-          <IconButton
-            color={shapeType === "text" ? "primary" : "default"}
-            onClick={() => setShapeType("text")}
-          >
-            <RttTwoToneIcon />
+          <IconButton onClick={() => setShapeType("text")}>
+            <RttTwoToneIcon
+              sx={{
+                color:
+                  shapeType === "text" ? colors.buttonBg : colors.textColor,
+              }}
+            />
           </IconButton>
         </Tooltip>
 
-        {/* Undo and Redo buttons */}
         <Box className="undo-redo-container">
           <Tooltip title="Undo" arrow>
             <IconButton onClick={handleUndo}>
-              <UndoTwoToneIcon />
+              <UndoTwoToneIcon sx={{ color: colors.textColor }} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Redo" arrow>
             <IconButton onClick={handleRedo}>
-              <RedoTwoToneIcon />
+              <RedoTwoToneIcon sx={{ color: colors.textColor }} />
             </IconButton>
           </Tooltip>
         </Box>
       </Box>
 
-      {/* Save button and other options */}
       {!id && (
         <CreatePageButtons
           handleSaveDrawing={handleSaveDrawing}

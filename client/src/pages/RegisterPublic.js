@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCreateUserMutation } from "../Apis/userApiSlice";
-import {
-  Box,
-  Typography,
-  TextField,
-  Select,
-  MenuItem,
-  Button,
-  CircularProgress,
-} from "@mui/material";
+import { Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
-
+import EditCalendarIcon from "@mui/icons-material/EditCalendar";
+import styled from "styled-components";
 const RegisterPublic = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -38,120 +31,141 @@ const RegisterPublic = () => {
       setError(errors?.data?.message || errors?.data?.errors[0]?.msg);
     }
   };
-
   return (
-    <Box
-      sx={{
-        // backgroundImage: `url('https://img.freepik.com/premium-photo/hand-holding-warning-sign-with-word-ai-holographic-text-against-dark-background_778772-3774.jpg?w=826')`,
-        // backgroundSize: "100%",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-      }}
-    >
-      <Typography variant="h3" sx={{ marginBottom: "20px", color: "white" }}>
-        Whiteboard Application
-      </Typography>
-
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "400px",
-          gap: 3,
-          padding: "30px",
-          backgroundColor: "white",
-          borderRadius: "8px",
-          boxShadow: 3,
-        }}
-      >
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <TextField
-            label="Username"
-            variant="outlined"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-
-          <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Box>
+    <FormContainer>
+      <form onSubmit={handleSubmit}>
+        <div className="brand">
+          <EditCalendarIcon sx={{ color: "#ea05ff", fontSize: 50 }} />
+          <h1>Chalk Board</h1>
+        </div>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <Select
           value={role}
           onChange={(e) => setRole(e.target.value)}
           fullWidth
-          variant="outlined"
-          displayEmpty
+          className="filter-user-select"
         >
-          <MenuItem value="User">User</MenuItem>
-          {/* <MenuItem value="Admin">Admin</MenuItem> */}
+          <MenuItem value="User" className="filter-user-list">
+            User
+          </MenuItem>
         </Select>
-
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={isLoading}
-          fullWidth
-        >
-          {isLoading ? (
-            <>
-              <CircularProgress
-                size={20}
-                sx={{ color: "white", marginRight: 1 }}
-              />
-              Processing...
-            </>
-          ) : (
-            "Register"
-          )}
-        </Button>
-
-        <Box textAlign="center">
-          <Link to="/login" variant="body2" sx={{ textDecoration: "none" }}>
-            Already have an account? Sign in here.
-          </Link>
-        </Box>
-
-        {/* Always render these Typography elements and control visibility */}
-        <Typography
-          color="error"
-          sx={{
-            mt: 1,
-            visibility: error ? "visible" : "hidden",
-            minHeight: "14px", // Reserve space for 1 line
-          }}
-        >
-          {error || ""}
-        </Typography>
-
-        <Typography
-          color="success"
-          sx={{
-            mt: 1,
-            visibility: success ? "visible" : "hidden",
-            minHeight: "14px",
-          }}
-        >
-          {success || ""}
-        </Typography>
-      </Box>
-    </Box>
+        {error && <Error>{error}</Error>}
+        <button type="submit" disabled={isLoading}>
+          Register
+        </button>
+        <div>
+          <Links href="/login">Already have an account? Sign in here.</Links>
+          <Links href="/change-password">Change Password?</Links>
+        </div>
+      </form>
+    </FormContainer>
   );
 };
+
+const FormContainer = styled.div`
+  max-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #131324;
+  overflow: hidden;
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+
+    img {
+      height: 5rem;
+    }
+
+    h1 {
+      color: white;
+      text-transform: uppercase;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    background-color: #00000076;
+    border-radius: 2rem;
+    padding: 5rem;
+  }
+
+  input {
+    background-color: transparent;
+    padding: 1rem;
+    border: 0.1rem solid #4e0eff;
+    border-radius: 0.4rem;
+    color: white;
+    width: 100%;
+    font-size: 1rem;
+
+    &:focus {
+      border: 0.1rem solid #997af0;
+      outline: none;
+    }
+  }
+
+  button {
+    background-color: #4e0eff;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+
+    &:hover {
+      background-color: #4e0eff;
+    }
+  }
+
+  span {
+    color: white;
+    text-transform: uppercase;
+
+    a {
+      color: #4e0eff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  }
+`;
+
+const Error = styled.div`
+  color: red;
+`;
+
+const Links = styled.a`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: blue;
+`;
 
 export default RegisterPublic;

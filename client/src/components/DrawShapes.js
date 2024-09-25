@@ -190,6 +190,7 @@ export const drawShapes = (canvas, shapes) => {
           path.forEach(({ x, y }) => {
             ctx.lineTo((x - minX) * scale, (y - minY) * scale);
           });
+          ctx.fillStyle = "white";
           ctx.stroke();
         }
         break;
