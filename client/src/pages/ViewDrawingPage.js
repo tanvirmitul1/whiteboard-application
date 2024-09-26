@@ -28,6 +28,7 @@ import useAuth from "../customHooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import ActionButton from "../components/viewPage/ActionButton";
 import useColors from "../customHooks/useColors";
+import Reactions from "../components/viewPage/Reactions";
 
 const ViewDrawingPage = () => {
   const { user } = useAuth();
@@ -69,6 +70,34 @@ const ViewDrawingPage = () => {
     } else {
       console.log("You do not have permission to edit this whiteboard.");
     }
+  };
+  const handleDownload = (whiteboard, canvasId) => {
+    const canvas = document.getElementById(canvasId);
+    const link = document.createElement("a");
+
+    // Create a scaled canvas for higher resolution
+    const scaledCanvas = document.createElement("canvas");
+    const scaleFactor = 10; // Increase this for higher resolution
+    scaledCanvas.width = canvas.width * scaleFactor;
+    scaledCanvas.height = canvas.height * scaleFactor;
+
+    const ctx = scaledCanvas.getContext("2d");
+
+    // Disable image smoothing to avoid blur during scaling
+    ctx.imageSmoothingEnabled = false;
+
+    // Set background color if necessary (e.g., #242526)
+    ctx.fillStyle = "#242526";
+    ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
+
+    // Scale the canvas drawing
+    ctx.scale(scaleFactor, scaleFactor);
+    ctx.drawImage(canvas, 0, 0); // Draw the original canvas onto the scaled one
+
+    // Generate the high-resolution image
+    link.href = scaledCanvas.toDataURL("image/jpeg", 1); // Use full quality
+    link.download = `${whiteboard.drawingTitle}.jpg`;
+    link.click();
   };
 
   const handleDeleteClick = (whiteboardId) => {
@@ -126,7 +155,7 @@ const ViewDrawingPage = () => {
             <DrawPageLoader />
           ) : (
             <Grid container spacing={3} justifyContent="center">
-              {data.whiteboards.map((whiteboard) => (
+              {data.whiteboards.map((whiteboard, index) => (
                 <Grid item xs={12} sm={6} md={4} key={whiteboard._id}>
                   <Box className="drawing-card">
                     <Typography
@@ -148,6 +177,7 @@ const ViewDrawingPage = () => {
                         onClick={() => handleViewSingleDrawing(whiteboard._id)}
                       >
                         <canvas
+                          id={`drawingCanvas-${index}`}
                           ref={(canvas) => {
                             if (canvas) {
                               drawShapes(canvas, whiteboard.shapes, colors);
@@ -193,10 +223,15 @@ const ViewDrawingPage = () => {
                       </div>
                     </div>
 
+                    <Reactions whiteboard={whiteboard} />
+
                     <ActionButton
                       whiteboard={whiteboard}
                       handleEditClick={handleEditClick}
                       handleDeleteClick={handleDeleteClick}
+                      handleDownload={() =>
+                        handleDownload(whiteboard, `drawingCanvas-${index}`)
+                      } // Pass unique ID
                     />
                   </Box>
                 </Grid>

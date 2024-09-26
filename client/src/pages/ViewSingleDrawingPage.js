@@ -107,7 +107,7 @@ const ViewSingleDrawingPage = () => {
             justifyContent: "flex-start",
             gap: "10px",
             alignSelf: "flex-start",
-            marginLeft: "40px",
+            marginLeft: "80px",
             marginTop: "10px",
           }}
         >
@@ -144,7 +144,7 @@ const ViewSingleDrawingPage = () => {
       </Box>
 
       <Box sx={{ width: { xs: "100vw", md: "35vw" } }}>
-        <CommentsSection />
+        <CommentsSection whiteboard={drawing} />
       </Box>
     </Box>
   );
