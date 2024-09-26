@@ -241,13 +241,41 @@ const ViewDrawingPage = () => {
 
           <Box className="pagination-container">
             <FormControl>
-              <InputLabel>Items Per Page</InputLabel>
+              <InputLabel sx={{ color: "white" }}>Items Per Page</InputLabel>
               <Select
                 value={itemsPerPage}
                 onChange={handleItemsPerPageChange}
                 label="Items per Page"
                 size="small"
-                style={{ width: 120 }}
+                sx={{
+                  width: 120,
+                  "& .MuiSelect-select": {
+                    color: "gray",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "gray",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "gray",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "gray",
+                  },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      bgcolor: "#333",
+                      "& .MuiMenuItem-root": {
+                        color: "gray",
+                      },
+                      "& .Mui-selected": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        color: "gray",
+                      },
+                    },
+                  },
+                }}
               >
                 <MenuItem value={5}>5</MenuItem>
                 <MenuItem value={10}>10</MenuItem>
@@ -265,6 +293,21 @@ const ViewDrawingPage = () => {
               boundaryCount={2}
               showFirstButton
               showLastButton
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "white",
+                },
+                "& .MuiPaginationItem-previousNext": {
+                  color: "white",
+                },
+                "& .Mui-selected": {
+                  backgroundColor: "white",
+                  color: "black",
+                },
+                "& .MuiPaginationItem-ellipsis": {
+                  color: "white",
+                },
+              }}
             />
           </Box>
         </>

@@ -12,13 +12,13 @@ const DrawPageLoader = () => {
       }}
     >
       {/* Display skeletons while loading */}
-      <Box sx={{ width: "100%", maxWidth: 1800 }}>
+      <Box sx={{ width: "90%", maxWidth: 1800 }}>
         <Grid container spacing={3}>
           {Array.from(new Array(9)).map((_, index) => (
             <Grid item xs={12} sm={6} md={6} key={index}>
               <Paper
                 sx={{
-                  backgroundColor: "#7c7c7c",
+                  backgroundColor: "#121425",
                   padding: 2,
 
                   borderRadius: 2,
