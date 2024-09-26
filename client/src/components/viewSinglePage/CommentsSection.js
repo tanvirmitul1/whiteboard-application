@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  TextField,
   Button,
   IconButton,
   Popover,
@@ -11,25 +10,22 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmojiPicker from "emoji-picker-react";
 import io from "socket.io-client";
-import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
-import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
-import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-import axios from "axios";
+
 import {
   useGetAllCommentsQuery,
   useStoreCommentsMutation,
 } from "../../Apis/commentsApiSlice";
 import useAuth from "../../customHooks/useAuth";
 import CommentList from "./CommentLish";
+import Reactions from "../viewPage/Reactions";
 
 const socket = io(process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL, {
   reconnectionAttempts: 5,
 });
 
-const CommentsSection = () => {
+const CommentsSection = ({ whiteboard }) => {
   const { drawingId } = useParams();
   const [storeComments, { isLoading: isCommentPosting }] =
     useStoreCommentsMutation();
@@ -96,43 +92,13 @@ const CommentsSection = () => {
   const handleEmojiClose = () => {
     setAnchorEl(null);
   };
-  const handleReaction = async (reactionType) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/drawings/reaction`,
-        {
-          drawingId,
-          reactionType,
-        }
-      );
-      toast.success("Reaction added!");
-    } catch (error) {
-      toast.error("Failed to add reaction.");
-    }
-  };
+
   const open = Boolean(anchorEl);
   const id = open ? "emoji-popover" : undefined;
 
   return (
     <Box className="comments-container">
-      <Box className="comments-reactions">
-        <IconButton onClick={() => handleReaction("like")} color="primary">
-          <ThumbUpAltIcon />
-        </IconButton>
-        <IconButton onClick={() => handleReaction("love")} color="secondary">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton onClick={() => handleReaction("laugh")} color="success">
-          <SentimentVerySatisfiedIcon />
-        </IconButton>
-        <IconButton onClick={() => handleReaction("sad")} color="warning">
-          <SentimentDissatisfiedIcon />
-        </IconButton>
-        <IconButton onClick={() => handleReaction("angry")} color="error">
-          <SentimentVeryDissatisfiedIcon />
-        </IconButton>
-      </Box>
-
+      <Reactions whiteboard={whiteboard} />
       <Box className="new-comment-input">
         <textarea
           placeholder="Write a comment..."

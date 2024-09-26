@@ -22,7 +22,7 @@ const CommentList = ({ comments }) => {
   return (
     <Box
       sx={{
-        width: { xs: "95vw", md: "30vw" },
+        width: { xs: "80vw", md: "25vw" },
         maxHeight: "45vh",
         overflow: "auto",
         borderRadius: 2,
