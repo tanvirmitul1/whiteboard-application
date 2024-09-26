@@ -27,9 +27,11 @@ import DrawingFilters from "../components/viewPage/DrawingFilters";
 import useAuth from "../customHooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import ActionButton from "../components/viewPage/ActionButton";
+import useColors from "../customHooks/useColors";
 
 const ViewDrawingPage = () => {
   const { user } = useAuth();
+  const { colors } = useColors();
   const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState(user?._id || null);
   const [filterTitle, setFilterTitle] = useState("");
@@ -60,9 +62,12 @@ const ViewDrawingPage = () => {
   };
 
   const handleEditClick = (whiteboard) => {
+    console.log("edit", whiteboard);
     const whiteboardId = whiteboard._id;
-    if (whiteboard.user === user._id) {
+    if (whiteboard.user._id === user._id) {
       navigate(`/edit/${whiteboardId}`);
+    } else {
+      console.log("You do not have permission to edit this whiteboard.");
     }
   };
 
@@ -145,7 +150,7 @@ const ViewDrawingPage = () => {
                         <canvas
                           ref={(canvas) => {
                             if (canvas) {
-                              drawShapes(canvas, whiteboard.shapes);
+                              drawShapes(canvas, whiteboard.shapes, colors);
                             }
                           }}
                           className="canvas-style"
@@ -188,7 +193,11 @@ const ViewDrawingPage = () => {
                       </div>
                     </div>
 
-                    <ActionButton />
+                    <ActionButton
+                      whiteboard={whiteboard}
+                      handleEditClick={handleEditClick}
+                      handleDeleteClick={handleDeleteClick}
+                    />
                   </Box>
                 </Grid>
               ))}

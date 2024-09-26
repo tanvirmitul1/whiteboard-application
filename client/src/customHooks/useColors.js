@@ -51,6 +51,12 @@ const useColors = () => {
       linkColor: getComputedStyle(document.documentElement)
         .getPropertyValue("--link-color")
         .trim(),
+      popoverBg: getComputedStyle(document.documentElement)
+        .getPropertyValue("--popover-bg")
+        .trim(),
+      canvasDrawColor: getComputedStyle(document.documentElement)
+        .getPropertyValue("--canvas-draw-color")
+        .trim(),
     };
   }, []);
 

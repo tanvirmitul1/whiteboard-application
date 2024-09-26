@@ -14,8 +14,10 @@ import { drawShapes } from "../components/DrawShapes";
 import CommentsSection from "../components/viewSinglePage/CommentsSection";
 import Download from "../components/viewSinglePage/Download";
 import { formatDistanceToNow } from "date-fns";
+import useColors from "../customHooks/useColors";
 
 const ViewSingleDrawingPage = () => {
+  const { colors } = useColors();
   const { drawingId } = useParams();
   const [resolution, setResolution] = useState(1);
   const { data: drawing, error, isLoading } = useGetDrawingByIdQuery(drawingId);
@@ -25,7 +27,7 @@ const ViewSingleDrawingPage = () => {
 
     const draw = () => {
       if (drawing) {
-        drawShapes(canvas, drawing.shapes);
+        drawShapes(canvas, drawing.shapes, colors);
       }
     };
 
