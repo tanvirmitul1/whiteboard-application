@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetDrawingByIdQuery } from "../Apis/whiteboardApiSlice";
-import {
-  Avatar,
-  Box,
-  Container,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
 import { drawShapes } from "../components/DrawShapes";
 
 import CommentsSection from "../components/viewSinglePage/CommentsSection";
@@ -17,6 +10,7 @@ import { formatDistanceToNow } from "date-fns";
 import useColors from "../customHooks/useColors";
 
 const ViewSingleDrawingPage = () => {
+  const navigate = useNavigate();
   const { colors } = useColors();
   const { drawingId } = useParams();
   const [resolution, setResolution] = useState(1);
@@ -145,6 +139,15 @@ const ViewSingleDrawingPage = () => {
 
       <Box sx={{ width: { xs: "100vw", md: "35vw" } }}>
         <CommentsSection whiteboard={drawing} />
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={() => navigate(-1)}
+          sx={{ marginTop: "10px" }}
+        >
+          Back
+        </Button>
       </Box>
     </Box>
   );
