@@ -66,7 +66,7 @@ const NotificationList = ({
       <List className="notification-list">
         {visibleNotifications.length === 0 ? (
           <ListItem>
-            <Typography>No notifications</Typography>
+            <Typography sx={{ color: "gray" }}>No notifications</Typography>
           </ListItem>
         ) : (
           visibleNotifications.map((notification, index) => (
