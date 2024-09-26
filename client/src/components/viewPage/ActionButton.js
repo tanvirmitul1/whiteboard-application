@@ -11,9 +11,11 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReportIcon from "@mui/icons-material/Report";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useColors from "../../customHooks/useColors";
+import useAuth from "../../customHooks/useAuth";
 
 // Dark mode colors
 const darkModeColors = {
@@ -23,7 +25,18 @@ const darkModeColors = {
   hover: "#555",
 };
 
-const ActionButton = ({ whiteboard, handleEditClick, handleDeleteClick }) => {
+const ActionButton = ({
+  whiteboard,
+  handleEditClick,
+  handleDeleteClick,
+  handleDownload,
+}) => {
+  const { user } = useAuth();
+  console.log({ whiteboard, user });
+
+  const isAuthenticated = () => {
+    return user?._id === whiteboard?.user?._id;
+  };
   const { colors } = useColors();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -49,6 +62,9 @@ const ActionButton = ({ whiteboard, handleEditClick, handleDeleteClick }) => {
       case "report":
         toast.error(`${action} action not implemented yet`);
         break;
+      case "download":
+        handleDownload(whiteboard);
+        break;
       default:
         break;
     }
@@ -67,7 +83,7 @@ const ActionButton = ({ whiteboard, handleEditClick, handleDeleteClick }) => {
         style={{
           color: colors.textColor,
           position: "absolute",
-          top: "15px",
+          top: "10px",
           right: "10px",
         }}
       >
@@ -98,31 +114,48 @@ const ActionButton = ({ whiteboard, handleEditClick, handleDeleteClick }) => {
         <List>
           <ListItem
             button
-            onClick={() => handleAction("edit")}
+            onClick={() => handleAction("download")}
             style={{
               color: darkModeColors.text,
               "&:hover": { backgroundColor: colors.secondaryBgColor },
             }}
           >
             <ListItemIcon style={{ color: colors.textColor }}>
-              <EditIcon />
+              <FileDownloadIcon />
             </ListItemIcon>
-            <ListItemText primary="Edit" />
+            <ListItemText primary="Download" />
           </ListItem>
+          {isAuthenticated() && (
+            <ListItem
+              button
+              onClick={() => handleAction("edit")}
+              style={{
+                color: darkModeColors.text,
+                "&:hover": { backgroundColor: colors.secondaryBgColor },
+              }}
+            >
+              <ListItemIcon style={{ color: colors.textColor }}>
+                <EditIcon />
+              </ListItemIcon>
+              <ListItemText primary="Edit" />
+            </ListItem>
+          )}
 
-          <ListItem
-            button
-            onClick={() => handleAction("delete")}
-            style={{
-              color: darkModeColors.text,
-              "&:hover": { backgroundColor: colors.secondaryBgColor },
-            }}
-          >
-            <ListItemIcon style={{ color: colors.textColor }}>
-              <DeleteIcon />
-            </ListItemIcon>
-            <ListItemText primary="Delete" />
-          </ListItem>
+          {isAuthenticated() && (
+            <ListItem
+              button
+              onClick={() => handleAction("delete")}
+              style={{
+                color: darkModeColors.text,
+                "&:hover": { backgroundColor: colors.secondaryBgColor },
+              }}
+            >
+              <ListItemIcon style={{ color: colors.textColor }}>
+                <DeleteIcon />
+              </ListItemIcon>
+              <ListItemText primary="Delete" />
+            </ListItem>
+          )}
 
           <ListItem
             button
