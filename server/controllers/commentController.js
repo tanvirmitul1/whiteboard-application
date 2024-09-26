@@ -54,10 +54,9 @@ exports.getAllComments = async (req, res) => {
   const drawingId = req.params.id;
 
   try {
-    // Fetch all comments related to the drawing and populate the 'user' field
     const comments = await Comment.find({ drawingId })
       .sort({ createdAt: -1 })
-      .populate("user", "username"); // Populate the user field with only the username
+      .populate("user", "username");
 
     if (!comments.length) {
       return res
