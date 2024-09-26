@@ -43,6 +43,13 @@ const whiteboardApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["ALLDRAWINGS"],
     }),
+    submitReaction: build.mutation({
+      query: (data) => ({
+        url: `/whiteboards/reactions`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -52,4 +59,5 @@ export const {
   useUpdateDrawingMutation,
   useGetDrawingByIdQuery,
   useDeleteDrawingMutation,
+  useSubmitReactionMutation,
 } = whiteboardApiSlice;
