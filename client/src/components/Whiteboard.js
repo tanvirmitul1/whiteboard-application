@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import "../index.css";
 import Swal from "sweetalert2";
+import useColors from "../customHooks/useColors";
 const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -11,8 +12,9 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
   const [canvasScale, setCanvasScale] = useState({ x: 1, y: 1 });
   const [textInput, setTextInput] = useState(null);
-  const [currentPenPath, setCurrentPenPath] = useState([]); // To store pen points
+  const [currentPenPath, setCurrentPenPath] = useState([]);
 
+  const { colors } = useColors();
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -205,7 +207,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
       for (let i = 1; i < path.length; i++) {
         ctx.lineTo(path[i].x, path[i].y);
       }
-      ctx.strokeStyle = "white";
+      ctx.strokeStyle = colors.canvasDrawColor;
       ctx.stroke();
     }
   };
@@ -236,7 +238,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
   const drawText = (ctx, text, position) => {
     if (position && text) {
       ctx.font = "16px Arial";
-      ctx.fillStyle = "white";
+      ctx.fillStyle = colors.canvasDrawColor;
       ctx.fillText(text, position.x, position.y);
     }
   };
@@ -245,12 +247,12 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     ctx.beginPath();
     ctx.moveTo(start.x, start.y);
     ctx.lineTo(end.x, end.y);
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = colors.canvasDrawColor;
     ctx.stroke();
   };
 
   const drawRectangle = (ctx, start, end) => {
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = colors.canvasDrawColor;
     ctx.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
   };
 
@@ -258,7 +260,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     const radius = distance(start, end);
     ctx.beginPath();
     ctx.arc(start.x, start.y, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = colors.canvasDrawColor;
     ctx.stroke();
   };
 
@@ -381,6 +383,104 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     }
   }, [shapeType, shapes.length]);
 
+  //mobile touchevent
+  const handleTouchStart = (e) => {
+    const canvas = canvasRef.current;
+    const touchPos = getTouchPosition(canvas, e);
+    setStartPoint(touchPos);
+
+    if (shapeType === "pen") {
+      setIsDrawing(true);
+      setCurrentPenPath([touchPos]); // Start the pen path
+    } else {
+      const shapeIndex = shapes.findIndex((shape) =>
+        isPointInShape(touchPos, shape)
+      );
+      if (shapeIndex !== -1) {
+        setSelectedShapeIndex(shapeIndex);
+        setIsMoving(true);
+      } else {
+        setIsDrawing(true);
+      }
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // Prevent scrolling while drawing
+    if (!isDrawing && !isMoving) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const touchPos = getTouchPosition(canvas, e);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawAllShapes();
+
+    if (isDrawing && shapeType === "pen") {
+      setCurrentPenPath([...currentPenPath, touchPos]);
+      drawPen(ctx, currentPenPath);
+    } else if (isDrawing && shapeType !== "eraser") {
+      drawCurrentShape(ctx, startPoint, touchPos);
+    } else if (isMoving && selectedShapeIndex !== null) {
+      moveShape(touchPos);
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    const canvas = canvasRef.current;
+    const touchPos = getTouchPosition(canvas, e);
+
+    if (isMoving && selectedShapeIndex !== null) {
+      setIsMoving(false);
+      setSelectedShapeIndex(null);
+    } else if (shapeType === "eraser") {
+      const updatedShapes = shapes.filter(
+        (shape) => !isPointInShape(touchPos, shape)
+      );
+      setShapes(updatedShapes);
+      onShapesUpdate(updatedShapes);
+    } else if (shapeType === "pen") {
+      const newPenShape = {
+        type: "pen",
+        path: currentPenPath,
+      };
+      const updatedShapes = [...shapes, newPenShape];
+      setShapes(updatedShapes);
+      onShapesUpdate(updatedShapes);
+      setIsDrawing(false);
+      setCurrentPenPath([]);
+    } else if (shapeType === "text") {
+      setTextInput({ x: touchPos.x, y: touchPos.y, value: "" });
+    } else if (isDrawing) {
+      const newShape = {
+        type: shapeType,
+        start: startPoint,
+        end: touchPos,
+      };
+      const updatedShapes = [...shapes, newShape];
+      setShapes(updatedShapes);
+      onShapesUpdate(updatedShapes);
+    }
+
+    setIsDrawing(false);
+  };
+
+  const getTouchPosition = (canvas, event) => {
+    const rect = canvas.getBoundingClientRect();
+
+    // Use event.touches for touchstart and touchmove, use event.changedTouches for touchend
+    const touch = event.touches[0] || event.changedTouches[0];
+
+    if (!touch) {
+      return null; // Ensure the function doesn't break if there's no touch
+    }
+
+    return {
+      x: (touch.clientX - rect.left) * (canvas.width / rect.width),
+      y: (touch.clientY - rect.top) * (canvas.height / rect.height),
+    };
+  };
+
   return (
     <Box
       ref={containerRef}
@@ -396,6 +496,9 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseOut={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className="canvas-style"
       />
 

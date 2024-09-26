@@ -1,4 +1,4 @@
-export const drawShapes = (canvas, shapes) => {
+export const drawShapes = (canvas, shapes, colors) => {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
@@ -106,7 +106,7 @@ export const drawShapes = (canvas, shapes) => {
           ctx.beginPath();
           ctx.moveTo(scaledStart.x, scaledStart.y);
           ctx.lineTo(scaledEnd.x, scaledEnd.y);
-          ctx.strokeStyle = "white";
+          ctx.strokeStyle = colors.canvasDrawColor;
           ctx.stroke();
         }
         break;
@@ -133,7 +133,7 @@ export const drawShapes = (canvas, shapes) => {
 
           ctx.beginPath();
           ctx.arc(scaledStart.x, scaledStart.y, radius, 0, 2 * Math.PI);
-          ctx.strokeStyle = "white";
+          ctx.strokeStyle = colors.canvasDrawColor;
           ctx.stroke();
         }
         break;
@@ -158,7 +158,7 @@ export const drawShapes = (canvas, shapes) => {
 
           ctx.beginPath();
           ctx.rect(scaledStart.x, scaledStart.y, width, height);
-          ctx.strokeStyle = "white";
+          ctx.strokeStyle = colors.canvasDrawColor;
           ctx.stroke();
         }
         break;
@@ -170,7 +170,7 @@ export const drawShapes = (canvas, shapes) => {
             y: (position.y - minY) * scale,
           };
           ctx.font = "16px Arial";
-          ctx.fillStyle = "white";
+          ctx.fillStyle = colors.canvasDrawColor;
           ctx.fillText(
             text || "Default Text",
             scaledPosition.x,
@@ -190,7 +190,7 @@ export const drawShapes = (canvas, shapes) => {
           path.forEach(({ x, y }) => {
             ctx.lineTo((x - minX) * scale, (y - minY) * scale);
           });
-          ctx.fillStyle = "white";
+          ctx.fillStyle = colors.canvasDrawColor;
           ctx.stroke();
         }
         break;
