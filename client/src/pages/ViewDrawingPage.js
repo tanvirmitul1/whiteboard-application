@@ -29,6 +29,7 @@ import { formatDistanceToNow } from "date-fns";
 import ActionButton from "../components/viewPage/ActionButton";
 import useColors from "../customHooks/useColors";
 import Reactions from "../components/viewPage/Reactions";
+import Logo from "../files/dp.jpg";
 
 const ViewDrawingPage = () => {
   const { user } = useAuth();
@@ -38,7 +39,6 @@ const ViewDrawingPage = () => {
   const [filterTitle, setFilterTitle] = useState("");
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
   const handleTitleChange = useCallback(
     debounce((value) => {
       setFilterTitle(value);
@@ -194,7 +194,10 @@ const ViewDrawingPage = () => {
                           gap: "10px",
                         }}
                       >
-                        <Avatar sx={{ height: "15px", width: "15px" }} />
+                        <Avatar
+                          sx={{ height: "15px", width: "15px" }}
+                          src={Logo}
+                        />
                         <a
                           style={{
                             fontSize: "12px",

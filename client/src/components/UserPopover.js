@@ -11,7 +11,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 import SettingsIcon from "@mui/icons-material/Settings";
 import { toast } from "react-toastify";
-
+import Logo from "./../files/dp.jpg";
 const UserPopover = ({
   openUserPopover,
   anchorEl,
@@ -36,7 +36,7 @@ const UserPopover = ({
     >
       <Box className="user-popover">
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Avatar src={"https://via.placeholder.com/150"} alt={userName} />
+          <Avatar sx={{ height: "30px", width: "30px" }} src={Logo} />
           <Box>
             <Typography className="user-name" variant="h6">
               {userName}

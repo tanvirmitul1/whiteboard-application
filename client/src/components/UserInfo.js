@@ -26,10 +26,10 @@ import NotificationList from "./NotificationList";
 import { useNavigate } from "react-router-dom";
 import UserPopover from "./UserPopover";
 
+import Logo from "../files/dp.jpg";
 const URL = process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL;
 const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 const socket = io(URL);
-
 const UserInfo = () => {
   const NotificationSound = new Audio("/audio/notifications.mp3");
   const { userName, role, isAdmin, userId } = useAuth();
@@ -123,7 +123,7 @@ const UserInfo = () => {
     >
       <Tooltip title="User Profile" arrow>
         <IconButton onClick={handleAvatarClick} sx={{ padding: 0 }}>
-          <Avatar src={"https://via.placeholder.com/150"} alt={userName} />
+          <Avatar sx={{ height: "30px", width: "30px" }} src={Logo} />
         </IconButton>
       </Tooltip>
 
