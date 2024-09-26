@@ -26,9 +26,8 @@ const getAllDrawings = async (req, res) => {
 
     const limitValue = parseInt(limit);
     const pageValue = parseInt(page);
-
     const whiteboards = await Whiteboard.find(query)
-      .sort({ updatedAt: -1, createdAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(limitValue)
       .skip((pageValue - 1) * limitValue)
       .populate("user", "username _id");
@@ -149,6 +148,62 @@ const deleteDrawing = async (req, res) => {
   }
 };
 
+const submitReaction = async (req, res) => {
+  const { reactionType, userId, whiteboardId } = req.body;
+
+  // Validate the request
+  if (!reactionType || !userId || !whiteboardId) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    // Find the whiteboard by ID
+    const whiteboard = await Whiteboard.findById(whiteboardId);
+    if (!whiteboard) {
+      return res.status(404).json({ message: "Whiteboard not found" });
+    }
+
+    // Check if the reaction type is valid
+    if (!(reactionType in whiteboard.reactions)) {
+      return res.status(400).json({ message: "Invalid reaction type" });
+    }
+
+    // Find the user's existing reaction
+    const existingReactionIndex = whiteboard.reactors.findIndex(
+      (reactor) => reactor.userId.toString() === userId
+    );
+
+    if (existingReactionIndex !== -1) {
+      // Get the previous reaction type
+      const previousReaction =
+        whiteboard.reactors[existingReactionIndex].reactionType;
+
+      // Update the user's reaction
+      whiteboard.reactors[existingReactionIndex].reactionType = reactionType;
+
+      // Decrease the count for the previous reaction
+      whiteboard.reactions[previousReaction] -= 1;
+
+      // Increase the count for the new reaction
+      whiteboard.reactions[reactionType] += 1;
+    } else {
+      // If the user hasn't reacted yet, add their reaction
+      whiteboard.reactors.push({ userId, reactionType });
+
+      // Increment the reaction count for the new reaction
+      whiteboard.reactions[reactionType] += 1;
+    }
+
+    // Save the updated whiteboard document
+    await whiteboard.save();
+
+    return res.status(200).json(whiteboard);
+  } catch (error) {
+    console.error("Error submitting reaction:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   authMiddleware,
   getAllDrawings,
@@ -156,4 +211,5 @@ module.exports = {
   getDrawingById,
   updateDrawing,
   deleteDrawing,
+  submitReaction,
 };

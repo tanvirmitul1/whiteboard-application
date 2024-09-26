@@ -5,7 +5,8 @@ const {
   createDrawing,
   getDrawingById,
   updateDrawing,
-  deleteDrawing
+  deleteDrawing,
+  submitReaction,
 } = require("../controllers/whiteboardController");
 const router = express.Router();
 
@@ -23,5 +24,8 @@ router.put("/drawings/:id", updateDrawing);
 
 // Delete a specific drawing by ID
 router.delete("/drawings/:id", deleteDrawing);
+
+//
+router.post("/reactions", submitReaction);
 
 module.exports = router;

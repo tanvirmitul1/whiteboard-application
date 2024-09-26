@@ -85,7 +85,25 @@ const whiteboardSchema = new mongoose.Schema(
       },
     ],
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    reactions: {
+      like: { type: Number, default: 0 },
+      love: { type: Number, default: 0 },
+      laugh: { type: Number, default: 0 },
+      sad: { type: Number, default: 0 },
+      angry: { type: Number, default: 0 },
+    },
+    reactors: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        reactionType: {
+          type: String,
+          enum: ["like", "love", "laugh", "sad", "angry"],
+          required: true,
+        },
+      },
+    ],
   },
+
   {
     timestamps: true, // Enable createdAt and updatedAt timestamps
   }
