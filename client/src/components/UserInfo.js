@@ -116,14 +116,11 @@ const UserInfo = () => {
         display: "flex",
         alignItems: "center",
         gap: 2,
-        padding: "2px 8px",
-        borderRadius: "20px",
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
       <Tooltip title="User Profile" arrow>
         <IconButton onClick={handleAvatarClick} sx={{ padding: 0 }}>
-          <Avatar sx={{ height: "30px", width: "30px" }} src={Logo} />
+          <Avatar sx={{ height: "25px", width: "25px" }} src={Logo} />
         </IconButton>
       </Tooltip>
 

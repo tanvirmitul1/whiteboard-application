@@ -146,9 +146,7 @@ const CreateDrawingPage = () => {
         flexDirection: "row",
         padding: 1,
         gap: 1,
-
-        maxHeight: "100vh",
-        overflowX: "hidden",
+        overflow: "hidden",
       }}
     >
       <Box

@@ -16,6 +16,9 @@ import {
   CircularProgress,
   Box,
   Button,
+  Select,
+  MenuItem,
+  Pagination,
 } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -43,38 +46,18 @@ const UserPage = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const handleDelete = async (userId) => {
     toast.error("Permission Denied");
-
-    // Swal.fire({
-    //   title: "Are you sure?",
-    //   text: "You won't be able to revert this!",
-    //   icon: "warning",
-    //   showCancelButton: true,
-    //   confirmButtonColor: "#d33",
-    //   cancelButtonColor: "#3085d6",
-    //   confirmButtonText: "Yes, delete it!",
-    //   cancelButtonText: "Cancel",
-    // }).then(async (result) => {
-    //   if (result.isConfirmed) {
-    //     try {
-    //       await deleteUser(userId);
-    //       Swal.fire("Deleted!", "The user has been deleted.", "success");
-    //       refetch(); // Refetch users list
-    //     } catch (error) {
-    //       Swal.fire("Error!", "Failed to delete the user.", "error");
-    //     }
-    //   }
-    // });
   };
 
-  // Effect to handle modals based on search params
   useEffect(() => {
     const type = searchParams.get("type");
     const userId = searchParams.get("user_id");
 
     if (type === "profile" && userId) {
-      // Find user by ID
       const user = usersData?.find((u) => u._id === userId);
       if (user) {
         openUserModal(user);
@@ -102,6 +85,15 @@ const UserPage = () => {
     setIsAddUserModalOpen(false);
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(1);
+  };
+
   const filteredUsers = usersData
     ? usersData.filter(
         (user) =>
@@ -110,6 +102,11 @@ const UserPage = () => {
       )
     : [];
 
+  const paginatedUsers = filteredUsers.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
+
   if (usersLoading) return <CircularProgress />;
   if (usersError)
     return <Typography color="error">Error loading users</Typography>;
@@ -117,18 +114,13 @@ const UserPage = () => {
   return (
     <Box
       sx={{
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        maxHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 2,
+        height: "90vh",
+        padding: 4,
+        backgroundColor: "#121212", // Dark background
       }}
     >
-      <Container maxWidth="lg">
-        <Box sx={{ marginBottom: 2, display: "flex", gap: 2 }}>
+      <Box>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
           <input
             className="text-field"
             type="text"
@@ -147,21 +139,28 @@ const UserPage = () => {
             variant="contained"
             color="primary"
             onClick={openAddUserModal}
+            size="small"
           >
             <AddIcon sx={{ marginRight: 1 }} /> Add User
           </Button>
         </Box>
 
         <TableContainer
-          component={Paper}
           sx={{
             overflowY: "auto",
             boxShadow: 3,
             marginTop: "10px",
-            backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent background
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            maxHeight: "70vh",
           }}
         >
-          <Table sx={{ border: "1px solid #635e5e" }}>
+          <Table
+            sx={{
+              border: "1px solid #635e5e",
+              maxHeight: "60vh",
+              overflowY: "auto",
+            }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell sx={{ color: colors.textColor }}>Username</TableCell>
@@ -170,7 +169,7 @@ const UserPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {paginatedUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell sx={{ color: colors.textColor }}>
                     <Button
@@ -199,14 +198,80 @@ const UserPage = () => {
           </Table>
         </TableContainer>
 
-        <Box sx={{ marginTop: 2 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => navigate(-1)}
-          >
-            Back
-          </Button>
+        {/* Pagination and Rows per Page Selection */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 2,
+            color: colors.textColor,
+          }}
+        >
+          <Box>
+            <Typography>Rows per page:</Typography>
+            <Select
+              size="small"
+              value={rowsPerPage}
+              onChange={handleRowsPerPageChange}
+              sx={{
+                width: 120,
+                "& .MuiSelect-select": {
+                  color: "gray",
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "gray",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "gray",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "gray",
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    bgcolor: "#333",
+                    "& .MuiMenuItem-root": {
+                      color: "gray",
+                    },
+                    "& .Mui-selected": {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      color: "gray",
+                    },
+                  },
+                },
+              }}
+            >
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+            </Select>
+          </Box>
+          <Pagination
+            count={Math.ceil(filteredUsers.length / rowsPerPage)}
+            page={page}
+            onChange={handleChangePage}
+            siblingCount={1}
+            boundaryCount={2}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "white",
+              },
+              "& .MuiPaginationItem-previousNext": {
+                color: "white",
+              },
+              "& .Mui-selected": {
+                backgroundColor: "white",
+                color: "gray",
+              },
+              "& .MuiPaginationItem-ellipsis": {
+                color: "white",
+              },
+            }}
+          />
         </Box>
 
         {/* User Details Modal */}
@@ -221,7 +286,7 @@ const UserPage = () => {
           isOpen={isAddUserModalOpen}
           onRequestClose={closeAddUserModal}
         />
-      </Container>
+      </Box>
     </Box>
   );
 };

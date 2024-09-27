@@ -12,19 +12,21 @@ const NavBar = () => {
   return (
     <Box
       sx={{
-        padding: "10px 20px",
+        padding: "5px 20px",
         backgroundColor: "#131324",
         color: "white",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         top: 0,
         zIndex: 1000,
+        height: "5vh",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
       }}
     >
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
         }}
       >
         <Link
@@ -32,18 +34,18 @@ const NavBar = () => {
           style={{ textDecoration: "none", color: "white" }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton sx={{ color: "white", mr: 1 }}>
-              <EditCalendarIcon sx={{ color: "#ea05ff", fontSize: 50 }} />
+            <IconButton sx={{ mr: 1 }}>
+              <EditCalendarIcon sx={{ color: "#ea05ff", fontSize: 25 }} />
             </IconButton>
             {isPc && (
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              <Typography variant="h7" sx={{ fontWeight: "bold" }}>
                 Chalk Board App
               </Typography>
             )}
           </Box>
         </Link>
-        {userName && <UserInfo />}
       </Box>
+      {userName && <UserInfo />}
     </Box>
   );
 };

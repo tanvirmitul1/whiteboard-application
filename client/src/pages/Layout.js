@@ -8,7 +8,6 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Add the "/register" route to the list of public routes
   const isAuthRoute =
     location.pathname === "/" ||
     location.pathname === "/change-password" ||
@@ -21,12 +20,10 @@ const Layout = ({ children }) => {
   }, [user, isAuthRoute, navigate]);
 
   return (
-    <div className="App">
-      <>
-        {!isAuthRoute && <Navbar />}
-        <div>{children}</div>
-      </>
-    </div>
+    <>
+      {!isAuthRoute && <Navbar />}
+      <div>{children}</div>
+    </>
   );
 };
 
