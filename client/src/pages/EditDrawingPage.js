@@ -93,6 +93,7 @@ const EditDrawingPage = () => {
     };
   }, [handleUndo, handleRedo, history, redoStack, shapes]);
 
+  console.log({ backgroundColor });
   const handleSave = async () => {
     try {
       await updateDrawing({

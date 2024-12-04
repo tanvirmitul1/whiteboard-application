@@ -151,6 +151,7 @@ const ViewSingleDrawingPage = () => {
             alignItems: "center",
             gap: "10px",
             justifyContent: "space-between",
+            marginTop: "20px",
           }}
         >
           <Download
@@ -164,9 +165,9 @@ const ViewSingleDrawingPage = () => {
               color="primary"
               onClick={() => handleEditClick(drawing)}
               startIcon={<EditIcon />}
-              sx={{ marginTop: "20px" }}
+              size="large"
             >
-              Edit Drawing
+              Edit
             </Button>
           )}
         </Box>

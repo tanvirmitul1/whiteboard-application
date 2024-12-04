@@ -15,7 +15,6 @@ const Download = ({ resolution, setResolution, handleDownload }) => {
         display: "flex",
         justifyContent: "start",
         gap: "10px",
-        marginTop: 2,
       }}
     >
       <FormControl
