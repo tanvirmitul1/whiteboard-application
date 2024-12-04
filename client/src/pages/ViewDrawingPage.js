@@ -35,7 +35,7 @@ const ViewDrawingPage = () => {
   const { user } = useAuth();
   const { colors } = useColors();
   const navigate = useNavigate();
-  const [selectedUser, setSelectedUser] = useState(user?._id || null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [filterTitle, setFilterTitle] = useState("");
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
