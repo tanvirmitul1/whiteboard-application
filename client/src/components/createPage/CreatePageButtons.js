@@ -41,7 +41,7 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         onClick={handleShowDrawings}
         sx={{ textTransform: "none", padding: 1 }}
       >
-        Drawings
+        Draw Lists
       </Button>
       {isAdmin && (
         <Button
