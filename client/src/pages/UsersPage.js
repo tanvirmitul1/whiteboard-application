@@ -97,8 +97,8 @@ const UserPage = () => {
   const filteredUsers = usersData
     ? usersData.filter(
         (user) =>
-          user.username.toLowerCase().includes(searchName.toLowerCase()) &&
-          user.role.toLowerCase().includes(searchRole.toLowerCase())
+          user?.username?.toLowerCase().includes(searchName?.toLowerCase()) &&
+          user?.role?.toLowerCase().includes(searchRole?.toLowerCase())
       )
     : [];
 
