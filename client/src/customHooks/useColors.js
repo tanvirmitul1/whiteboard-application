@@ -51,6 +51,9 @@ const useColors = () => {
       linkColor: getComputedStyle(document.documentElement)
         .getPropertyValue("--link-color")
         .trim(),
+      canvasDrawColor: getComputedStyle(document.documentElement)
+        .getPropertyValue("--canvas-draw-color")
+        .trim(),
     };
   }, []);
 
