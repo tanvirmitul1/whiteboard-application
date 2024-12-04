@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -19,7 +20,8 @@ const EditDrawingPage = () => {
   const [shapes, setShapes] = useState([]);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
-
+  const [drawColor, setDrawColor] = useState("#C735BB");
+  const [backgroundColor, setBackgroundColor] = useState("#242441");
   const { userId } = useAuth();
 
   const { id } = useParams();
@@ -38,6 +40,7 @@ const EditDrawingPage = () => {
     if (data) {
       setDrawingTitle(data.drawingTitle || "");
       setShapes(data.shapes || []);
+      setBackgroundColor(data.backgroundColor || "#242441");
     }
   }, [data]);
 
@@ -97,6 +100,7 @@ const EditDrawingPage = () => {
         shapes: shapes,
         drawingTitle,
         userId,
+        backgroundColor,
       })
         .unwrap()
         .then((res) => {
@@ -157,6 +161,10 @@ const EditDrawingPage = () => {
           isLoading={isUpdating}
           handleUndo={handleUndo}
           handleRedo={handleRedo}
+          drawColor={drawColor}
+          setDrawColor={setDrawColor}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
         />
       </Box>
       <Box
@@ -172,6 +180,8 @@ const EditDrawingPage = () => {
           onShapesUpdate={handleShapeUpdate}
           shapes={shapes}
           setShapes={setShapes}
+          drawColor={drawColor}
+          backgroundColor={backgroundColor}
         />
 
         <Box

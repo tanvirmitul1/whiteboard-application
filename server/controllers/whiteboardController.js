@@ -48,7 +48,7 @@ const getAllDrawings = async (req, res) => {
 // Create a new drawing
 
 const createDrawing = async (req, res) => {
-  const { drawingTitle, shapeType, shapes, userId } = req.body;
+  const { drawingTitle, shapeType, shapes, userId, backgroundColor } = req.body;
 
   try {
     // Create and save the drawing
@@ -57,6 +57,7 @@ const createDrawing = async (req, res) => {
       shapeType,
       shapes,
       user: userId,
+      backgroundColor,
     });
     console.log({ shapes });
 
@@ -93,14 +94,14 @@ const getDrawingById = async (req, res) => {
 // Update a specific drawing by ID
 const updateDrawing = async (req, res) => {
   const { id } = req.params;
-  const { shapes, drawingTitle, userId } = req.body;
+  const { shapes, drawingTitle, userId, backgroundColor } = req.body;
 
   console.log("req body", req.body);
 
   try {
     const whiteboard = await Whiteboard.findByIdAndUpdate(
       id,
-      { shapes, drawingTitle },
+      { shapes, drawingTitle, backgroundColor },
       { new: true }
     );
 

@@ -8,6 +8,7 @@ const whiteboardSchema = new mongoose.Schema(
       enum: ["line", "circle", "rectangle", "text", "pen"],
       required: true,
     },
+    backgroundColor: { type: String, required: true },
     shapes: [
       {
         type: {
@@ -15,6 +16,7 @@ const whiteboardSchema = new mongoose.Schema(
           enum: ["line", "circle", "rectangle", "text", "pen"],
           required: true,
         },
+        color: { type: String, required: true },
         // Start and end coordinates for lines and rectangles
         start: {
           x: {

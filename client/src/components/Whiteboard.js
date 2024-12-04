@@ -3,7 +3,14 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import "../index.css";
 import Swal from "sweetalert2";
 import useColors from "../customHooks/useColors";
-const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
+const Whiteboard = ({
+  shapeType,
+  onShapesUpdate,
+  setShapes,
+  shapes,
+  drawColor,
+  backgroundColor,
+}) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -35,7 +42,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     window.addEventListener("resize", setCanvasSize);
 
     return () => window.removeEventListener("resize", setCanvasSize);
-  }, [shapeType, shapes]);
+  }, [shapeType, shapes, drawColor]);
 
   const getMousePosition = (canvas, event) => {
     const rect = canvas.getBoundingClientRect();
@@ -109,6 +116,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
       const newPenShape = {
         type: "pen",
         path: currentPenPath,
+        color: drawColor,
       };
       const updatedShapes = [...shapes, newPenShape];
       setShapes(updatedShapes);
@@ -122,6 +130,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
         type: shapeType,
         start: startPoint,
         end: mousePos,
+        color: drawColor,
       };
       const updatedShapes = [...shapes, newShape];
       setShapes(updatedShapes);
@@ -142,6 +151,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
           type: "text",
           text: textInput.value,
           position: { x: textInput.x, y: textInput.y },
+          color: drawColor,
         };
         console.log("newTextShape", newTextShape);
         const updatedShapes = [...shapes, newTextShape];
@@ -207,28 +217,28 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
       for (let i = 1; i < path.length; i++) {
         ctx.lineTo(path[i].x, path[i].y);
       }
-      ctx.strokeStyle = colors.canvasDrawColor;
+      ctx.strokeStyle = drawColor;
       ctx.stroke();
     }
   };
 
   const drawShape = (ctx, shape) => {
-    const { type, start, end, path } = shape;
+    const { type, start, end, path, color } = shape;
     switch (type) {
       case "line":
-        drawLine(ctx, start, end);
+        drawLine(ctx, start, end, color);
         break;
       case "rectangle":
-        drawRectangle(ctx, start, end);
+        drawRectangle(ctx, start, end, color);
         break;
       case "circle":
-        drawCircle(ctx, start, end);
+        drawCircle(ctx, start, end, color);
         break;
       case "pen":
-        drawPen(ctx, path); // Draw the pen path
+        drawPen(ctx, path, color); // Draw the pen path
         break;
       case "text":
-        drawText(ctx, shape.text, shape.position);
+        drawText(ctx, shape.text, shape.position, color);
         break;
       default:
         break;
@@ -238,42 +248,42 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
   const drawText = (ctx, text, position) => {
     if (position && text) {
       ctx.font = "16px Arial";
-      ctx.fillStyle = colors.canvasDrawColor;
+      ctx.fillStyle = drawColor;
       ctx.fillText(text, position.x, position.y);
     }
   };
 
-  const drawLine = (ctx, start, end) => {
+  const drawLine = (ctx, start, end, color) => {
     ctx.beginPath();
     ctx.moveTo(start.x, start.y);
     ctx.lineTo(end.x, end.y);
-    ctx.strokeStyle = colors.canvasDrawColor;
+    ctx.strokeStyle = color;
     ctx.stroke();
   };
 
-  const drawRectangle = (ctx, start, end) => {
-    ctx.strokeStyle = colors.canvasDrawColor;
+  const drawRectangle = (ctx, start, end, color) => {
+    ctx.strokeStyle = color;
     ctx.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
   };
 
-  const drawCircle = (ctx, start, end) => {
+  const drawCircle = (ctx, start, end, color) => {
     const radius = distance(start, end);
     ctx.beginPath();
     ctx.arc(start.x, start.y, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = colors.canvasDrawColor;
+    ctx.strokeStyle = color;
     ctx.stroke();
   };
 
   const drawCurrentShape = (ctx, start, end) => {
     switch (shapeType) {
       case "line":
-        drawLine(ctx, start, end);
+        drawLine(ctx, start, end, drawColor);
         break;
       case "rectangle":
-        drawRectangle(ctx, start, end);
+        drawRectangle(ctx, start, end, drawColor);
         break;
       case "circle":
-        drawCircle(ctx, start, end);
+        drawCircle(ctx, start, end, drawColor);
         break;
       default:
         break;
@@ -443,6 +453,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
       const newPenShape = {
         type: "pen",
         path: currentPenPath,
+        color: drawColor,
       };
       const updatedShapes = [...shapes, newPenShape];
       setShapes(updatedShapes);
@@ -456,6 +467,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
         type: shapeType,
         start: startPoint,
         end: touchPos,
+        color: drawColor,
       };
       const updatedShapes = [...shapes, newShape];
       setShapes(updatedShapes);
@@ -500,6 +512,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         className="canvas-style"
+        style={{ backgroundColor: backgroundColor }}
       />
 
       {/* Watercolor Mark */}

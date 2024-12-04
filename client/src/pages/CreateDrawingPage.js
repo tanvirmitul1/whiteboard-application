@@ -11,6 +11,8 @@ const CreateDrawingPage = () => {
   const navigate = useNavigate();
   const [drawingTitle, setDrawingTitle] = useState("New drawing 1");
   const [shapeType, setShapeType] = useState("line");
+  const [drawColor, setDrawColor] = useState("#C735BB");
+  const [backgroundColor, setBackgroundColor] = useState("#242441");
 
   const [shapes, setShapes] = useState([]);
   const [history, setHistory] = useState([]);
@@ -81,6 +83,7 @@ const CreateDrawingPage = () => {
           shapes,
           userId,
           token,
+          backgroundColor,
         })
           .unwrap()
           .then((res) => {
@@ -166,6 +169,10 @@ const CreateDrawingPage = () => {
           isLoading={isLoading}
           handleUndo={handleUndo}
           handleRedo={handleRedo}
+          drawColor={drawColor}
+          setDrawColor={setDrawColor}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
         />
       </Box>
       <Box
@@ -181,6 +188,8 @@ const CreateDrawingPage = () => {
           onShapesUpdate={handleShapeUpdate}
           shapes={shapes}
           setShapes={setShapes}
+          drawColor={drawColor}
+          backgroundColor={backgroundColor}
         />
       </Box>
     </Box>

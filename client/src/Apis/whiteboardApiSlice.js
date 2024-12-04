@@ -27,10 +27,10 @@ const whiteboardApiSlice = apiSlice.injectEndpoints({
 
     // Update a specific drawing
     updateDrawing: build.mutation({
-      query: ({ id, shapes, drawingTitle, userId }) => ({
+      query: ({ id, shapes, drawingTitle, userId, backgroundColor }) => ({
         url: `whiteboards/drawings/${id}`,
         method: "PUT",
-        body: { shapes, drawingTitle, userId },
+        body: { shapes, drawingTitle, userId, backgroundColor },
       }),
       invalidatesTags: ["ALLDRAWINGS"],
     }),

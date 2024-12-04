@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, TextField, IconButton, Tooltip } from "@mui/material";
+import React, { useState } from "react";
+import { Box, TextField, IconButton, Tooltip, Popover } from "@mui/material";
 import DriveFileRenameOutlineTwoToneIcon from "@mui/icons-material/DriveFileRenameOutlineTwoTone";
 import GestureTwoToneIcon from "@mui/icons-material/GestureTwoTone";
 import CircleTwoToneIcon from "@mui/icons-material/CircleTwoTone";
@@ -11,7 +11,9 @@ import RedoTwoToneIcon from "@mui/icons-material/RedoTwoTone";
 import CreatePageButtons from "./CreatePageButtons";
 import { useParams } from "react-router-dom";
 import useColors from "../../customHooks/useColors";
-
+import { ChromePicker } from "react-color";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
 const LeftSidebar = ({
   drawingTitle,
   setDrawingTitle,
@@ -21,11 +23,36 @@ const LeftSidebar = ({
   handleSaveDrawing,
   handleUndo,
   handleRedo,
+  drawColor,
+  setDrawColor,
+  backgroundColor,
+  setBackgroundColor,
 }) => {
   const { colors } = useColors();
 
   //remove save button for edit mode
   const { id } = useParams();
+  const [drawAnchorEl, setDrawAnchorEl] = useState(null);
+  const [bgAnchorEl, setBgAnchorEl] = useState(null);
+
+  const handleDrawClick = (event) => {
+    setDrawAnchorEl(event.currentTarget);
+  };
+
+  const handleBgClick = (event) => {
+    setBgAnchorEl(event.currentTarget);
+  };
+
+  const handleDrawClose = () => {
+    setDrawAnchorEl(null);
+  };
+
+  const handleBgClose = () => {
+    setBgAnchorEl(null);
+  };
+
+  const drawOpen = Boolean(drawAnchorEl);
+  const bgOpen = Boolean(bgAnchorEl);
 
   return (
     <Box className="left-sidebar-container">
@@ -98,6 +125,82 @@ const LeftSidebar = ({
             />
           </IconButton>
         </Tooltip>
+        <div>
+          {/* Background Color */}
+          <Tooltip title="Background Color" arrow>
+            <IconButton onClick={handleBgClick}>
+              <FormatColorFillIcon sx={{ color: colors.textColor }} />
+            </IconButton>
+          </Tooltip>
+          <Box
+            sx={{
+              height: "5px",
+              width: "30px",
+              backgroundColor: backgroundColor,
+              margin: "4px auto 0",
+              borderRadius: "3px",
+              boxShadow: "0 0 2px rgba(0,0,0,0.5)",
+            }}
+          />
+          <Popover
+            open={bgOpen}
+            anchorEl={bgAnchorEl}
+            onClose={handleBgClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <ChromePicker
+              color={backgroundColor}
+              onChangeComplete={(color) => {
+                setBackgroundColor(color.hex);
+              }}
+            />
+          </Popover>
+        </div>
+        <div>
+          {/* Draw Color */}
+          <Tooltip title=" Draw color" arrow>
+            <IconButton onClick={handleDrawClick}>
+              <ColorLensIcon sx={{ color: drawColor }} />
+            </IconButton>
+          </Tooltip>
+          <Box
+            sx={{
+              height: "5px",
+              width: "30px",
+              backgroundColor: drawColor,
+              margin: "4px auto 0",
+              borderRadius: "3px",
+              boxShadow: "0 0 2px rgba(0,0,0,0.5)",
+            }}
+          />
+          <Popover
+            open={drawOpen}
+            anchorEl={drawAnchorEl}
+            onClose={handleDrawClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <ChromePicker
+              color={drawColor}
+              onChangeComplete={(color) => {
+                setDrawColor(color.hex);
+              }}
+            />
+          </Popover>
+        </div>
 
         <Box className="undo-redo-container">
           <Tooltip title="Undo" arrow>

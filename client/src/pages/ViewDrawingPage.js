@@ -87,7 +87,7 @@ const ViewDrawingPage = () => {
     ctx.imageSmoothingEnabled = false;
 
     // Set background color if necessary (e.g., #242526)
-    ctx.fillStyle = "#242526";
+    ctx.fillStyle = whiteboard.backgroundColor || "#242526";
     ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
 
     // Scale the canvas drawing
@@ -180,10 +180,14 @@ const ViewDrawingPage = () => {
                           id={`drawingCanvas-${index}`}
                           ref={(canvas) => {
                             if (canvas) {
-                              drawShapes(canvas, whiteboard.shapes, colors);
+                              drawShapes(canvas, whiteboard.shapes);
                             }
                           }}
                           className="canvas-style"
+                          style={{
+                            backgroundColor:
+                              whiteboard?.backgroundColor || "#242441",
+                          }}
                         />
                       </Box>
 

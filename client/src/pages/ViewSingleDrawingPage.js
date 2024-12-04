@@ -7,11 +7,11 @@ import { drawShapes } from "../components/DrawShapes";
 import CommentsSection from "../components/viewSinglePage/CommentsSection";
 import Download from "../components/viewSinglePage/Download";
 import { formatDistanceToNow } from "date-fns";
-import useColors from "../customHooks/useColors";
-
+import EditIcon from "@mui/icons-material/Edit";
+import useAuth from "../customHooks/useAuth";
 const ViewSingleDrawingPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { colors } = useColors();
   const { drawingId } = useParams();
   const [resolution, setResolution] = useState(1);
   const { data: drawing, error, isLoading } = useGetDrawingByIdQuery(drawingId);
@@ -21,7 +21,7 @@ const ViewSingleDrawingPage = () => {
 
     const draw = () => {
       if (drawing) {
-        drawShapes(canvas, drawing.shapes, colors);
+        drawShapes(canvas, drawing.shapes);
       }
     };
 
@@ -47,9 +47,8 @@ const ViewSingleDrawingPage = () => {
     const scaledCanvas = document.createElement("canvas");
     scaledCanvas.width = canvas.width * resolution;
     scaledCanvas.height = canvas.height * resolution;
-
     const ctx = scaledCanvas.getContext("2d");
-    ctx.fillStyle = "#242526";
+    ctx.fillStyle = drawing.backgroundColor || "#242526";
     ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
     ctx.scale(resolution, resolution);
     ctx.drawImage(canvas, 0, 0);
@@ -66,6 +65,16 @@ const ViewSingleDrawingPage = () => {
   if (error) {
     return <Typography color="error">Failed to load drawing</Typography>;
   }
+
+  const handleEditClick = (whiteboard) => {
+    console.log("edit", whiteboard);
+    const whiteboardId = whiteboard._id;
+    if (whiteboard.user._id === user._id) {
+      navigate(`/edit/${whiteboardId}`);
+    } else {
+      console.log("You do not have permission to edit this whiteboard.");
+    }
+  };
 
   return (
     <Box
@@ -93,7 +102,13 @@ const ViewSingleDrawingPage = () => {
           flexDirection: "column",
         }}
       >
-        <canvas id="drawingCanvas" className="canvas-style-single-draw" />
+        <canvas
+          id="drawingCanvas"
+          className="canvas-style-single-draw"
+          style={{
+            backgroundColor: drawing?.backgroundColor || "#242441",
+          }}
+        />
 
         <div
           style={{
@@ -130,11 +145,31 @@ const ViewSingleDrawingPage = () => {
           </div>
         </div>
 
-        <Download
-          resolution={resolution}
-          setResolution={setResolution}
-          handleDownload={handleDownload}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            justifyContent: "space-between",
+          }}
+        >
+          <Download
+            resolution={resolution}
+            setResolution={setResolution}
+            handleDownload={handleDownload}
+          />
+          {user._id === drawing?.user._id && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleEditClick(drawing)}
+              startIcon={<EditIcon />}
+              sx={{ marginTop: "20px" }}
+            >
+              Edit Drawing
+            </Button>
+          )}
+        </Box>
       </Box>
 
       <Box sx={{ width: { xs: "100vw", md: "35vw" } }}>
