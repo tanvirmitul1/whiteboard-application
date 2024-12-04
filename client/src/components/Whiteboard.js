@@ -1,7 +1,20 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import "../index.css";
-import Swal from "sweetalert2";
+import useColors from "../customHooks/useColors";
+import Clear from "./whiteboard/Clear";
+import { StyledTypography } from "./ui/whiteBoardUI";
+import {
+  distance,
+  drawCircle,
+  drawLine,
+  drawPen,
+  drawRectangle,
+  drawShape,
+  handleTouchEnd,
+  handleTouchMove,
+  handleTouchStart,
+} from "../utils/whiteboardHelpers";
 const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -12,6 +25,8 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
   const [canvasScale, setCanvasScale] = useState({ x: 1, y: 1 });
   const [textInput, setTextInput] = useState(null);
   const [currentPenPath, setCurrentPenPath] = useState([]); // To store pen points
+
+  const { colors } = useColors();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,12 +56,6 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
       x: (event.clientX - rect.left) * (canvas.width / rect.width),
       y: (event.clientY - rect.top) * (canvas.height / rect.height),
     };
-  };
-
-  const distance = (point1, point2) => {
-    return Math.sqrt(
-      Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2)
-    );
   };
 
   const handleMouseDown = (e) => {
@@ -82,7 +91,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
 
     if (isDrawing && shapeType === "pen") {
       setCurrentPenPath([...currentPenPath, mousePos]);
-      drawPen(ctx, currentPenPath);
+      drawPen(ctx, currentPenPath, colors);
     } else if (isDrawing && shapeType !== "eraser") {
       drawCurrentShape(ctx, startPoint, mousePos);
     } else if (isMoving && selectedShapeIndex !== null) {
@@ -198,80 +207,16 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     }
   };
 
-  const drawPen = (ctx, path) => {
-    if (path.length > 1) {
-      ctx.beginPath();
-      ctx.moveTo(path[0].x, path[0].y);
-      for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(path[i].x, path[i].y);
-      }
-      ctx.strokeStyle = "white";
-      ctx.stroke();
-    }
-  };
-
-  const drawShape = (ctx, shape) => {
-    const { type, start, end, path } = shape;
-    switch (type) {
-      case "line":
-        drawLine(ctx, start, end);
-        break;
-      case "rectangle":
-        drawRectangle(ctx, start, end);
-        break;
-      case "circle":
-        drawCircle(ctx, start, end);
-        break;
-      case "pen":
-        drawPen(ctx, path); // Draw the pen path
-        break;
-      case "text":
-        drawText(ctx, shape.text, shape.position);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const drawText = (ctx, text, position) => {
-    if (position && text) {
-      ctx.font = "16px Arial";
-      ctx.fillStyle = "white";
-      ctx.fillText(text, position.x, position.y);
-    }
-  };
-
-  const drawLine = (ctx, start, end) => {
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    ctx.lineTo(end.x, end.y);
-    ctx.strokeStyle = "white";
-    ctx.stroke();
-  };
-
-  const drawRectangle = (ctx, start, end) => {
-    ctx.strokeStyle = "white";
-    ctx.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
-  };
-
-  const drawCircle = (ctx, start, end) => {
-    const radius = distance(start, end);
-    ctx.beginPath();
-    ctx.arc(start.x, start.y, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = "white";
-    ctx.stroke();
-  };
-
   const drawCurrentShape = (ctx, start, end) => {
     switch (shapeType) {
       case "line":
-        drawLine(ctx, start, end);
+        drawLine(ctx, start, end, colors);
         break;
       case "rectangle":
-        drawRectangle(ctx, start, end);
+        drawRectangle(ctx, start, end, colors);
         break;
       case "circle":
-        drawCircle(ctx, start, end);
+        drawCircle(ctx, start, end, colors);
         break;
       default:
         break;
@@ -331,28 +276,7 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    shapes.forEach((shape) => drawShape(ctx, shape));
-  };
-
-  const clearCanvas = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to clear this drawing?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, clear it!",
-    });
-
-    if (result.isConfirmed) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      setShapes([]);
-      onShapesUpdate([]);
-      localStorage.removeItem("shapes");
-    }
+    shapes.forEach((shape) => drawShape(ctx, shape, colors));
   };
 
   useEffect(() => {
@@ -389,36 +313,70 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
         position: "relative",
       }}
     >
-      {/* Canvas */}
       <canvas
         ref={canvasRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseOut={handleMouseUp}
-        className="canvas-style"
-      />
-
-      {/* Watercolor Mark */}
-
-      <Typography
-        variant="h6"
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          color: "#b8b0b0",
-          fontWeight: "bold",
-          textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
-          opacity: ".1",
-          pointerEvents: "none",
+        onTouchStart={(e) => {
+          handleTouchStart(
+            e,
+            canvasRef,
+            shapeType,
+            setStartPoint,
+            setCurrentPenPath,
+            shapes,
+            setIsDrawing,
+            setIsMoving,
+            setSelectedShapeIndex,
+            isPointInShape
+          );
         }}
-      >
-        mitul@seopage1.net
-      </Typography>
-
-      {/* Text Input for Text Tool */}
+        onTouchMove={(e) => {
+          handleTouchMove(
+            e,
+            canvasRef,
+            shapeType,
+            setCurrentPenPath,
+            isDrawing,
+            isMoving,
+            selectedShapeIndex,
+            drawAllShapes,
+            drawCurrentShape,
+            moveShape,
+            currentPenPath,
+            drawPen,
+            startPoint
+          );
+        }}
+        onTouchEnd={(e) => {
+          handleTouchEnd(
+            e,
+            canvasRef,
+            shapeType,
+            setCurrentPenPath,
+            isDrawing,
+            isMoving,
+            selectedShapeIndex,
+            currentPenPath,
+            startPoint,
+            setIsMoving,
+            setSelectedShapeIndex,
+            setShapes,
+            onShapesUpdate,
+            isPointInShape,
+            shapes,
+            setTextInput,
+            setIsDrawing
+          );
+        }}
+        className="canvas-style"
+        style={{
+          backgroundColor: colors?.canvasBgColor,
+        }}
+      />
+      <StyledTypography variant="h6">mitul@seopage1.net</StyledTypography>
       {textInput && (
         <TextField
           placeholder="Enter text"
@@ -437,24 +395,12 @@ const Whiteboard = ({ shapeType, onShapesUpdate, setShapes, shapes }) => {
           }}
         />
       )}
-
-      {/* Clear Button */}
-      <Button
-        sx={{
-          position: "absolute",
-          bottom: 16,
-          right: 16,
-          textTransform: "none",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        }}
-        variant="contained"
-        color="error"
-        size="small"
-        onClick={clearCanvas}
-        disabled={shapes.length === 0}
-      >
-        Clear
-      </Button>
+      <Clear
+        shapes={shapes}
+        setShapes={setShapes}
+        onShapesUpdate={onShapesUpdate}
+        canvasRef={canvasRef}
+      />
     </Box>
   );
 };
