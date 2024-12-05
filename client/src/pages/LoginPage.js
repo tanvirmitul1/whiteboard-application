@@ -41,7 +41,7 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit}>
         <div className="brand">
           <EditCalendarIcon sx={{ color: "#ea05ff", fontSize: 50 }} />
-          <h1>Chalk Board</h1>
+          <h1>Color Board</h1>
         </div>
         <input
           type="text"
