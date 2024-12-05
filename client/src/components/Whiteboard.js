@@ -10,6 +10,7 @@ const Whiteboard = ({
   shapes,
   drawColor,
   backgroundColor,
+  fillColor,
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -117,6 +118,7 @@ const Whiteboard = ({
         type: "pen",
         path: currentPenPath,
         color: drawColor,
+        fill: fillColor,
       };
       const updatedShapes = [...shapes, newPenShape];
       setShapes(updatedShapes);
@@ -131,6 +133,7 @@ const Whiteboard = ({
         start: startPoint,
         end: mousePos,
         color: drawColor,
+        fill: fillColor,
       };
       const updatedShapes = [...shapes, newShape];
       setShapes(updatedShapes);
@@ -152,6 +155,7 @@ const Whiteboard = ({
           text: textInput.value,
           position: { x: textInput.x, y: textInput.y },
           color: drawColor,
+          fill: fillColor,
         };
         console.log("newTextShape", newTextShape);
         const updatedShapes = [...shapes, newTextShape];
@@ -223,16 +227,16 @@ const Whiteboard = ({
   };
 
   const drawShape = (ctx, shape) => {
-    const { type, start, end, path, color } = shape;
+    const { type, start, end, path, color, fill } = shape;
     switch (type) {
       case "line":
         drawLine(ctx, start, end, color);
         break;
       case "rectangle":
-        drawRectangle(ctx, start, end, color);
+        drawRectangle(ctx, start, end, color, fill);
         break;
       case "circle":
-        drawCircle(ctx, start, end, color);
+        drawCircle(ctx, start, end, color, fill);
         break;
       case "pen":
         drawPen(ctx, path, color); // Draw the pen path
@@ -261,17 +265,24 @@ const Whiteboard = ({
     ctx.stroke();
   };
 
-  const drawRectangle = (ctx, start, end, color) => {
+  const drawRectangle = (ctx, start, end, color, fill) => {
     ctx.strokeStyle = color;
     ctx.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
+
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
+    }
   };
 
-  const drawCircle = (ctx, start, end, color) => {
+  const drawCircle = (ctx, start, end, color, fill) => {
     const radius = distance(start, end);
     ctx.beginPath();
     ctx.arc(start.x, start.y, radius, 0, Math.PI * 2);
     ctx.strokeStyle = color;
     ctx.stroke();
+    ctx.fillStyle = fill;
+    ctx.fill();
   };
 
   const drawCurrentShape = (ctx, start, end) => {

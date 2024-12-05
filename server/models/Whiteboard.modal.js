@@ -17,6 +17,7 @@ const whiteboardSchema = new mongoose.Schema(
           required: true,
         },
         color: { type: String, required: true },
+        fill: { type: String, required: true },
         // Start and end coordinates for lines and rectangles
         start: {
           x: {

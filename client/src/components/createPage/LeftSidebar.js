@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, TextField, IconButton, Tooltip, Popover } from "@mui/material";
 import DriveFileRenameOutlineTwoToneIcon from "@mui/icons-material/DriveFileRenameOutlineTwoTone";
 import GestureTwoToneIcon from "@mui/icons-material/GestureTwoTone";
@@ -14,6 +14,7 @@ import useColors from "../../customHooks/useColors";
 import { ChromePicker } from "react-color";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
+import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
 const LeftSidebar = ({
   drawingTitle,
   setDrawingTitle,
@@ -27,6 +28,8 @@ const LeftSidebar = ({
   setDrawColor,
   backgroundColor,
   setBackgroundColor,
+  fillColor,
+  setFillColor,
 }) => {
   const { colors } = useColors();
 
@@ -34,6 +37,7 @@ const LeftSidebar = ({
   const { id } = useParams();
   const [drawAnchorEl, setDrawAnchorEl] = useState(null);
   const [bgAnchorEl, setBgAnchorEl] = useState(null);
+  const [fillAnchorEl, setFillAnchorEl] = useState(null);
 
   const handleDrawClick = (event) => {
     setDrawAnchorEl(event.currentTarget);
@@ -41,6 +45,10 @@ const LeftSidebar = ({
 
   const handleBgClick = (event) => {
     setBgAnchorEl(event.currentTarget);
+  };
+
+  const handleFillClick = (event) => {
+    setFillAnchorEl(event.currentTarget);
   };
 
   const handleDrawClose = () => {
@@ -51,12 +59,22 @@ const LeftSidebar = ({
     setBgAnchorEl(null);
   };
 
+  const handleFillClose = () => {
+    setFillAnchorEl(null);
+  };
+
   const drawOpen = Boolean(drawAnchorEl);
   const bgOpen = Boolean(bgAnchorEl);
+  const fillOpen = Boolean(fillAnchorEl);
+  const inputRef = useRef(null); // Create a ref for the input
 
+  useEffect(() => {
+    inputRef.current.focus(); // Set focus to the input on component mount
+  }, []);
   return (
     <Box className="left-sidebar-container">
       <input
+        ref={inputRef}
         value={drawingTitle}
         onChange={(e) => setDrawingTitle(e.target.value)}
         className="text-field"
@@ -129,13 +147,13 @@ const LeftSidebar = ({
           {/* Background Color */}
           <Tooltip title="Background Color" arrow>
             <IconButton onClick={handleBgClick}>
-              <FormatColorFillIcon sx={{ color: colors.textColor }} />
+              <ColorLensIcon sx={{ color: colors.textColor }} />
             </IconButton>
           </Tooltip>
           <Box
             sx={{
               height: "5px",
-              width: "30px",
+              width: "25px",
               backgroundColor: backgroundColor,
               margin: "4px auto 0",
               borderRadius: "3px",
@@ -167,13 +185,13 @@ const LeftSidebar = ({
           {/* Draw Color */}
           <Tooltip title=" Draw color" arrow>
             <IconButton onClick={handleDrawClick}>
-              <ColorLensIcon sx={{ color: drawColor }} />
+              <FormatColorTextIcon sx={{ color: colors.textColor }} />
             </IconButton>
           </Tooltip>
           <Box
             sx={{
               height: "5px",
-              width: "30px",
+              width: "25px",
               backgroundColor: drawColor,
               margin: "4px auto 0",
               borderRadius: "3px",
@@ -197,6 +215,44 @@ const LeftSidebar = ({
               color={drawColor}
               onChangeComplete={(color) => {
                 setDrawColor(color.hex);
+              }}
+            />
+          </Popover>
+        </div>
+        <div>
+          {/* fill Color */}
+          <Tooltip title=" Fill color" arrow>
+            <IconButton onClick={handleFillClick}>
+              <FormatColorFillIcon sx={{ color: colors.textColor }} />
+            </IconButton>
+          </Tooltip>
+          <Box
+            sx={{
+              height: "5px",
+              width: "25px",
+              backgroundColor: fillColor,
+              margin: "4px auto 0",
+              borderRadius: "3px",
+              boxShadow: "0 0 2px rgba(0,0,0,0.5)",
+            }}
+          />
+          <Popover
+            open={fillOpen}
+            anchorEl={fillAnchorEl}
+            onClose={handleFillClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <ChromePicker
+              color={fillColor}
+              onChangeComplete={(color) => {
+                setFillColor(color.hex);
               }}
             />
           </Popover>

@@ -22,6 +22,7 @@ const EditDrawingPage = () => {
   const [redoStack, setRedoStack] = useState([]);
   const [drawColor, setDrawColor] = useState("#C735BB");
   const [backgroundColor, setBackgroundColor] = useState("#242441");
+  const [fillColor, setFillColor] = useState("#58da1d");
   const { userId } = useAuth();
 
   const { id } = useParams();
@@ -166,6 +167,8 @@ const EditDrawingPage = () => {
           setDrawColor={setDrawColor}
           backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
+          fillColor={fillColor}
+          setFillColor={setFillColor}
         />
       </Box>
       <Box
@@ -183,6 +186,7 @@ const EditDrawingPage = () => {
           setShapes={setShapes}
           drawColor={drawColor}
           backgroundColor={backgroundColor}
+          fillColor={fillColor}
         />
 
         <Box

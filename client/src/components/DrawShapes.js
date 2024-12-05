@@ -16,7 +16,6 @@ export const drawShapes = (canvas, shapes) => {
   shapes?.forEach((shape) => {
     const { start = {}, end = {}, path = [], position = {}, type } = shape;
 
-    // Update min/max based on start and end if they exist
     if (start.x !== undefined && start.y !== undefined) {
       minX = Math.min(minX, start.x);
       minY = Math.min(minY, start.y);
@@ -30,7 +29,6 @@ export const drawShapes = (canvas, shapes) => {
       maxY = Math.max(maxY, end.y);
     }
 
-    // Check if it's a pen shape and calculate min/max from path
     if (type === "pen" && path.length) {
       path.forEach(({ x, y }) => {
         minX = Math.min(minX, x);
@@ -40,7 +38,6 @@ export const drawShapes = (canvas, shapes) => {
       });
     }
 
-    // Check if it's a text shape and calculate min/max from position
     if (
       type === "text" &&
       position.x !== undefined &&
@@ -68,11 +65,7 @@ export const drawShapes = (canvas, shapes) => {
   // Set canvas size and clear it
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-
-  // Set styles
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 2;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw each shape with scaling applied
   shapes?.forEach((shape) => {
@@ -85,7 +78,6 @@ export const drawShapes = (canvas, shapes) => {
       position = {},
     } = shape;
 
-    // Handle each shape type
     switch (type) {
       case "line":
         if (
@@ -133,6 +125,8 @@ export const drawShapes = (canvas, shapes) => {
 
           ctx.beginPath();
           ctx.arc(scaledStart.x, scaledStart.y, radius, 0, 2 * Math.PI);
+          ctx.fillStyle = shape?.fill ?? "#ff0909";
+          ctx.fill();
           ctx.strokeStyle = shape?.color ?? "#C735BB";
           ctx.stroke();
         }
@@ -158,6 +152,8 @@ export const drawShapes = (canvas, shapes) => {
 
           ctx.beginPath();
           ctx.rect(scaledStart.x, scaledStart.y, width, height);
+          ctx.fillStyle = shape?.fill ?? "#ff0909";
+          ctx.fill();
           ctx.strokeStyle = shape?.color ?? "#C735BB";
           ctx.stroke();
         }
@@ -190,7 +186,7 @@ export const drawShapes = (canvas, shapes) => {
           path.forEach(({ x, y }) => {
             ctx.lineTo((x - minX) * scale, (y - minY) * scale);
           });
-          ctx.fillStyle = shape?.color ?? "#C735BB";
+          ctx.strokeStyle = shape?.color ?? "#C735BB";
           ctx.stroke();
         }
         break;

@@ -38,7 +38,7 @@ const ViewDrawingPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [filterTitle, setFilterTitle] = useState("");
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(30);
   const handleTitleChange = useCallback(
     debounce((value) => {
       setFilterTitle(value);
@@ -287,6 +287,7 @@ const ViewDrawingPage = () => {
                 <MenuItem value={5}>5</MenuItem>
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={30}>30</MenuItem>
                 <MenuItem value={50}>50</MenuItem>
               </Select>
             </FormControl>

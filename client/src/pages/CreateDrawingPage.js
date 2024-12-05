@@ -13,7 +13,7 @@ const CreateDrawingPage = () => {
   const [shapeType, setShapeType] = useState("line");
   const [drawColor, setDrawColor] = useState("#C735BB");
   const [backgroundColor, setBackgroundColor] = useState("#242441");
-
+  const [fillColor, setFillColor] = useState("#58da1d");
   const [shapes, setShapes] = useState([]);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
@@ -27,14 +27,12 @@ const CreateDrawingPage = () => {
       (item) => !(item.type === "pen" && item.path.length === 0)
     );
 
-    console.log({ filteredShapes });
     setShapes(filteredShapes);
-
-    console.log("shapes inside handleShapeUpdate", "shapes");
     setHistory([...history, newShapes]);
     setRedoStack([]);
   };
 
+  console.log({ shapes });
   // Wrap handleUndo in useCallback
   const handleUndo = useCallback(() => {
     if (history.length > 0) {
@@ -173,6 +171,8 @@ const CreateDrawingPage = () => {
           setDrawColor={setDrawColor}
           backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
+          fillColor={fillColor}
+          setFillColor={setFillColor}
         />
       </Box>
       <Box
@@ -190,6 +190,7 @@ const CreateDrawingPage = () => {
           setShapes={setShapes}
           drawColor={drawColor}
           backgroundColor={backgroundColor}
+          fillColor={fillColor}
         />
       </Box>
     </Box>

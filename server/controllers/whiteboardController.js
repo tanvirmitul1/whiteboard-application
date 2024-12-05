@@ -59,7 +59,6 @@ const createDrawing = async (req, res) => {
       user: userId,
       backgroundColor,
     });
-    console.log({ shapes });
 
     await whiteboard.save();
     await createNotification({
@@ -95,8 +94,6 @@ const getDrawingById = async (req, res) => {
 const updateDrawing = async (req, res) => {
   const { id } = req.params;
   const { shapes, drawingTitle, userId, backgroundColor } = req.body;
-
-  console.log("req body", req.body);
 
   try {
     const whiteboard = await Whiteboard.findByIdAndUpdate(

@@ -31,8 +31,6 @@ exports.postComment = async (req, res) => {
     // Populate the user details (including the username)
     savedComment = await savedComment.populate("user", "username");
 
-    console.log({ savedComment });
-
     // Create a notification for the new comment
     await createNotification({
       userId: user,
