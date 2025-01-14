@@ -30,6 +30,8 @@ const LeftSidebar = ({
   setBackgroundColor,
   fillColor,
   setFillColor,
+  isFillColorActive,
+  setIsFillColorActive,
 }) => {
   const { colors } = useColors();
 
@@ -49,6 +51,7 @@ const LeftSidebar = ({
 
   const handleFillClick = (event) => {
     setFillAnchorEl(event.currentTarget);
+    setIsFillColorActive(true);
   };
 
   const handleDrawClose = () => {
@@ -221,9 +224,26 @@ const LeftSidebar = ({
         </div>
         <div>
           {/* fill Color */}
-          <Tooltip title=" Fill color" arrow>
-            <IconButton onClick={handleFillClick}>
-              <FormatColorFillIcon sx={{ color: colors.textColor }} />
+          <Tooltip
+            title={
+              isFillColorActive
+                ? "Press Esc to remove fill color mode"
+                : "Fill color"
+            }
+            arrow
+          >
+            <IconButton
+              onClick={handleFillClick}
+              sx={{
+                backgroundColor: isFillColorActive ? "#242441" : "transparent", // Highlight when active
+                transition: "background-color 0.3s ease",
+              }}
+            >
+              <FormatColorFillIcon
+                sx={{
+                  color: isFillColorActive ? "#00796b" : "white", // Change icon color when active
+                }}
+              />
             </IconButton>
           </Tooltip>
           <Box

@@ -6,7 +6,7 @@ import LeftSidebar from "../components/createPage/LeftSidebar";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
 import Whiteboard from "../components/Whiteboard";
-
+import { toast } from "react-toastify";
 const CreateDrawingPage = () => {
   const navigate = useNavigate();
   const [drawingTitle, setDrawingTitle] = useState("New drawing 1");
@@ -17,10 +17,9 @@ const CreateDrawingPage = () => {
   const [shapes, setShapes] = useState([]);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
-
   const [createDraw, { isLoading }] = useCreateDrawMutation();
   const { userId, token } = useAuth();
-  console.log({ shapes });
+  const [isFillColorActive, setIsFillColorActive] = useState(false);
 
   const handleShapeUpdate = (newShapes) => {
     const filteredShapes = newShapes.filter(
@@ -32,7 +31,6 @@ const CreateDrawingPage = () => {
     setRedoStack([]);
   };
 
-  console.log({ shapes });
   // Wrap handleUndo in useCallback
   const handleUndo = useCallback(() => {
     if (history.length > 0) {
@@ -138,7 +136,21 @@ const CreateDrawingPage = () => {
     }
   }, [navigate]);
 
-  console.log({ shapes });
+  // Handle key press
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsFillColorActive(false); // Set state to false when Esc is pressed
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <Box
@@ -173,6 +185,8 @@ const CreateDrawingPage = () => {
           setBackgroundColor={setBackgroundColor}
           fillColor={fillColor}
           setFillColor={setFillColor}
+          setIsFillColorActive={setIsFillColorActive}
+          isFillColorActive={isFillColorActive}
         />
       </Box>
       <Box
@@ -191,6 +205,8 @@ const CreateDrawingPage = () => {
           drawColor={drawColor}
           backgroundColor={backgroundColor}
           fillColor={fillColor}
+          setFillColor={setFillColor}
+          isFillColorActive={isFillColorActive}
         />
       </Box>
     </Box>

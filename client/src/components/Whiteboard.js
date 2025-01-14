@@ -11,6 +11,8 @@ const Whiteboard = ({
   drawColor,
   backgroundColor,
   fillColor,
+  setFillColor,
+  isFillColorActive,
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -239,7 +241,7 @@ const Whiteboard = ({
         drawCircle(ctx, start, end, color, fill);
         break;
       case "pen":
-        drawPen(ctx, path, color); // Draw the pen path
+        drawPen(ctx, path, color);
         break;
       case "text":
         drawText(ctx, shape.text, shape.position, color);
@@ -503,6 +505,36 @@ const Whiteboard = ({
       y: (touch.clientY - rect.top) * (canvas.height / rect.height),
     };
   };
+
+  useEffect(() => {
+    if (isFillColorActive) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+
+      // Safely map shapes to update the selected one
+      const updatedShapes = shapes
+        ?.map((shape, index) => {
+          if (!shape) return null; // Skip undefined shapes
+          if (index === selectedShapeIndex) {
+            return { ...shape, fill: fillColor }; // Return a new updated object
+          }
+          return shape;
+        })
+        .filter(Boolean); // Remove any null values from the array
+
+      // Clear the canvas before redrawing
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw updated shapes
+      updatedShapes?.forEach((shape) => {
+        if (shape) {
+          drawShape(ctx, shape); // Ensure shape is valid before passing it
+        }
+      });
+
+      setShapes(updatedShapes);
+    }
+  }, [fillColor, selectedShapeIndex]);
 
   return (
     <Box
