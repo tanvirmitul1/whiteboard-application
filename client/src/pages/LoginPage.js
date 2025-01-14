@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLoginMutation } from "../Apis/userApiSlice";
 import styled from "styled-components";
 import { toast } from "react-toastify";
@@ -20,21 +20,48 @@ const LoginPage = () => {
     }
   }, [navigate, userId]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await login({ username, password }).unwrap();
-      localStorage.setItem("user", JSON.stringify(response.user));
-      localStorage.setItem("token", response.token);
-      toast.success("Login successful!");
-      setTimeout(() => {
-        navigate("/create-drawing");
-      }, 500);
-    } catch (errors) {
-      setError(errors?.data?.message || errors?.data?.errors[0]?.msg);
-      toast.error(error);
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await login({ username, password }).unwrap();
+  //     localStorage.setItem("user", JSON.stringify(response.user));
+  //     localStorage.setItem("token", response.token);
+  //     toast.success("Login successful!");
+  //     setTimeout(() => {
+  //       navigate("/create-drawing");
+  //     }, 500);
+  //   } catch (errors) {
+  //     setError(errors?.data?.message || errors?.data?.errors[0]?.msg);
+  //     toast.error(error);
+  //   }
+  // };
+
+  const handleSubmit = useCallback(
+    async (e) => {
+      if (e) e.preventDefault(); // Optional, depends on usage in `useEffect`
+      try {
+        const response = await login({ username, password }).unwrap();
+        localStorage.setItem("user", JSON.stringify(response.user));
+        localStorage.setItem("token", response.token);
+        toast.success("Login successful!");
+        setTimeout(() => {
+          navigate("/create-drawing");
+        }, 500);
+      } catch (errors) {
+        const errorMessage =
+          errors?.data?.message ||
+          errors?.data?.errors[0]?.msg ||
+          "Error occurred";
+        setError(errorMessage);
+        toast.error(errorMessage);
+      }
+    },
+    [username, password, login, navigate] // Memoize based on dependencies
+  );
+
+  useEffect(() => {
+    handleSubmit(); // Automatically submits when dependencies change
+  }, [handleSubmit]); // Dependency now uses the memoized function
 
   return (
     <FormContainer>
