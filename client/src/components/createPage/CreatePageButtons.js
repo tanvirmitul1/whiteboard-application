@@ -43,7 +43,8 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
       >
         Draw Lists
       </Button>
-      {isAdmin && (
+      {/* {isAdmin && ( */}
+      {false && (
         <Button
           variant="contained"
           color="secondary"
