@@ -23,32 +23,31 @@ const Reactions = ({ whiteboard }) => {
   const [submitReaction] = useSubmitReactionMutation();
 
   const handleReaction = async (reactionType) => {
+    const sound = new Audio("/audio/waterDrop.mp3");
+    sound.play();
+
+    setReactionCounts((prevCounts) => {
+      const newCounts = { ...prevCounts };
+
+      if (userReaction) {
+        // Decrement the previous reaction count
+        newCounts[userReaction] = Math.max(
+          (newCounts[userReaction] || 1) - 1,
+          0
+        );
+      }
+
+      // Increment the new reaction count
+      newCounts[reactionType] = (newCounts[reactionType] || 0) + 1;
+
+      return newCounts;
+    });
     try {
       await submitReaction({
         whiteboardId: whiteboard._id,
         reactionType,
         userId: user._id,
       }).unwrap();
-
-      const sound = new Audio("/audio/waterDrop.mp3");
-      sound.play();
-
-      setReactionCounts((prevCounts) => {
-        const newCounts = { ...prevCounts };
-
-        if (userReaction) {
-          // Decrement the previous reaction count
-          newCounts[userReaction] = Math.max(
-            (newCounts[userReaction] || 1) - 1,
-            0
-          );
-        }
-
-        // Increment the new reaction count
-        newCounts[reactionType] = (newCounts[reactionType] || 0) + 1;
-
-        return newCounts;
-      });
 
       // Update the user's current reaction
       setUserReaction(reactionType);
