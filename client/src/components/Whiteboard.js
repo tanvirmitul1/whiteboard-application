@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import "../index.css";
 import Swal from "sweetalert2";
-import useColors from "../customHooks/useColors";
 const Whiteboard = ({
   shapeType,
   onShapesUpdate,
@@ -24,7 +23,6 @@ const Whiteboard = ({
   const [textInput, setTextInput] = useState(null);
   const [currentPenPath, setCurrentPenPath] = useState([]);
 
-  const { colors } = useColors();
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -108,7 +106,6 @@ const Whiteboard = ({
 
     if (isMoving && selectedShapeIndex !== null) {
       setIsMoving(false);
-      setSelectedShapeIndex(null);
     } else if (shapeType === "eraser") {
       const updatedShapes = shapes.filter(
         (shape) => !isPointInShape(mousePos, shape)
@@ -455,7 +452,6 @@ const Whiteboard = ({
 
     if (isMoving && selectedShapeIndex !== null) {
       setIsMoving(false);
-      setSelectedShapeIndex(null);
     } else if (shapeType === "eraser") {
       const updatedShapes = shapes.filter(
         (shape) => !isPointInShape(touchPos, shape)
@@ -535,6 +531,30 @@ const Whiteboard = ({
       setShapes(updatedShapes);
     }
   }, [fillColor, selectedShapeIndex]);
+
+  useEffect(() => {
+    console.log({ shapes, selectedShapeIndex });
+    const handleKeyDown = (event) => {
+      if (event.key === "Delete" && selectedShapeIndex !== null) {
+        // Filter out the shape at the selected index
+        const filteredShapes = shapes.filter(
+          (_, index) => index !== selectedShapeIndex
+        );
+
+        setShapes(filteredShapes);
+
+        // Redraw all remaining shapes
+        drawAllShapes();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedShapeIndex]);
 
   return (
     <Box

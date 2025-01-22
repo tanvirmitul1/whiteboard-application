@@ -13,6 +13,10 @@ const LoginPage = () => {
   const [login, { isLoading }] = useLoginMutation();
   const { userId } = useAuth();
   const [error, setError] = useState("");
+  const [pageVisitCount, setPageVisitCount] = useState(() => {
+    // Retrieve the count from localStorage, or default to 0
+    return Number(localStorage.getItem("pageVisitCount")) || 0;
+  });
 
   useEffect(() => {
     if (userId) {
@@ -44,9 +48,16 @@ const LoginPage = () => {
         localStorage.setItem("user", JSON.stringify(response.user));
         localStorage.setItem("token", response.token);
         toast.success("Login successful!");
+
         setTimeout(() => {
           navigate("/create-drawing");
         }, 500);
+
+        setPageVisitCount((prev) => {
+          const newCount = prev + 1;
+          localStorage.setItem("pageVisitCount", newCount);
+          return newCount;
+        });
       } catch (errors) {
         const errorMessage =
           errors?.data?.message ||
@@ -59,9 +70,13 @@ const LoginPage = () => {
     [username, password, login, navigate] // Memoize based on dependencies
   );
 
+  console.log({ pageVisitCount });
+
   useEffect(() => {
-    handleSubmit(); // Automatically submits when dependencies change
-  }, [handleSubmit]); // Dependency now uses the memoized function
+    if (pageVisitCount < 1) {
+      handleSubmit();
+    }
+  }, [handleSubmit, pageVisitCount]);
 
   return (
     <FormContainer>
