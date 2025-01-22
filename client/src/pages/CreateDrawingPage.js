@@ -6,7 +6,6 @@ import LeftSidebar from "../components/createPage/LeftSidebar";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
 import Whiteboard from "../components/Whiteboard";
-import { toast } from "react-toastify";
 const CreateDrawingPage = () => {
   const navigate = useNavigate();
   const [drawingTitle, setDrawingTitle] = useState("New drawing 1");
@@ -140,7 +139,7 @@ const CreateDrawingPage = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
-        setIsFillColorActive(false); // Set state to false when Esc is pressed
+        setIsFillColorActive(false);
       }
     };
 

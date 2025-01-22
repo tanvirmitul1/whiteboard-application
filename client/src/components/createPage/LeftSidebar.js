@@ -15,6 +15,7 @@ import { ChromePicker } from "react-color";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
 import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
+import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
 const LeftSidebar = ({
   drawingTitle,
   setDrawingTitle,
@@ -122,6 +123,16 @@ const LeftSidebar = ({
                   shapeType === "rectangle"
                     ? colors.buttonBg
                     : colors.textColor,
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Triangle" arrow>
+          <IconButton onClick={() => setShapeType("triangle")}>
+            <ChangeHistoryIcon
+              sx={{
+                color:
+                  shapeType === "triangle" ? colors.buttonBg : colors.textColor,
               }}
             />
           </IconButton>

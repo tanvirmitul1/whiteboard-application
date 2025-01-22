@@ -13,7 +13,7 @@ const whiteboardSchema = new mongoose.Schema(
       {
         type: {
           type: String,
-          enum: ["line", "circle", "rectangle", "text", "pen"],
+          enum: ["line", "circle", "rectangle", "triangle", "text", "pen"],
           required: true,
         },
         color: { type: String, required: false },

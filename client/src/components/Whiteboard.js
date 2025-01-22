@@ -186,7 +186,6 @@ const Whiteboard = ({
             },
           };
         } else {
-          // Move other shapes (line, rectangle, circle)
           return {
             ...shape,
             start: {
@@ -234,6 +233,9 @@ const Whiteboard = ({
       case "rectangle":
         drawRectangle(ctx, start, end, color, fill);
         break;
+      case "triangle":
+        drawTriangle(ctx, start, end, color, fill);
+        break;
       case "circle":
         drawCircle(ctx, start, end, color, fill);
         break;
@@ -262,6 +264,28 @@ const Whiteboard = ({
     ctx.lineTo(end.x, end.y);
     ctx.strokeStyle = color;
     ctx.stroke();
+  };
+  const drawTriangle = (ctx, start, end, color, fill) => {
+    const thirdPoint = { x: start.x + (end.x - start.x) / 2, y: start.y }; // Calculate the top vertex of the triangle
+
+    // Begin drawing
+    ctx.beginPath();
+    ctx.moveTo(start.x, end.y); // Bottom-left point
+    ctx.lineTo(end.x, end.y); // Bottom-right point
+    ctx.lineTo(thirdPoint.x, thirdPoint.y); // Top vertex
+    ctx.closePath(); // Close the triangle path
+
+    // Set stroke color and draw the outline
+    if (color) {
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    }
+
+    // Set fill color and fill the triangle
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
   };
 
   const drawRectangle = (ctx, start, end, color, fill) => {
@@ -292,6 +316,9 @@ const Whiteboard = ({
       case "rectangle":
         drawRectangle(ctx, start, end, drawColor);
         break;
+      case "triangle":
+        drawTriangle(ctx, start, end, drawColor);
+        break;
       case "circle":
         drawCircle(ctx, start, end, drawColor);
         break;
@@ -320,6 +347,14 @@ const Whiteboard = ({
         return distanceToLine < 5;
 
       case "rectangle":
+        return (
+          point.x >= start.x &&
+          point.x <= end.x &&
+          point.y >= start.y &&
+          point.y <= end.y
+        );
+
+      case "triangle":
         return (
           point.x >= start.x &&
           point.x <= end.x &&

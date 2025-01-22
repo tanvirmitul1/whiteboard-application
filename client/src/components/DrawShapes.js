@@ -159,6 +159,39 @@ export const drawShapes = (canvas, shapes) => {
         }
         break;
 
+      case "triangle":
+        if (
+          start.x !== undefined &&
+          start.y !== undefined &&
+          end.x !== undefined &&
+          end.y !== undefined
+        ) {
+          const scaledStart = {
+            x: (start.x - minX) * scale,
+            y: (start.y - minY) * scale,
+          };
+          const scaledEnd = {
+            x: (end.x - minX) * scale,
+            y: (end.y - minY) * scale,
+          };
+          const thirdPoint = {
+            x: scaledStart.x + (scaledEnd.x - scaledStart.x) / 2,
+            y: scaledStart.y,
+          };
+
+          ctx.beginPath();
+          ctx.moveTo(scaledStart.x, scaledEnd.y);
+          ctx.lineTo(scaledEnd.x, scaledEnd.y);
+          ctx.lineTo(thirdPoint.x, thirdPoint.y);
+          ctx.closePath();
+
+          ctx.fillStyle = shape?.fill ?? "#ff0909";
+          ctx.fill();
+          ctx.strokeStyle = shape?.color ?? "#C735BB";
+          ctx.stroke();
+        }
+        break;
+
       case "text":
         if (position.x !== undefined && position.y !== undefined) {
           const scaledPosition = {

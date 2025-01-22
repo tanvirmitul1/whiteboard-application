@@ -23,6 +23,8 @@ const EditDrawingPage = () => {
   const [drawColor, setDrawColor] = useState("#C735BB");
   const [backgroundColor, setBackgroundColor] = useState("#242441");
   const [fillColor, setFillColor] = useState("#58da1d");
+  const [isFillColorActive, setIsFillColorActive] = useState(false);
+
   const { userId } = useAuth();
 
   const { id } = useParams();
@@ -94,7 +96,20 @@ const EditDrawingPage = () => {
     };
   }, [handleUndo, handleRedo, history, redoStack, shapes]);
 
-  console.log({ backgroundColor });
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsFillColorActive(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   const handleSave = async () => {
     try {
       await updateDrawing({
@@ -169,6 +184,8 @@ const EditDrawingPage = () => {
           setBackgroundColor={setBackgroundColor}
           fillColor={fillColor}
           setFillColor={setFillColor}
+          setIsFillColorActive={setIsFillColorActive}
+          isFillColorActive={isFillColorActive}
         />
       </Box>
       <Box
@@ -187,6 +204,8 @@ const EditDrawingPage = () => {
           drawColor={drawColor}
           backgroundColor={backgroundColor}
           fillColor={fillColor}
+          setFillColor={setFillColor}
+          isFillColorActive={isFillColorActive}
         />
 
         <Box
