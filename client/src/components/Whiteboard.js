@@ -2,6 +2,18 @@ import React, { useRef, useState, useEffect } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import "../index.css";
 import Swal from "sweetalert2";
+import {
+  distance,
+  drawCircle,
+  drawLine,
+  drawPen,
+  drawRectangle,
+  drawShape,
+  drawText,
+  drawTriangle,
+} from "../utils/drawFunctions";
+import { handleKeyDown } from "../utils/keyHandlers";
+import { setCanvasCursor } from "../utils/otherFunctions";
 const Whiteboard = ({
   shapeType,
   onShapesUpdate,
@@ -23,7 +35,6 @@ const Whiteboard = ({
   const [textInput, setTextInput] = useState(null);
   const [currentPenPath, setCurrentPenPath] = useState([]);
   const [copiedShape, setCopiedShape] = useState(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -52,12 +63,6 @@ const Whiteboard = ({
       x: (event.clientX - rect.left) * (canvas.width / rect.width),
       y: (event.clientY - rect.top) * (canvas.height / rect.height),
     };
-  };
-
-  const distance = (point1, point2) => {
-    return Math.sqrt(
-      Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2)
-    );
   };
 
   const handleMouseDown = (e) => {
@@ -213,102 +218,6 @@ const Whiteboard = ({
     }
   };
 
-  const drawPen = (ctx, path) => {
-    if (path.length > 1) {
-      ctx.beginPath();
-      ctx.moveTo(path[0].x, path[0].y);
-      for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(path[i].x, path[i].y);
-      }
-      ctx.strokeStyle = drawColor;
-      ctx.stroke();
-    }
-  };
-
-  const drawShape = (ctx, shape) => {
-    const { type, start, end, path, color, fill } = shape;
-    switch (type) {
-      case "line":
-        drawLine(ctx, start, end, color);
-        break;
-      case "rectangle":
-        drawRectangle(ctx, start, end, color, fill);
-        break;
-      case "triangle":
-        drawTriangle(ctx, start, end, color, fill);
-        break;
-      case "circle":
-        drawCircle(ctx, start, end, color, fill);
-        break;
-      case "pen":
-        drawPen(ctx, path, color);
-        break;
-      case "text":
-        drawText(ctx, shape.text, shape.position, color);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const drawText = (ctx, text, position) => {
-    if (position && text) {
-      ctx.font = "16px Arial";
-      ctx.fillStyle = drawColor;
-      ctx.fillText(text, position.x, position.y);
-    }
-  };
-
-  const drawLine = (ctx, start, end, color) => {
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    ctx.lineTo(end.x, end.y);
-    ctx.strokeStyle = color;
-    ctx.stroke();
-  };
-  const drawTriangle = (ctx, start, end, color, fill) => {
-    const thirdPoint = { x: start.x + (end.x - start.x) / 2, y: start.y }; // Calculate the top vertex of the triangle
-
-    // Begin drawing
-    ctx.beginPath();
-    ctx.moveTo(start.x, end.y); // Bottom-left point
-    ctx.lineTo(end.x, end.y); // Bottom-right point
-    ctx.lineTo(thirdPoint.x, thirdPoint.y); // Top vertex
-    ctx.closePath(); // Close the triangle path
-
-    // Set stroke color and draw the outline
-    if (color) {
-      ctx.strokeStyle = color;
-      ctx.stroke();
-    }
-
-    // Set fill color and fill the triangle
-    if (fill) {
-      ctx.fillStyle = fill;
-      ctx.fill();
-    }
-  };
-
-  const drawRectangle = (ctx, start, end, color, fill) => {
-    ctx.strokeStyle = color;
-    ctx.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
-
-    if (fill) {
-      ctx.fillStyle = fill;
-      ctx.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
-    }
-  };
-
-  const drawCircle = (ctx, start, end, color, fill) => {
-    const radius = distance(start, end);
-    ctx.beginPath();
-    ctx.arc(start.x, start.y, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = color;
-    ctx.stroke();
-    ctx.fillStyle = fill;
-    ctx.fill();
-  };
-
   const drawCurrentShape = (ctx, start, end) => {
     switch (shapeType) {
       case "line":
@@ -412,32 +321,6 @@ const Whiteboard = ({
       localStorage.removeItem("shapes");
     }
   };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-
-    if (canvas) {
-      switch (shapeType) {
-        case "line":
-          canvas.style.cursor = "crosshair";
-          break;
-        case "circle":
-          canvas.style.cursor = "crosshair";
-          break;
-        case "rectangle":
-          canvas.style.cursor = "crosshair";
-          break;
-        case "eraser":
-          canvas.style.cursor = "pointer";
-          break;
-        case "text":
-          canvas.style.cursor = "text";
-          break;
-        default:
-          canvas.style.cursor = "default";
-      }
-    }
-  }, [shapeType, shapes.length]);
 
   //mobile touchevent
   const handleTouchStart = (e) => {
@@ -569,57 +452,28 @@ const Whiteboard = ({
   }, [fillColor, selectedShapeIndex]);
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Delete" && selectedShapeIndex !== null) {
-        // Filter out the shape at the selected index
-        const filteredShapes = shapes.filter(
-          (_, index) => index !== selectedShapeIndex
-        );
+    const keyDownHandler = (event) =>
+      handleKeyDown(
+        event,
+        selectedShapeIndex,
+        shapes,
+        setShapes,
+        copiedShape,
+        setCopiedShape,
+        drawAllShapes
+      );
 
-        setShapes(filteredShapes);
-
-        // Redraw all remaining shapes
-        drawAllShapes();
-      }
-
-      // Handle Control + C (copy)
-      if (event.ctrlKey && event.key === "c" && selectedShapeIndex !== null) {
-        // Copy the selected shape
-        const shapeToCopy = shapes[selectedShapeIndex];
-        setCopiedShape(shapeToCopy); // Store the copied shape
-      }
-
-      // Handle Control + V (paste)
-      if (event.ctrlKey && event.key === "v" && copiedShape) {
-        // Paste the copied shape to the right of the original shape
-        const copiedShapeToPaste = {
-          ...copiedShape,
-          start: {
-            x: copiedShape.start.x + 50, // Adjust the x position to the right
-            y: copiedShape.start.y,
-          },
-          end: {
-            x: copiedShape.end.x + 50, // Adjust the x position of the end point
-            y: copiedShape.end.y,
-          },
-        };
-
-        // Add the new pasted shape to the shapes array
-        setShapes((prevShapes) => [...prevShapes, copiedShapeToPaste]);
-
-        // Redraw all shapes
-        drawAllShapes();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
+    window.addEventListener("keydown", keyDownHandler);
     // Cleanup the event listener on component unmount
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", keyDownHandler);
     };
   }, [selectedShapeIndex, shapes, copiedShape]);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    setCanvasCursor(canvas, shapeType);
+  }, [shapeType, shapes.length]);
   return (
     <Box
       ref={containerRef}

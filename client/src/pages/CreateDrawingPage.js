@@ -12,7 +12,7 @@ const CreateDrawingPage = () => {
   const [shapeType, setShapeType] = useState("line");
   const [drawColor, setDrawColor] = useState("#C735BB");
   const [backgroundColor, setBackgroundColor] = useState("#242441");
-  const [fillColor, setFillColor] = useState("#58da1d");
+  const [fillColor, setFillColor] = useState("#DC0DB6");
   const [shapes, setShapes] = useState([]);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
@@ -140,6 +140,7 @@ const CreateDrawingPage = () => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         setIsFillColorActive(false);
+        setShapeType("");
       }
     };
 
