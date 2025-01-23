@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Button } from "@mui/material";
 import useAuth from "../../customHooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import InstructionModal from "../instructions/InstructionModal";
 
 const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
   const handleShowUsers = () => {
     navigate("/user-list");
   };
+  const [openInstructionsModal, setOpenInstructionsModal] =
+    React.useState(false);
 
   return (
     <Box
@@ -55,6 +58,21 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
           Users
         </Button>
       )}
+
+      <Button
+        variant="contained"
+        color="secondary"
+        size="small"
+        onClick={() => setOpenInstructionsModal(true)}
+        sx={{ textTransform: "none", padding: 1 }}
+      >
+        Instruction
+      </Button>
+
+      <InstructionModal
+        isOpen={openInstructionsModal}
+        onClose={() => setOpenInstructionsModal(false)}
+      />
     </Box>
   );
 };
