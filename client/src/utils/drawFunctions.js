@@ -3,25 +3,26 @@ const selectionLineWidth = 4;
 const selectionLineWidthText = 1;
 
 export const drawShape = (ctx, shape) => {
-  const { type, start, end, path, color, fill, text, position } = shape;
+  const { type, start, end, path, color, fill, text, position, selected } =
+    shape;
   switch (type) {
     case "line":
-      drawLine(ctx, start, end, color, true);
+      drawLine(ctx, start, end, color, selected);
       break;
     case "rectangle":
-      drawRectangle(ctx, start, end, color, fill, true);
+      drawRectangle(ctx, start, end, color, fill, selected);
       break;
     case "triangle":
-      drawTriangle(ctx, start, end, color, fill, true);
+      drawTriangle(ctx, start, end, color, fill, selected);
       break;
     case "circle":
-      drawCircle(ctx, start, end, color, fill, true);
+      drawCircle(ctx, start, end, color, fill, selected);
       break;
     case "pen":
-      drawPen(ctx, path, color, true);
+      drawPen(ctx, path, color, selected);
       break;
     case "text":
-      drawText(ctx, text, position, color, true);
+      drawText(ctx, text, position, color, selected);
       break;
     default:
       break;

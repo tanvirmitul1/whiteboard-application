@@ -474,6 +474,20 @@ const Whiteboard = ({
     const canvas = canvasRef.current;
     setCanvasCursor(canvas, shapeType);
   }, [shapeType, shapes.length]);
+
+  // useEffect(() => {
+  //   if (selectedShapeIndex !== null) {
+  //     const updatedShapes = shapes.map((shape, index) => {
+  //       if (index === selectedShapeIndex) {
+  //         return { ...shape, selected: true };
+  //       }
+  //       return shape;
+  //     });
+
+  //     setShapes(updatedShapes);
+  //     drawAllShapes();
+  //   }
+  // }, [selectedShapeIndex]);
   return (
     <Box
       ref={containerRef}
