@@ -120,7 +120,7 @@ const ShapeContextBar = ({
             <FaArrowDown /> Take to Back{" "}
             <SuggestionBox>(Ctrl + B)</SuggestionBox>
           </ContextMenuItem>
-          {selectedShape.type !== "text" && (
+          {!["text", "pen", "line"].includes(selectedShape?.type) && (
             <ContextMenuItem onClick={handleOpenColorPicker}>
               <FaFillDrip /> Change Fill Color
             </ContextMenuItem>
