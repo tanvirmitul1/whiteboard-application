@@ -476,6 +476,7 @@ const Whiteboard = ({
   const handleContextMenu = (e) => {
     e.preventDefault();
     const mousePos = getMousePosition(canvasRef.current, e);
+
     const shapeIndex = shapes.findIndex((shape) =>
       isPointInShape(mousePos, shape)
     );
@@ -483,7 +484,7 @@ const Whiteboard = ({
     console.log("selectedShape", selectedShape);
     if (shapeIndex !== -1) {
       setSelectedShapeIndex(shapeIndex);
-      setContextMenu(getShapeCoordinates(selectedShape));
+      setContextMenu(getShapeCoordinates(selectedShape, mousePos));
     } else {
       closeContextMenu();
     }

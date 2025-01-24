@@ -1,6 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import { copyShape, deleteShape, pasteShape } from "../../utils/otherFunctions";
+import {
+  FaTrashAlt,
+  FaCopy,
+  FaPaste,
+  FaArrowUp,
+  FaArrowDown,
+} from "react-icons/fa"; // Importing icons
+import {
+  copyShape,
+  deleteShape,
+  pasteShape,
+  takeToFront,
+  takeToBack,
+} from "../../utils/otherFunctions";
 
 const ShapeContextBar = ({
   contextMenu,
@@ -16,17 +29,27 @@ const ShapeContextBar = ({
 
   const handleDelete = () => {
     deleteShape(selectedShapeIndex, shapes, setShapes, drawAllShapes);
-    closeContextMenu(); // Close context menu after deleting
+    closeContextMenu();
   };
 
   const handleCopy = () => {
     copyShape(selectedShapeIndex, shapes, setCopiedShape);
-    closeContextMenu(); // Close context menu after copying
+    closeContextMenu();
   };
 
   const handlePaste = () => {
     pasteShape(copiedShape, setShapes, drawAllShapes);
-    closeContextMenu(); // Close context menu after pasting
+    closeContextMenu();
+  };
+
+  const handleTakeToFront = () => {
+    takeToFront(selectedShapeIndex, shapes, setShapes, drawAllShapes);
+    closeContextMenu();
+  };
+
+  const handleTakeToBack = () => {
+    takeToBack(selectedShapeIndex, shapes, setShapes, drawAllShapes);
+    closeContextMenu();
   };
 
   return (
@@ -37,9 +60,21 @@ const ShapeContextBar = ({
           left={contextMenu.x}
           onMouseLeave={closeContextMenu}
         >
-          <ContextMenuItem onClick={handleDelete}>Delete</ContextMenuItem>
-          <ContextMenuItem onClick={handleCopy}>Copy</ContextMenuItem>
-          <ContextMenuItem onClick={handlePaste}>Paste</ContextMenuItem>
+          <ContextMenuItem onClick={handleDelete}>
+            <FaTrashAlt /> Delete
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handleCopy}>
+            <FaCopy /> Copy
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handlePaste}>
+            <FaPaste /> Paste
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handleTakeToFront}>
+            <FaArrowUp /> Take to Front
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handleTakeToBack}>
+            <FaArrowDown /> Take to Back
+          </ContextMenuItem>
         </ContextMenu>
       )}
     </div>
@@ -59,8 +94,7 @@ const ContextMenu = styled.ul`
   padding: 10px 0;
   border-radius: 8px;
   z-index: 1000;
-  min-width: 150px;
-  transition: opacity 0.3s ease-in-out;
+  min-width: 180px;
   opacity: 0.95;
 
   &:hover {
@@ -69,6 +103,9 @@ const ContextMenu = styled.ul`
 `;
 
 const ContextMenuItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spacing between icon and text */
   padding: 10px 15px;
   font-size: 14px;
   font-weight: 500;

@@ -18,40 +18,14 @@ export const setCanvasCursor = (canvas, shapeType) => {
       canvas.style.cursor = "default";
   }
 };
-export function getShapeCoordinates(shape) {
+export function getShapeCoordinates(shape, mousePos) {
   if (!shape) return null;
 
   let result = {
     visible: true,
-    x: 0,
-    y: 0,
+    x: mousePos.x,
+    y: mousePos.y,
   };
-
-  switch (shape.type) {
-    case "triangle":
-    case "rectangle":
-    case "circle":
-    case "line":
-      result.x = shape.end.x;
-      result.y = shape.end.y;
-      break;
-
-    case "text":
-      result.x = shape.position.x;
-      result.y = shape.position.y;
-      break;
-
-    case "pen":
-      const lastPoint = shape.path[shape.path.length - 1];
-      result.x = lastPoint.x;
-      result.y = lastPoint.y;
-      break;
-
-    default:
-      result.x = shape.start.x;
-      result.y = shape.start.y;
-      break;
-  }
 
   return result;
 }
@@ -99,6 +73,40 @@ export const deleteShape = (
     setShapes(filteredShapes);
 
     // Redraw all remaining shapes
+    drawAllShapes();
+  }
+};
+
+export const takeToFront = (index, shapes, setShapes, drawAllShapes) => {
+  if (index < shapes.length - 1) {
+    // Clone the shapes array
+    const updatedShapes = [...shapes];
+
+    // Remove the shape from the current index
+    const [shape] = updatedShapes.splice(index, 1);
+
+    // Add the shape to the end of the array
+    updatedShapes.push(shape);
+
+    // Update the shapes state and redraw all shapes
+    setShapes(updatedShapes);
+    drawAllShapes();
+  }
+};
+
+export const takeToBack = (index, shapes, setShapes, drawAllShapes) => {
+  if (index > 0) {
+    // Clone the shapes array
+    const updatedShapes = [...shapes];
+
+    // Remove the shape from the current index
+    const [shape] = updatedShapes.splice(index, 1);
+
+    // Add the shape to the beginning of the array
+    updatedShapes.unshift(shape);
+
+    // Update the shapes state and redraw all shapes
+    setShapes(updatedShapes);
     drawAllShapes();
   }
 };
