@@ -1,7 +1,6 @@
 const selectionColor = "#4EDBFF";
 const selectionLineWidth = 4;
 const selectionLineWidthText = 1;
-
 export const drawShape = (ctx, shape) => {
   const { type, start, end, path, color, fill, text, position, selected } =
     shape;

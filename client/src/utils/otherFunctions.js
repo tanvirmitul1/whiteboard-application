@@ -110,3 +110,31 @@ export const takeToBack = (index, shapes, setShapes, drawAllShapes) => {
     drawAllShapes();
   }
 };
+
+export const changeFillColor = (
+  selectedShapeIndex,
+  newFillColor,
+  shapes,
+  setShapes,
+  drawAllShapes
+) => {
+  if (
+    selectedShapeIndex === null ||
+    selectedShapeIndex < 0 ||
+    selectedShapeIndex >= shapes.length
+  ) {
+    console.error("Invalid shape index");
+    return;
+  }
+
+  // Safely update the selected shape's fill color
+  const updatedShapes = shapes.map((shape, index) =>
+    index === selectedShapeIndex ? { ...shape, fill: newFillColor } : shape
+  );
+
+  // Update the shapes state
+  setShapes(updatedShapes);
+
+  // Redraw all shapes on the canvas
+  drawAllShapes();
+};

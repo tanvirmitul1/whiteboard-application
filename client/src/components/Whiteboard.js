@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState, useEffect } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import "../index.css";
@@ -9,7 +10,11 @@ import {
   drawShape,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
-import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
+import {
+  changeFillColor,
+  getShapeCoordinates,
+  setCanvasCursor,
+} from "../utils/otherFunctions";
 import ShapeContextBar from "./context/ShapeContextBar";
 const Whiteboard = ({
   shapeType,
@@ -275,7 +280,8 @@ const Whiteboard = ({
   const drawAllShapes = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     shapes.forEach((shape) => drawShape(ctx, shape));
   };
 
@@ -401,31 +407,10 @@ const Whiteboard = ({
 
   useEffect(() => {
     if (isFillColorActive) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-
-      // Safely map shapes to update the selected one
-      const updatedShapes = shapes
-        ?.map((shape, index) => {
-          if (!shape) return null; // Skip undefined shapes
-          if (index === selectedShapeIndex) {
-            return { ...shape, fill: fillColor }; // Return a new updated object
-          }
-          return shape;
-        })
-        .filter(Boolean); // Remove any null values from the array
-
-      // Clear the canvas before redrawing
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw updated shapes
-      updatedShapes?.forEach((shape) => {
-        if (shape) {
-          drawShape(ctx, shape); // Ensure shape is valid before passing it
-        }
+      changeFillColor(selectedShapeIndex, fillColor, shapes, setShapes, () => {
+        // Redraw all shapes
+        drawAllShapes();
       });
-
-      setShapes(updatedShapes);
     }
   }, [fillColor, selectedShapeIndex]);
 
