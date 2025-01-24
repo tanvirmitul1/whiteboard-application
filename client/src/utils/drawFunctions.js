@@ -28,6 +28,24 @@ export const drawShape = (ctx, shape) => {
       break;
   }
 };
+export const drawCurrentShape = (ctx, start, end, shapeType, color) => {
+  switch (shapeType) {
+    case "line":
+      drawLine(ctx, start, end, color);
+      break;
+    case "rectangle":
+      drawRectangle(ctx, start, end, color);
+      break;
+    case "triangle":
+      drawTriangle(ctx, start, end, color);
+      break;
+    case "circle":
+      drawCircle(ctx, start, end, color);
+      break;
+    default:
+      break;
+  }
+};
 export const drawLine = (ctx, start, end, color, isSelected) => {
   ctx.beginPath();
   ctx.moveTo(start.x, start.y);

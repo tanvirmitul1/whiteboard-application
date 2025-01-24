@@ -4,13 +4,9 @@ import "../index.css";
 import Swal from "sweetalert2";
 import {
   distance,
-  drawCircle,
-  drawLine,
+  drawCurrentShape,
   drawPen,
-  drawRectangle,
   drawShape,
-  drawText,
-  drawTriangle,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
 import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
@@ -101,7 +97,7 @@ const Whiteboard = ({
       setCurrentPenPath([...currentPenPath, mousePos]);
       drawPen(ctx, currentPenPath);
     } else if (isDrawing && shapeType !== "eraser") {
-      drawCurrentShape(ctx, startPoint, mousePos);
+      drawCurrentShape(ctx, startPoint, mousePos, shapeType, drawColor);
     } else if (isMoving && selectedShapeIndex !== null) {
       moveShape(mousePos);
     }
@@ -216,25 +212,6 @@ const Whiteboard = ({
     const canvasElement = document.querySelector("canvas");
     if (canvasElement) {
       canvasElement.style.cursor = "move";
-    }
-  };
-
-  const drawCurrentShape = (ctx, start, end) => {
-    switch (shapeType) {
-      case "line":
-        drawLine(ctx, start, end, drawColor);
-        break;
-      case "rectangle":
-        drawRectangle(ctx, start, end, drawColor);
-        break;
-      case "triangle":
-        drawTriangle(ctx, start, end, drawColor);
-        break;
-      case "circle":
-        drawCircle(ctx, start, end, drawColor);
-        break;
-      default:
-        break;
     }
   };
 
@@ -360,7 +337,7 @@ const Whiteboard = ({
       setCurrentPenPath([...currentPenPath, touchPos]);
       drawPen(ctx, currentPenPath);
     } else if (isDrawing && shapeType !== "eraser") {
-      drawCurrentShape(ctx, startPoint, touchPos);
+      drawCurrentShape(ctx, startPoint, touchPos, shapeType, drawColor);
     } else if (isMoving && selectedShapeIndex !== null) {
       moveShape(touchPos);
     }
