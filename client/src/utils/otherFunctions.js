@@ -40,17 +40,41 @@ export const copyShape = (selectedShapeIndex, shapes, setCopiedShape) => {
 // Function to paste the copied shape
 export const pasteShape = (copiedShape, setShapes, drawAllShapes) => {
   if (copiedShape) {
-    const copiedShapeToPaste = {
-      ...copiedShape,
-      start: {
-        x: copiedShape.start.x + 50, // Adjust the x position to the right
-        y: copiedShape.start.y,
-      },
-      end: {
-        x: copiedShape.end.x + 50, // Adjust the x position of the end point
-        y: copiedShape.end.y,
-      },
-    };
+    let copiedShapeToPaste;
+
+    // Check the type of the copied shape
+    if (copiedShape.type === "text") {
+      // Handle text shapes
+      copiedShapeToPaste = {
+        ...copiedShape,
+        position: {
+          x: copiedShape.position.x + 50, // Adjust the x position to the right
+          y: copiedShape.position.y, // Keep the same y position
+        },
+      };
+    } else if (copiedShape.type === "pen") {
+      // Handle pen shapes
+      copiedShapeToPaste = {
+        ...copiedShape,
+        path: copiedShape.path.map((point) => ({
+          x: point.x + 50, // Adjust the x position of each point in the path
+          y: point.y, // Keep the y position the same
+        })),
+      };
+    } else {
+      // Handle other shapes (e.g., rectangle, circle, etc.)
+      copiedShapeToPaste = {
+        ...copiedShape,
+        start: {
+          x: copiedShape.start.x + 50, // Adjust the x position to the right
+          y: copiedShape.start.y,
+        },
+        end: {
+          x: copiedShape.end.x + 50, // Adjust the x position of the end point
+          y: copiedShape.end.y,
+        },
+      };
+    }
 
     // Add the new pasted shape to the shapes array
     setShapes((prevShapes) => [...prevShapes, copiedShapeToPaste]);
