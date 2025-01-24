@@ -20,38 +20,70 @@ const InstructionModal = ({ isOpen, onClose }) => {
           id: 5,
           text: "Draw independently with the Pen tool (click and drag to draw).",
         },
+        {
+          id: 6,
+          text: "Resize shapes dynamically by dragging the edges while drawing.",
+        },
+        {
+          id: 7,
+          text: "Change the size of drawn lines, circles, and rectangles directly on the canvas.",
+        },
       ],
     },
     {
       category: "Keyboard Shortcuts",
       items: [
-        { id: 6, text: "Undo: Press Ctrl + Z." },
-        { id: 7, text: "Redo: Press Ctrl + Y." },
-        { id: 8, text: "Select a shape and use the arrow keys to nudge." },
-        { id: 9, text: "Press ESC to remove fill color mode." },
-        { id: 10, text: "Press Delete to remove the selected shape." },
-        { id: 11, text: "Press Ctrl + C to copy the selected shape." },
+        { id: 8, text: "Undo: Press Ctrl + Z." },
+        { id: 9, text: "Redo: Press Ctrl + Y." },
+        { id: 10, text: "Select a shape and use the arrow keys to nudge." },
+        { id: 11, text: "Press ESC to remove fill color mode." },
+        { id: 12, text: "Press Delete to remove the selected shape." },
+        { id: 13, text: "Press Ctrl + C to copy the selected shape." },
         {
-          id: 12,
+          id: 14,
           text: "Press Ctrl + V to paste the copied shape beside the original.",
+        },
+        {
+          id: 15,
+          text: "Move a shape by holding down 'Ctrl' and dragging it.",
         },
       ],
     },
     {
       category: "Other Features",
       items: [
-        { id: 13, text: "Use the text tool to add text to the canvas." },
+        { id: 16, text: "Use the text tool to add text to the canvas." },
         {
-          id: 14,
-          text: "Resize shapes dynamically by dragging while drawing.",
+          id: 17,
+          text: "Resize text dynamically by dragging the text box corners.",
         },
         {
-          id: 15,
-          text: "Change shape color by clicking the shape color icon.",
+          id: 18,
+          text: "Change shape color by clicking the shape color icon in the toolbar.",
         },
         {
-          id: 16,
+          id: 19,
           text: "Change canvas background color by clicking the background color icon.",
+        },
+        {
+          id: 20,
+          text: "Move drawn objects (shapes or text) with a move tool.",
+        },
+        {
+          id: 21,
+          text: "Undo or redo your drawing actions using the toolbar buttons.",
+        },
+        {
+          id: 22,
+          text: "You can clear all shapes on the canvas by clicking the 'Clear' button.",
+        },
+        {
+          id: 23,
+          text: "Save the drawing to your local device or cloud storage.",
+        },
+        {
+          id: 24,
+          text: "Zoom in or out by holding 'Ctrl' and scrolling with your mouse.",
         },
       ],
     },
