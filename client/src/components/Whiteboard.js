@@ -13,7 +13,8 @@ import {
   drawTriangle,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
-import { setCanvasCursor } from "../utils/otherFunctions";
+import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
+import ShapeContextBar from "./context/ShapeContextBar";
 const Whiteboard = ({
   shapeType,
   onShapesUpdate,
@@ -488,6 +489,32 @@ const Whiteboard = ({
   //     drawAllShapes();
   //   }
   // }, [selectedShapeIndex]);
+
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+  });
+
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    const mousePos = getMousePosition(canvasRef.current, e);
+    const shapeIndex = shapes.findIndex((shape) =>
+      isPointInShape(mousePos, shape)
+    );
+    const selectedShape = shapes[shapeIndex];
+    console.log("selectedShape", selectedShape);
+    if (shapeIndex !== -1) {
+      setSelectedShapeIndex(shapeIndex);
+      setContextMenu(getShapeCoordinates(selectedShape));
+    } else {
+      closeContextMenu();
+    }
+  };
+
+  const closeContextMenu = () =>
+    setContextMenu({ ...contextMenu, visible: false });
+
   return (
     <Box
       ref={containerRef}
@@ -495,6 +522,7 @@ const Whiteboard = ({
         height: "80vh",
         position: "relative",
       }}
+      onContextMenu={handleContextMenu}
     >
       {/* Canvas */}
       <canvas
@@ -508,8 +536,20 @@ const Whiteboard = ({
         onTouchEnd={handleTouchEnd}
         className="canvas-style"
         style={{ backgroundColor: backgroundColor }}
+        onContextMenu={handleContextMenu}
       />
-
+      <ShapeContextBar
+        contextMenu={contextMenu}
+        closeContextMenu={closeContextMenu}
+        selectedShapeIndex={selectedShapeIndex}
+        shapes={shapes}
+        setShapes={setShapes}
+        copiedShape={copiedShape}
+        setCopiedShape={setCopiedShape}
+        drawAllShapes={drawAllShapes}
+        onShapesUpdate={onShapesUpdate}
+        canvasScale={canvasScale}
+      />
       {/* Watercolor Mark */}
 
       <Typography
