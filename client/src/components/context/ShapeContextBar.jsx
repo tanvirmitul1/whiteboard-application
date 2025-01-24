@@ -64,16 +64,18 @@ const ShapeContextBar = ({
             <FaTrashAlt /> Delete
           </ContextMenuItem>
           <ContextMenuItem onClick={handleCopy}>
-            <FaCopy /> Copy
+            <FaCopy /> Copy <SuggestionBox>(Ctrl + C)</SuggestionBox>
           </ContextMenuItem>
           <ContextMenuItem onClick={handlePaste}>
-            <FaPaste /> Paste
+            <FaPaste /> Paste <SuggestionBox>(Ctrl + V)</SuggestionBox>
           </ContextMenuItem>
           <ContextMenuItem onClick={handleTakeToFront}>
-            <FaArrowUp /> Take to Front
+            <FaArrowUp /> Take to Front{" "}
+            <SuggestionBox>(Ctrl + F)</SuggestionBox>
           </ContextMenuItem>
           <ContextMenuItem onClick={handleTakeToBack}>
-            <FaArrowDown /> Take to Back
+            <FaArrowDown /> Take to Back{" "}
+            <SuggestionBox>(Ctrl + B)</SuggestionBox>
           </ContextMenuItem>
         </ContextMenu>
       )}
@@ -82,6 +84,10 @@ const ShapeContextBar = ({
 };
 
 export default ShapeContextBar;
+
+const SuggestionBox = styled.span`
+  opacity: 0.4;
+`;
 
 // Styled components
 const ContextMenu = styled.ul`

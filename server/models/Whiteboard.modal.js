@@ -3,11 +3,7 @@ const mongoose = require("mongoose");
 const whiteboardSchema = new mongoose.Schema(
   {
     drawingTitle: { type: String, required: true },
-    shapeType: {
-      type: String,
-      enum: ["line", "circle", "rectangle", "triangle", "text", "pen"],
-      required: true,
-    },
+
     backgroundColor: { type: String, required: false },
     shapes: [
       {

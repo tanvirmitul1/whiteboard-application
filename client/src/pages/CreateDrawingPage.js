@@ -74,7 +74,6 @@ const CreateDrawingPage = () => {
       try {
         await createDraw({
           drawingTitle,
-          shapeType,
           shapes,
           userId,
           token,
