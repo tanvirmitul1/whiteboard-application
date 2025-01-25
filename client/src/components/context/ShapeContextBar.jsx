@@ -31,7 +31,7 @@ const ShapeContextBar = ({
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [currentColor, setCurrentColor] = useState("#000000");
   const colorPickerRef = useRef(null);
-
+  const [pickerType, setPickerType] = useState("fill");
   const selectedShape = shapes[selectedShapeIndex];
 
   const handleDelete = () => {
@@ -62,6 +62,7 @@ const ShapeContextBar = ({
   const handleColorChange = (color) => {
     setCurrentColor(color.hex);
     changeFillColor(
+      pickerType,
       selectedShapeIndex,
       color.hex,
       shapes,
@@ -70,7 +71,8 @@ const ShapeContextBar = ({
     );
   };
 
-  const handleOpenColorPicker = () => {
+  const handleOpenColorPicker = (pickerType) => {
+    setPickerType(pickerType);
     setShowColorPicker(true);
   };
 
@@ -121,10 +123,13 @@ const ShapeContextBar = ({
             <SuggestionBox>(Ctrl + B)</SuggestionBox>
           </ContextMenuItem>
           {!["text", "pen", "line"].includes(selectedShape?.type) && (
-            <ContextMenuItem onClick={handleOpenColorPicker}>
+            <ContextMenuItem onClick={() => handleOpenColorPicker("fill")}>
               <FaFillDrip /> Change Fill Color
             </ContextMenuItem>
           )}
+          <ContextMenuItem onClick={() => handleOpenColorPicker("stroke")}>
+            <FaFillDrip /> Change Color
+          </ContextMenuItem>
         </ContextMenu>
       )}
 

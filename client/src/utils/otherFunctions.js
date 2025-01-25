@@ -136,6 +136,7 @@ export const takeToFront = (index, shapes, setShapes, drawAllShapes) => {
 };
 
 export const changeFillColor = (
+  pickerType,
   selectedShapeIndex,
   newFillColor,
   shapes,
@@ -152,9 +153,16 @@ export const changeFillColor = (
   }
 
   // Safely update the selected shape's fill color
-  const updatedShapes = shapes.map((shape, index) =>
-    index === selectedShapeIndex ? { ...shape, fill: newFillColor } : shape
-  );
+  let updatedShapes = shapes;
+  if (pickerType === "fill") {
+    updatedShapes = shapes.map((shape, index) =>
+      index === selectedShapeIndex ? { ...shape, fill: newFillColor } : shape
+    );
+  } else if (pickerType === "stroke") {
+    updatedShapes = shapes.map((shape, index) =>
+      index === selectedShapeIndex ? { ...shape, color: newFillColor } : shape
+    );
+  }
 
   // Update the shapes state
   setShapes(updatedShapes);
