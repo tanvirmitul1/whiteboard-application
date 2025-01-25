@@ -3,6 +3,9 @@ import { Box, Button } from "@mui/material";
 import useAuth from "../../customHooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import InstructionModal from "../instructions/InstructionModal";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import { MdOutlineIntegrationInstructions } from "react-icons/md";
 
 const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
   const navigate = useNavigate();
@@ -35,6 +38,7 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         disabled={isLoading}
         sx={{ textTransform: "none", padding: 1 }}
       >
+        <AddTaskIcon sx={{ marginRight: 1 }} />
         {isLoading ? "Saving..." : "Save"}
       </Button>
       <Button
@@ -44,6 +48,7 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         onClick={handleShowDrawings}
         sx={{ textTransform: "none", padding: 1 }}
       >
+        <ChecklistIcon sx={{ marginRight: 1 }} />
         Draw Lists
       </Button>
       {/* {isAdmin && ( */}
@@ -66,6 +71,10 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         onClick={() => setOpenInstructionsModal(true)}
         sx={{ textTransform: "none", padding: 1 }}
       >
+        <MdOutlineIntegrationInstructions
+          size={20}
+          style={{ marginRight: "10px" }}
+        />
         Instruction
       </Button>
 

@@ -30,6 +30,7 @@ import ActionButton from "../components/viewPage/ActionButton";
 import useColors from "../customHooks/useColors";
 import Reactions from "../components/viewPage/Reactions";
 import Logo from "../files/dp.jpg";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const ViewDrawingPage = () => {
   const { user } = useAuth();
@@ -327,7 +328,8 @@ const ViewDrawingPage = () => {
           color="secondary"
           onClick={() => navigate(-1)}
         >
-          Back
+          <IoMdArrowRoundBack size={20} style={{ marginRight: "10px" }} />
+          Go Back
         </Button>
       </Box>
     </Box>

@@ -9,6 +9,7 @@ import Download from "../components/viewSinglePage/Download";
 import { formatDistanceToNow } from "date-fns";
 import EditIcon from "@mui/icons-material/Edit";
 import useAuth from "../customHooks/useAuth";
+import { IoMdArrowRoundBack } from "react-icons/io";
 const ViewSingleDrawingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -182,7 +183,9 @@ const ViewSingleDrawingPage = () => {
           onClick={() => navigate(-1)}
           sx={{ marginTop: "10px" }}
         >
-          Back
+          {" "}
+          <IoMdArrowRoundBack size={20} style={{ marginRight: "10px" }} />
+          Go Back
         </Button>
       </Box>
     </Box>

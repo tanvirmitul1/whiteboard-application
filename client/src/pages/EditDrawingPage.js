@@ -12,6 +12,9 @@ import Whiteboard from "../components/Whiteboard";
 import Swal from "sweetalert2";
 import useAuth from "../customHooks/useAuth";
 
+import { MdUpdate } from "react-icons/md";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
 const EditDrawingPage = () => {
   const [drawingTitle, setDrawingTitle] = useState("");
   const [shapeType, setShapeType] = useState("line");
@@ -223,6 +226,7 @@ const EditDrawingPage = () => {
             size="small"
             sx={{ textTransform: "none" }}
           >
+            <MdUpdate size={20} style={{ marginRight: "10px" }} />
             Update drawing
           </Button>
 
@@ -233,7 +237,8 @@ const EditDrawingPage = () => {
             onClick={() => navigate(-1)}
             sx={{ textTransform: "none" }}
           >
-            Back
+            <IoMdArrowRoundBack size={20} style={{ marginRight: "10px" }} />
+            Go Back
           </Button>
         </Box>
       </Box>
