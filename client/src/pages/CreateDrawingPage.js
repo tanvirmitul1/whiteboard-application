@@ -72,9 +72,10 @@ const CreateDrawingPage = () => {
 
     if (result.isConfirmed) {
       try {
+        const validShapes = shapes.filter((shape) => shape.type?.trim());
         await createDraw({
           drawingTitle,
-          shapes,
+          shapes: validShapes,
           userId,
           token,
           backgroundColor,

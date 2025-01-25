@@ -114,10 +114,11 @@ const EditDrawingPage = () => {
     };
   }, []);
   const handleSave = async () => {
+    const validShapes = shapes.filter((shape) => shape.type?.trim());
     try {
       await updateDrawing({
         id,
-        shapes: shapes,
+        shapes: validShapes,
         drawingTitle,
         userId,
         backgroundColor,

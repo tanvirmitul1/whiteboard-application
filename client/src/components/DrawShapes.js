@@ -13,7 +13,6 @@ export const drawShapes = (canvas, shapes) => {
     maxY = -Infinity;
   const updatedShapes = [...shapes].reverse();
 
-  console.log({ shapes, updatedShapes });
   // Calculate the bounding box for all shapes
   updatedShapes.forEach((shape) => {
     const { start = {}, end = {}, path = [], position = {}, type } = shape;

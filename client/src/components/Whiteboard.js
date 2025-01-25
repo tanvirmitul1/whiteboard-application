@@ -37,6 +37,7 @@ const Whiteboard = ({
   const [textInput, setTextInput] = useState(null);
   const [currentPenPath, setCurrentPenPath] = useState([]);
   const [copiedShape, setCopiedShape] = useState(null);
+  console.log({ shapes });
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
