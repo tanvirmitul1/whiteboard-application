@@ -11,9 +11,11 @@ export const drawShapes = (canvas, shapes) => {
     minY = Infinity,
     maxX = -Infinity,
     maxY = -Infinity;
+  const updatedShapes = [...shapes].reverse();
 
+  console.log({ shapes, updatedShapes });
   // Calculate the bounding box for all shapes
-  shapes?.forEach((shape) => {
+  updatedShapes.forEach((shape) => {
     const { start = {}, end = {}, path = [], position = {}, type } = shape;
 
     if (start.x !== undefined && start.y !== undefined) {
@@ -68,7 +70,7 @@ export const drawShapes = (canvas, shapes) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw each shape with scaling applied
-  shapes?.forEach((shape) => {
+  updatedShapes?.forEach((shape) => {
     const {
       start = {},
       end = {},

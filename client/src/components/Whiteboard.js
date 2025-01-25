@@ -127,7 +127,7 @@ const Whiteboard = ({
         color: drawColor,
         fill: fillColor,
       };
-      const updatedShapes = [...shapes, newPenShape];
+      const updatedShapes = [newPenShape, ...shapes];
       setShapes(updatedShapes);
       onShapesUpdate(updatedShapes);
       setIsDrawing(false);
@@ -142,7 +142,7 @@ const Whiteboard = ({
         color: drawColor,
         fill: fillColor,
       };
-      const updatedShapes = [...shapes, newShape];
+      const updatedShapes = [newShape, ...shapes];
       setShapes(updatedShapes);
       onShapesUpdate(updatedShapes);
     }
@@ -165,7 +165,7 @@ const Whiteboard = ({
           fill: fillColor,
         };
         console.log("newTextShape", newTextShape);
-        const updatedShapes = [...shapes, newTextShape];
+        const updatedShapes = [newTextShape, ...shapes];
         console.log({ updatedShapes });
         setShapes(updatedShapes);
         onShapesUpdate(updatedShapes);
@@ -282,7 +282,7 @@ const Whiteboard = ({
     const ctx = canvas.getContext("2d");
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    shapes.forEach((shape) => drawShape(ctx, shape));
+    [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
   };
 
   const clearCanvas = async () => {

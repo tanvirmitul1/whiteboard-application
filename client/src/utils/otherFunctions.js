@@ -101,7 +101,7 @@ export const deleteShape = (
   }
 };
 
-export const takeToFront = (index, shapes, setShapes, drawAllShapes) => {
+export const takeToBack = (index, shapes, setShapes, drawAllShapes) => {
   if (index < shapes.length - 1) {
     // Clone the shapes array
     const updatedShapes = [...shapes];
@@ -118,7 +118,7 @@ export const takeToFront = (index, shapes, setShapes, drawAllShapes) => {
   }
 };
 
-export const takeToBack = (index, shapes, setShapes, drawAllShapes) => {
+export const takeToFront = (index, shapes, setShapes, drawAllShapes) => {
   if (index > 0) {
     // Clone the shapes array
     const updatedShapes = [...shapes];
