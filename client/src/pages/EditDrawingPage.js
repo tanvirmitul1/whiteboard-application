@@ -14,13 +14,16 @@ import useAuth from "../customHooks/useAuth";
 
 import { MdUpdate } from "react-icons/md";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { setShapes } from "../slices/canvasSlice";
 
 const EditDrawingPage = () => {
+  const dispatch = useDispatch();
+  const shapes = useSelector((state) => state.canvas.shapes);
   const [drawingTitle, setDrawingTitle] = useState("");
   const [shapeType, setShapeType] = useState("line");
 
   const [isSaved, setIsSaved] = useState(false);
-  const [shapes, setShapes] = useState([]);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
   const [drawColor, setDrawColor] = useState("#C735BB");
@@ -45,7 +48,7 @@ const EditDrawingPage = () => {
   useEffect(() => {
     if (data) {
       setDrawingTitle(data.drawingTitle || "");
-      setShapes(data.shapes || []);
+      dispatch(setShapes(data.shapes || []));
       setBackgroundColor(data.backgroundColor || "#242441");
     }
   }, [data]);
@@ -54,7 +57,8 @@ const EditDrawingPage = () => {
     const filteredShapes = newShapes.filter(
       (item) => !(item.type === "pen" && item.path.length === 0)
     );
-    setShapes(filteredShapes);
+
+    dispatch(setShapes(filteredShapes));
     setHistory([...history, newShapes]);
     setRedoStack([]);
   };
@@ -63,7 +67,7 @@ const EditDrawingPage = () => {
     if (history.length > 0) {
       const prevState = history[history.length - 1];
       setRedoStack([shapes, ...redoStack]);
-      setShapes(prevState);
+      dispatch(setShapes(prevState));
       setHistory(history.slice(0, -1));
     }
   };
@@ -72,7 +76,7 @@ const EditDrawingPage = () => {
     if (redoStack.length > 0) {
       const restoredState = redoStack[0];
       setHistory([...history, shapes]);
-      setShapes(restoredState);
+      dispatch(setShapes(restoredState));
       setRedoStack(redoStack.slice(1));
     }
   };
@@ -201,13 +205,9 @@ const EditDrawingPage = () => {
         <Whiteboard
           shapeType={shapeType}
           onShapesUpdate={handleShapeUpdate}
-          shapes={shapes}
-          setShapes={setShapes}
           drawColor={drawColor}
           backgroundColor={backgroundColor}
           fillColor={fillColor}
-          setFillColor={setFillColor}
-          isFillColorActive={isFillColorActive}
         />
 
         <Box
