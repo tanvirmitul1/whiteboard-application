@@ -175,3 +175,45 @@ export const changeFillColor = (
   // Redraw all shapes on the canvas
   drawAllShapes();
 };
+
+export const moveShapeByKeys = (dx, dy, selectedShapeIndex) => {
+  const shapes = store.getState().canvas.shapes;
+  const updatedShapes = shapes.map((shape, index) => {
+    if (index === selectedShapeIndex) {
+      if (shape.type === "pen") {
+        // Move the entire pen path (for lines)
+        const newPath = shape.path.map((point) => ({
+          x: point.x + dx,
+          y: point.y + dy,
+        }));
+        return { ...shape, path: newPath };
+      } else if (shape.type === "text") {
+        // Move the text position
+        return {
+          ...shape,
+          position: {
+            x: shape.position.x + dx,
+            y: shape.position.y + dy,
+          },
+        };
+      } else {
+        // Move other shapes (rectangles, circles, etc.)
+        return {
+          ...shape,
+          start: {
+            x: shape.start.x + dx,
+            y: shape.start.y + dy,
+          },
+          end: {
+            x: shape.end.x + dx,
+            y: shape.end.y + dy,
+          },
+        };
+      }
+    }
+    return shape;
+  });
+
+  // Update the shapes state
+  store.dispatch(setShapes(updatedShapes));
+};
