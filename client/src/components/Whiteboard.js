@@ -8,6 +8,7 @@ import {
   drawCurrentShape,
   drawPen,
   drawShape,
+  getMousePosition,
   isPointInShape,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
@@ -15,6 +16,9 @@ import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
 import ShapeContextBar from "./context/ShapeContextBar";
 import { setShapes } from "../slices/canvasSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Watermark from "./canvas/Watermark";
+import TextToolInput from "./canvas/TextToolInput";
+import ClearButton from "./canvas/ClearButton";
 
 const Whiteboard = ({
   shapeType,
@@ -60,14 +64,6 @@ const Whiteboard = ({
 
     return () => window.removeEventListener("resize", setCanvasSize);
   }, [shapeType, shapes, drawColor]);
-
-  const getMousePosition = (canvas, event) => {
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: (event.clientX - rect.left) * (canvas.width / rect.width),
-      y: (event.clientY - rect.top) * (canvas.height / rect.height),
-    };
-  };
 
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
@@ -155,37 +151,23 @@ const Whiteboard = ({
     setIsDrawing(false);
   };
 
-  const handleTextInput = (e) => {
-    setTextInput({ ...textInput, value: e.target.value });
-  };
-
-  const handleTextSubmit = (e) => {
-    if (e.key === "Enter" || e.type === "blur") {
-      if (textInput && textInput.value.trim() !== "") {
-        const newTextShape = {
-          type: "text",
-          text: textInput.value,
-          position: { x: textInput.x, y: textInput.y },
-          color: drawColor,
-          fill: fillColor,
-        };
-
-        const updatedShapes = [newTextShape, ...shapes];
-        dispatch(setShapes(updatedShapes));
-        onShapesUpdate(updatedShapes);
-      }
-      setTextInput(null);
-    }
-  };
-
   const moveShape = (mousePos) => {
+    const deltaX = mousePos.x - startPoint.x;
+    const deltaY = mousePos.y - startPoint.y;
+
+    // To smooth the movement, we can apply a constant factor to reduce the delta movement
+    const smoothingFactor = 0.1; // Adjust this factor to make the movement slower or faster
+
+    const smoothedDeltaX = deltaX * smoothingFactor;
+    const smoothedDeltaY = deltaY * smoothingFactor;
+
     const updatedShapes = shapes.map((shape, index) => {
       if (index === selectedShapeIndex) {
         if (shape.type === "pen") {
           // Move the entire pen path
           const newPath = shape.path.map((point) => ({
-            x: point.x + (mousePos.x - startPoint.x),
-            y: point.y + (mousePos.y - startPoint.y),
+            x: point.x + smoothedDeltaX,
+            y: point.y + smoothedDeltaY,
           }));
           return { ...shape, path: newPath };
         } else if (shape.type === "text") {
@@ -193,20 +175,20 @@ const Whiteboard = ({
           return {
             ...shape,
             position: {
-              x: shape.position.x + (mousePos.x - startPoint.x),
-              y: shape.position.y + (mousePos.y - startPoint.y),
+              x: shape.position.x + smoothedDeltaX,
+              y: shape.position.y + smoothedDeltaY,
             },
           };
         } else {
           return {
             ...shape,
             start: {
-              x: shape.start.x + (mousePos.x - startPoint.x),
-              y: shape.start.y + (mousePos.y - startPoint.y),
+              x: shape.start.x + smoothedDeltaX,
+              y: shape.start.y + smoothedDeltaY,
             },
             end: {
-              x: shape.end.x + (mousePos.x - startPoint.x),
-              y: shape.end.y + (mousePos.y - startPoint.y),
+              x: shape.end.x + smoothedDeltaX,
+              y: shape.end.y + smoothedDeltaY,
             },
           };
         }
@@ -214,13 +196,12 @@ const Whiteboard = ({
       return shape;
     });
 
-    setStartPoint(mousePos);
-    dispatch(setShapes(updatedShapes));
-    onShapesUpdate(updatedShapes);
+    setStartPoint(mousePos); // Update the starting point for the next movement
+    dispatch(setShapes(updatedShapes)); // Update shapes in the Redux store
 
     const canvasElement = document.querySelector("canvas");
     if (canvasElement) {
-      canvasElement.style.cursor = "move";
+      canvasElement.style.cursor = "move"; // Optional: Update cursor style to indicate movement
     }
   };
 
@@ -400,7 +381,7 @@ const Whiteboard = ({
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     e.preventDefault();
-    const mousePos = getMousePosition(canvasRef.current, e);
+    const mousePos = getMousePosition(canvas, e);
 
     const shapeIndex = shapes.findIndex((shape) =>
       isPointInShape(ctx, mousePos, shape)
@@ -422,7 +403,7 @@ const Whiteboard = ({
     <Box
       ref={containerRef}
       sx={{
-        height: "80vh",
+        height: "90vh",
         position: "relative",
       }}
       onContextMenu={handleContextMenu}
@@ -453,60 +434,20 @@ const Whiteboard = ({
       />
       {/* Watercolor Mark */}
 
-      <Typography
-        variant="h6"
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          color: "#b8b0b0",
-          fontWeight: "bold",
-          textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
-          opacity: ".1",
-          pointerEvents: "none",
-        }}
-      >
-        mitul@seopage1.net
-      </Typography>
+      <Watermark />
 
       {/* Text Input for Text Tool */}
-      {textInput && (
-        <TextField
-          placeholder="Enter text"
-          autoFocus
-          value={textInput.value}
-          onChange={handleTextInput}
-          onKeyDown={handleTextSubmit}
-          onBlur={handleTextSubmit}
-          sx={{
-            position: "absolute",
-            top: `${textInput.y / canvasScale.y}px`,
-            left: `${textInput.x / canvasScale.x}px`,
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          }}
-        />
-      )}
+      <TextToolInput
+        textInput={textInput}
+        canvasScale={canvasScale}
+        setTextInput={setTextInput}
+        onShapesUpdate={onShapesUpdate}
+        drawColor={drawColor}
+        fillColor={fillColor}
+      />
 
       {/* Clear Button */}
-      <Button
-        sx={{
-          position: "absolute",
-          bottom: 16,
-          right: 16,
-          textTransform: "none",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        }}
-        variant="contained"
-        color="error"
-        size="small"
-        onClick={clearCanvas}
-        disabled={shapes.length === 0}
-      >
-        Clear
-      </Button>
+      <ClearButton clearCanvas={clearCanvas} shapes={shapes} />
     </Box>
   );
 };
