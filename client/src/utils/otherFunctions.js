@@ -215,3 +215,21 @@ export const moveShapeByKeys = (dx, dy, selectedShapeIndex) => {
   // Update the shapes state
   store.dispatch(setShapes(updatedShapes));
 };
+export const changeFontSize = (
+  selectedShapeIndex,
+  newFontSize,
+  drawAllShapes
+) => {
+  const shapes = store.getState().canvas.shapes;
+  const updatedShapes = shapes.map((shape, index) => {
+    if (index === selectedShapeIndex) {
+      return {
+        ...shape,
+        fontSize: newFontSize,
+      };
+    }
+    return shape;
+  });
+  store.dispatch(setShapes(updatedShapes));
+  drawAllShapes();
+};

@@ -29,6 +29,7 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
       text,
       color,
       fill,
+      fontSize,
     } = shape;
 
     switch (type) {
@@ -100,7 +101,7 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
             x: position.x * scale,
             y: position.y * scale,
           };
-          ctx.font = `${16 * scale}px Arial`; // Scale font size
+          ctx.font = `${(fontSize || 16) * scale}px Arial`; // Scale font size
           ctx.fillStyle = color || "#C735BB";
           ctx.fillText(
             text || "Default Text",

@@ -8,6 +8,7 @@ import {
   FaArrowUp,
   FaArrowDown,
   FaFillDrip,
+  FaFont,
 } from "react-icons/fa";
 import {
   copyShape,
@@ -16,6 +17,7 @@ import {
   takeToFront,
   takeToBack,
   changeFillColor,
+  changeFontSize,
 } from "../../utils/otherFunctions";
 import { useSelector } from "react-redux";
 
@@ -90,6 +92,13 @@ const ShapeContextBar = ({
     };
   }, [showColorPicker]);
 
+  const handleChangeFontSize = () => {
+    const newFontSize = prompt("Enter the new font size:");
+    if (newFontSize !== null) {
+      changeFontSize(selectedShapeIndex, newFontSize, drawAllShapes);
+    }
+  };
+
   return (
     <div>
       {contextMenu.visible && selectedShape && (
@@ -123,6 +132,11 @@ const ShapeContextBar = ({
           <ContextMenuItem onClick={() => handleOpenColorPicker("stroke")}>
             <FaFillDrip /> Change Color
           </ContextMenuItem>
+          {["text"].includes(selectedShape?.type) && (
+            <ContextMenuItem onClick={() => handleChangeFontSize()}>
+              <FaFont /> Change FontSize
+            </ContextMenuItem>
+          )}
         </ContextMenu>
       )}
 

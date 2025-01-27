@@ -5,8 +5,18 @@ const selectionColor = "#4EDBFF";
 const selectionLineWidth = 4;
 const selectionLineWidthText = 1;
 export const drawShape = (ctx, shape) => {
-  const { type, start, end, path, color, fill, text, position, selected } =
-    shape;
+  const {
+    type,
+    start,
+    end,
+    path,
+    color,
+    fill,
+    text,
+    position,
+    selected,
+    fontSize,
+  } = shape;
   switch (type) {
     case "line":
       drawLine(ctx, start, end, color, selected);
@@ -24,7 +34,7 @@ export const drawShape = (ctx, shape) => {
       drawPen(ctx, path, color, selected);
       break;
     case "text":
-      drawText(ctx, text, position, color, selected);
+      drawText(ctx, text, position, color, selected, fontSize);
       break;
     default:
       break;
@@ -137,9 +147,9 @@ export const drawCircle = (ctx, start, end, color, fill, isSelected) => {
   }
 };
 
-export const drawText = (ctx, text, position, color, isSelected) => {
+export const drawText = (ctx, text, position, color, isSelected, fontSize) => {
   if (position && text) {
-    ctx.font = "16px Arial";
+    ctx.font = `${fontSize}px Arial`;
     ctx.fillStyle = color;
     ctx.fillText(text, position.x, position.y);
     if (isSelected) {

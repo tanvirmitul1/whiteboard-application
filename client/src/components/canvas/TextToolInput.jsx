@@ -23,6 +23,7 @@ const TextToolInput = ({
           position: { x: textInput.x, y: textInput.y },
           color: drawColor,
           fill: fillColor,
+          fontSize: 20,
         };
 
         const updatedShapes = [newTextShape, ...shapes];
