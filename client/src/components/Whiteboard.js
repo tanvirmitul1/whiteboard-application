@@ -8,6 +8,7 @@ import {
   drawCurrentShape,
   drawPen,
   drawShape,
+  isPointInShape,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
 import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
@@ -71,6 +72,7 @@ const Whiteboard = ({
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
     const mousePos = getMousePosition(canvas, e);
+    const ctx = canvas.getContext("2d");
     setStartPoint(mousePos);
 
     if (shapeType === "pen") {
@@ -78,7 +80,7 @@ const Whiteboard = ({
       setCurrentPenPath([mousePos]); // Start the pen path
     } else {
       const shapeIndex = shapes.findIndex((shape) =>
-        isPointInShape(mousePos, shape)
+        isPointInShape(ctx, mousePos, shape)
       );
       if (shapeIndex !== -1) {
         setSelectedShapeIndex(shapeIndex);
@@ -111,13 +113,14 @@ const Whiteboard = ({
 
   const handleMouseUp = (e) => {
     const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
     const mousePos = getMousePosition(canvas, e);
 
     if (isMoving && selectedShapeIndex !== null) {
       setIsMoving(false);
     } else if (shapeType === "eraser") {
       const updatedShapes = shapes.filter(
-        (shape) => !isPointInShape(mousePos, shape)
+        (shape) => !isPointInShape(ctx, mousePos, shape)
       );
 
       dispatch(setShapes(updatedShapes));
@@ -221,63 +224,6 @@ const Whiteboard = ({
     }
   };
 
-  const isPointInShape = (point, shape) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const { type, start, end, text, position } = shape;
-
-    switch (type) {
-      case "line":
-        const distanceToLine =
-          Math.abs(
-            (end.y - start.y) * point.x -
-              (end.x - start.x) * point.y +
-              end.x * start.y -
-              end.y * start.x
-          ) /
-          Math.sqrt(
-            Math.pow(end.y - start.y, 2) + Math.pow(end.x - start.x, 2)
-          );
-        return distanceToLine < 5;
-
-      case "rectangle":
-        return (
-          point.x >= start.x &&
-          point.x <= end.x &&
-          point.y >= start.y &&
-          point.y <= end.y
-        );
-
-      case "triangle":
-        return (
-          point.x >= start.x &&
-          point.x <= end.x &&
-          point.y >= start.y &&
-          point.y <= end.y
-        );
-
-      case "circle":
-        const radius = distance(start, end);
-        const distanceToCenter = distance(point, start);
-        return distanceToCenter <= radius;
-
-      case "pen":
-        return shape.path.some((penPoint) => distance(penPoint, point) < 5);
-
-      case "text":
-        return (
-          position &&
-          point.x >= position.x &&
-          point.x <= position.x + ctx.measureText(text).width &&
-          point.y >= position.y - 16 &&
-          point.y <= position.y
-        );
-
-      default:
-        return false;
-    }
-  };
-
   const drawAllShapes = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -310,6 +256,7 @@ const Whiteboard = ({
   //mobile touchevent
   const handleTouchStart = (e) => {
     const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
     const touchPos = getTouchPosition(canvas, e);
     setStartPoint(touchPos);
 
@@ -318,7 +265,7 @@ const Whiteboard = ({
       setCurrentPenPath([touchPos]); // Start the pen path
     } else {
       const shapeIndex = shapes.findIndex((shape) =>
-        isPointInShape(touchPos, shape)
+        isPointInShape(ctx, touchPos, shape)
       );
       if (shapeIndex !== -1) {
         setSelectedShapeIndex(shapeIndex);
@@ -352,13 +299,14 @@ const Whiteboard = ({
 
   const handleTouchEnd = (e) => {
     const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
     const touchPos = getTouchPosition(canvas, e);
 
     if (isMoving && selectedShapeIndex !== null) {
       setIsMoving(false);
     } else if (shapeType === "eraser") {
       const updatedShapes = shapes.filter(
-        (shape) => !isPointInShape(touchPos, shape)
+        (shape) => !isPointInShape(ctx, touchPos, shape)
       );
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
@@ -413,7 +361,7 @@ const Whiteboard = ({
         selectedShapeIndex,
         copiedShape,
         setCopiedShape,
-        drawAllShapes()
+        drawAllShapes
       );
 
     window.addEventListener("keydown", keyDownHandler);
@@ -449,11 +397,13 @@ const Whiteboard = ({
   });
 
   const handleContextMenu = (e) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
     e.preventDefault();
     const mousePos = getMousePosition(canvasRef.current, e);
 
     const shapeIndex = shapes.findIndex((shape) =>
-      isPointInShape(mousePos, shape)
+      isPointInShape(ctx, mousePos, shape)
     );
     const selectedShape = shapes[shapeIndex];
 

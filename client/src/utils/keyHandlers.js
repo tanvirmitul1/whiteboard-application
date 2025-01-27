@@ -29,11 +29,11 @@ export const handleKeyDown = (
     pasteShape(copiedShape, drawAllShapes);
   }
   // Handle Control + F (take to front)
-  if (event.ctrlKey && event.key === "f") {
+  if (event.ctrlKey && event.shiftKey && event.key === "f") {
     takeToFront(selectedShapeIndex, drawAllShapes);
   }
   // Handle Control + B (take to back)
-  if (event.ctrlKey && event.key === "b") {
+  if (event.ctrlKey && event.shiftKey && event.key === "b") {
     takeToBack(selectedShapeIndex, drawAllShapes);
   }
 };
