@@ -48,6 +48,13 @@ const Whiteboard = ({
     const ctx = canvas.getContext("2d");
     setStartPoint(mousePos);
 
+    if (shapeType === "eraser") {
+      const selectedShape = shapes[selectedShapeIndex];
+      const updatedShapes = shapes.filter((shape) => shape !== selectedShape);
+      dispatch(setShapes(updatedShapes));
+      onShapesUpdate(updatedShapes);
+    }
+
     if (shapeType === "pen") {
       setIsDrawing(true);
       setCurrentPenPath([mousePos]); // Start the pen path
