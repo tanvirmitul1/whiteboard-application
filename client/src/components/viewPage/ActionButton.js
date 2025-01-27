@@ -32,7 +32,6 @@ const ActionButton = ({
   handleDownload,
 }) => {
   const { user } = useAuth();
-  console.log({ whiteboard, user });
 
   const isAuthenticated = () => {
     return user?._id === whiteboard?.user?._id;

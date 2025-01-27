@@ -1,3 +1,7 @@
+import { setShapes } from "../slices/canvasSlice";
+import { store } from "../store";
+const shapes = store.getState().canvas.shapes;
+
 export const setCanvasCursor = (canvas, shapeType) => {
   if (!canvas) return;
 
@@ -30,15 +34,16 @@ export function getShapeCoordinates(shape, mousePos) {
   return result;
 }
 
-export const copyShape = (selectedShapeIndex, shapes, setCopiedShape) => {
+export const copyShape = (selectedShapeIndex, setCopiedShape) => {
   if (selectedShapeIndex !== null) {
     const shapeToCopy = shapes[selectedShapeIndex];
+
     setCopiedShape(shapeToCopy); // Store the copied shape
   }
 };
 
 // Function to paste the copied shape
-export const pasteShape = (copiedShape, setShapes, drawAllShapes) => {
+export const pasteShape = (copiedShape, drawAllShapes) => {
   if (copiedShape) {
     let copiedShapeToPaste;
 
@@ -76,32 +81,28 @@ export const pasteShape = (copiedShape, setShapes, drawAllShapes) => {
       };
     }
 
-    // Add the new pasted shape to the shapes array
-    setShapes((prevShapes) => [...prevShapes, copiedShapeToPaste]);
-
+    const updatedShapes = [copiedShapeToPaste, ...shapes];
+    store.dispatch(setShapes(updatedShapes));
     // Redraw all shapes
     drawAllShapes();
   }
 };
 
-export const deleteShape = (
-  selectedShapeIndex,
-  shapes,
-  setShapes,
-  drawAllShapes
-) => {
+export const deleteShape = (selectedShapeIndex, drawAllShapes) => {
+  console.log("selectedShapeIndex", selectedShapeIndex);
+  console.log("shapes before delete", shapes);
   if (selectedShapeIndex !== null) {
     const filteredShapes = shapes.filter(
       (_, index) => index !== selectedShapeIndex
     );
-    setShapes(filteredShapes);
-
+    store.dispatch(setShapes(filteredShapes));
     // Redraw all remaining shapes
     drawAllShapes();
+    console.log("shapes after delete", shapes);
   }
 };
 
-export const takeToBack = (index, shapes, setShapes, drawAllShapes) => {
+export const takeToBack = (index, drawAllShapes) => {
   if (index < shapes.length - 1) {
     // Clone the shapes array
     const updatedShapes = [...shapes];
@@ -113,12 +114,13 @@ export const takeToBack = (index, shapes, setShapes, drawAllShapes) => {
     updatedShapes.push(shape);
 
     // Update the shapes state and redraw all shapes
-    setShapes(updatedShapes);
+    store.dispatch(setShapes(updatedShapes));
+
     drawAllShapes();
   }
 };
 
-export const takeToFront = (index, shapes, setShapes, drawAllShapes) => {
+export const takeToFront = (index, drawAllShapes) => {
   if (index > 0) {
     // Clone the shapes array
     const updatedShapes = [...shapes];
@@ -130,7 +132,7 @@ export const takeToFront = (index, shapes, setShapes, drawAllShapes) => {
     updatedShapes.unshift(shape);
 
     // Update the shapes state and redraw all shapes
-    setShapes(updatedShapes);
+    store.dispatch(setShapes(updatedShapes));
     drawAllShapes();
   }
 };
@@ -139,8 +141,6 @@ export const changeFillColor = (
   pickerType,
   selectedShapeIndex,
   newFillColor,
-  shapes,
-  setShapes,
   drawAllShapes
 ) => {
   if (
@@ -165,7 +165,7 @@ export const changeFillColor = (
   }
 
   // Update the shapes state
-  setShapes(updatedShapes);
+  store.dispatch(setShapes(updatedShapes));
 
   // Redraw all shapes on the canvas
   drawAllShapes();

@@ -54,8 +54,6 @@ const EditDrawingPage = () => {
     const filteredShapes = newShapes.filter(
       (item) => !(item.type === "pen" && item.path.length === 0)
     );
-
-    console.log({ filteredShapes });
     setShapes(filteredShapes);
     setHistory([...history, newShapes]);
     setRedoStack([]);

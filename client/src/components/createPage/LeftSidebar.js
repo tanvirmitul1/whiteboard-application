@@ -75,6 +75,19 @@ const LeftSidebar = ({
   useEffect(() => {
     inputRef.current.focus(); // Set focus to the input on component mount
   }, []);
+
+  //  useEffect(() => {
+  //     if (isFillColorActive) {
+  //       changeFillColor(
+  //             pickerType,
+  //             selectedShapeIndex,
+  //             color.hex,
+  //             shapes,
+  //             setShapes,
+  //             drawAllShapes
+  //           );
+  //     }
+  //   }, [fillColor, selectedShapeIndex]);
   return (
     <Box className="left-sidebar-container">
       <input

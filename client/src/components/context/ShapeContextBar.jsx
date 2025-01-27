@@ -17,17 +17,17 @@ import {
   takeToBack,
   changeFillColor,
 } from "../../utils/otherFunctions";
+import { useSelector } from "react-redux";
 
 const ShapeContextBar = ({
   contextMenu,
   closeContextMenu,
   selectedShapeIndex,
-  shapes,
-  setShapes,
   drawAllShapes,
   copiedShape,
   setCopiedShape,
 }) => {
+  const shapes = useSelector((state) => state.canvas.shapes);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [currentColor, setCurrentColor] = useState("#000000");
   const colorPickerRef = useRef(null);
@@ -35,40 +35,33 @@ const ShapeContextBar = ({
   const selectedShape = shapes[selectedShapeIndex];
 
   const handleDelete = () => {
-    deleteShape(selectedShapeIndex, shapes, setShapes, drawAllShapes);
+    deleteShape(selectedShapeIndex, drawAllShapes);
     closeContextMenu();
   };
 
   const handleCopy = () => {
-    copyShape(selectedShapeIndex, shapes, setCopiedShape);
+    copyShape(selectedShapeIndex, setCopiedShape);
     closeContextMenu();
   };
 
   const handlePaste = () => {
-    pasteShape(copiedShape, setShapes, drawAllShapes);
+    pasteShape(copiedShape, drawAllShapes);
     closeContextMenu();
   };
 
   const handleTakeToFront = () => {
-    takeToFront(selectedShapeIndex, shapes, setShapes, drawAllShapes);
+    takeToFront(selectedShapeIndex, drawAllShapes);
     closeContextMenu();
   };
 
   const handleTakeToBack = () => {
-    takeToBack(selectedShapeIndex, shapes, setShapes, drawAllShapes);
+    takeToBack(selectedShapeIndex, drawAllShapes);
     closeContextMenu();
   };
 
   const handleColorChange = (color) => {
     setCurrentColor(color.hex);
-    changeFillColor(
-      pickerType,
-      selectedShapeIndex,
-      color.hex,
-      shapes,
-      setShapes,
-      drawAllShapes
-    );
+    changeFillColor(pickerType, selectedShapeIndex, color.hex, drawAllShapes);
   };
 
   const handleOpenColorPicker = (pickerType) => {

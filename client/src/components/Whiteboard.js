@@ -10,23 +10,23 @@ import {
   drawShape,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
-import {
-  changeFillColor,
-  getShapeCoordinates,
-  setCanvasCursor,
-} from "../utils/otherFunctions";
+import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
 import ShapeContextBar from "./context/ShapeContextBar";
+import { setShapes } from "../slices/canvasSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 const Whiteboard = ({
   shapeType,
   onShapesUpdate,
-  setShapes,
-  shapes,
   drawColor,
   backgroundColor,
   fillColor,
   setFillColor,
   isFillColorActive,
 }) => {
+  const dispatch = useDispatch();
+  const shapes = useSelector((state) => state.canvas.shapes);
+  console.log({ shapes });
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -37,7 +37,7 @@ const Whiteboard = ({
   const [textInput, setTextInput] = useState(null);
   const [currentPenPath, setCurrentPenPath] = useState([]);
   const [copiedShape, setCopiedShape] = useState(null);
-  console.log({ shapes });
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -119,7 +119,8 @@ const Whiteboard = ({
       const updatedShapes = shapes.filter(
         (shape) => !isPointInShape(mousePos, shape)
       );
-      setShapes(updatedShapes);
+
+      dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
     } else if (shapeType === "pen") {
       const newPenShape = {
@@ -129,7 +130,7 @@ const Whiteboard = ({
         fill: fillColor,
       };
       const updatedShapes = [newPenShape, ...shapes];
-      setShapes(updatedShapes);
+      dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
       setIsDrawing(false);
       setCurrentPenPath([]);
@@ -144,7 +145,7 @@ const Whiteboard = ({
         fill: fillColor,
       };
       const updatedShapes = [newShape, ...shapes];
-      setShapes(updatedShapes);
+      dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
     }
 
@@ -165,10 +166,9 @@ const Whiteboard = ({
           color: drawColor,
           fill: fillColor,
         };
-        console.log("newTextShape", newTextShape);
+
         const updatedShapes = [newTextShape, ...shapes];
-        console.log({ updatedShapes });
-        setShapes(updatedShapes);
+        dispatch(setShapes(updatedShapes));
         onShapesUpdate(updatedShapes);
       }
       setTextInput(null);
@@ -212,7 +212,7 @@ const Whiteboard = ({
     });
 
     setStartPoint(mousePos);
-    setShapes(updatedShapes);
+    dispatch(setShapes(updatedShapes));
     onShapesUpdate(updatedShapes);
 
     const canvasElement = document.querySelector("canvas");
@@ -301,7 +301,7 @@ const Whiteboard = ({
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      setShapes([]);
+      dispatch(setShapes([]));
       onShapesUpdate([]);
       localStorage.removeItem("shapes");
     }
@@ -360,7 +360,7 @@ const Whiteboard = ({
       const updatedShapes = shapes.filter(
         (shape) => !isPointInShape(touchPos, shape)
       );
-      setShapes(updatedShapes);
+      dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
     } else if (shapeType === "pen") {
       const newPenShape = {
@@ -369,7 +369,7 @@ const Whiteboard = ({
         color: drawColor,
       };
       const updatedShapes = [...shapes, newPenShape];
-      setShapes(updatedShapes);
+      dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
       setIsDrawing(false);
       setCurrentPenPath([]);
@@ -383,7 +383,7 @@ const Whiteboard = ({
         color: drawColor,
       };
       const updatedShapes = [...shapes, newShape];
-      setShapes(updatedShapes);
+      dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
     }
 
@@ -407,24 +407,13 @@ const Whiteboard = ({
   };
 
   useEffect(() => {
-    if (isFillColorActive) {
-      changeFillColor(selectedShapeIndex, fillColor, shapes, setShapes, () => {
-        // Redraw all shapes
-        drawAllShapes();
-      });
-    }
-  }, [fillColor, selectedShapeIndex]);
-
-  useEffect(() => {
     const keyDownHandler = (event) =>
       handleKeyDown(
         event,
         selectedShapeIndex,
-        shapes,
-        setShapes,
         copiedShape,
         setCopiedShape,
-        drawAllShapes
+        drawAllShapes()
       );
 
     window.addEventListener("keydown", keyDownHandler);
@@ -467,7 +456,7 @@ const Whiteboard = ({
       isPointInShape(mousePos, shape)
     );
     const selectedShape = shapes[shapeIndex];
-    console.log("selectedShape", selectedShape);
+
     if (shapeIndex !== -1) {
       setSelectedShapeIndex(shapeIndex);
       setContextMenu(getShapeCoordinates(selectedShape, mousePos));
@@ -506,8 +495,6 @@ const Whiteboard = ({
         contextMenu={contextMenu}
         closeContextMenu={closeContextMenu}
         selectedShapeIndex={selectedShapeIndex}
-        shapes={shapes}
-        setShapes={setShapes}
         copiedShape={copiedShape}
         setCopiedShape={setCopiedShape}
         drawAllShapes={drawAllShapes}

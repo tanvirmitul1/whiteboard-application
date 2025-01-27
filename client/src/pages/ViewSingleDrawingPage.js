@@ -68,7 +68,6 @@ const ViewSingleDrawingPage = () => {
   }
 
   const handleEditClick = (whiteboard) => {
-    console.log("edit", whiteboard);
     const whiteboardId = whiteboard._id;
     if (whiteboard.user._id === user._id) {
       navigate(`/edit/${whiteboardId}`);

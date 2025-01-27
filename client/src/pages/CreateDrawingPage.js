@@ -6,14 +6,18 @@ import LeftSidebar from "../components/createPage/LeftSidebar";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
 import Whiteboard from "../components/Whiteboard";
+import { useDispatch, useSelector } from "react-redux";
+import { setShapes } from "../slices/canvasSlice";
 const CreateDrawingPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const shapes = useSelector((state) => state.canvas.shapes);
   const [drawingTitle, setDrawingTitle] = useState("New drawing 1");
   const [shapeType, setShapeType] = useState("line");
   const [drawColor, setDrawColor] = useState("#C735BB");
   const [backgroundColor, setBackgroundColor] = useState("#242441");
   const [fillColor, setFillColor] = useState("#DC0DB6");
-  const [shapes, setShapes] = useState([]);
+
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
   const [createDraw, { isLoading }] = useCreateDrawMutation();
@@ -25,7 +29,7 @@ const CreateDrawingPage = () => {
       (item) => !(item.type === "pen" && item.path.length === 0)
     );
 
-    setShapes(filteredShapes);
+    dispatch(setShapes(filteredShapes));
     setHistory([...history, newShapes]);
     setRedoStack([]);
   };
@@ -35,7 +39,7 @@ const CreateDrawingPage = () => {
     if (history.length > 0) {
       const prevState = history[history.length - 1];
       setRedoStack([shapes, ...redoStack]);
-      setShapes(prevState);
+      dispatch(setShapes(prevState));
       setHistory(history.slice(0, -1));
     }
   }, [history, shapes, redoStack]);
@@ -45,10 +49,10 @@ const CreateDrawingPage = () => {
     if (redoStack.length > 0) {
       const restoredState = redoStack[0];
       setHistory([...history, shapes]);
-      setShapes(restoredState);
+      dispatch(setShapes(restoredState));
       setRedoStack(redoStack.slice(1));
     }
-  }, [redoStack, history, shapes]);
+  }, [redoStack, history, shapes, dispatch]);
 
   const handleSaveDrawing = async () => {
     if (!drawingTitle) {
@@ -131,9 +135,9 @@ const CreateDrawingPage = () => {
   useEffect(() => {
     const savedShapes = localStorage.getItem("shapes");
     if (savedShapes) {
-      setShapes(JSON.parse(savedShapes));
+      dispatch(setShapes(JSON.parse(savedShapes)));
     }
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   // Handle key press
   useEffect(() => {
@@ -200,8 +204,6 @@ const CreateDrawingPage = () => {
         <Whiteboard
           shapeType={shapeType}
           onShapesUpdate={handleShapeUpdate}
-          shapes={shapes}
-          setShapes={setShapes}
           drawColor={drawColor}
           backgroundColor={backgroundColor}
           fillColor={fillColor}
