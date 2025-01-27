@@ -49,7 +49,10 @@ const Whiteboard = ({
     setStartPoint(mousePos);
 
     if (shapeType === "eraser") {
-      const selectedShape = shapes[selectedShapeIndex];
+      const shapeIndex = shapes.findIndex((shape) =>
+        isPointInShape(ctx, mousePos, shape)
+      );
+      const selectedShape = shapes[shapeIndex];
       const updatedShapes = shapes.filter((shape) => shape !== selectedShape);
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);

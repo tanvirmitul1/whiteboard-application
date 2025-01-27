@@ -25,11 +25,11 @@ const CreateDrawingPage = () => {
   const [isFillColorActive, setIsFillColorActive] = useState(false);
 
   const handleShapeUpdate = (newShapes) => {
-    const filteredShapes = newShapes.filter(
-      (item) => !(item.type === "pen" && item.path.length === 0)
-    );
+    // const filteredShapes = newShapes.filter(
+    //   (item) => !(item.type === "pen" && item.path.length === 0)
+    // );
 
-    dispatch(setShapes(filteredShapes));
+    // dispatch(setShapes(filteredShapes));
     setHistory([...history, newShapes]);
     setRedoStack([]);
   };
