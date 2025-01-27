@@ -213,3 +213,18 @@ export const getMousePosition = (canvas, event) => {
     y: (event.clientY - rect.top) * (canvas.height / rect.height),
   };
 };
+export const getTouchPosition = (canvas, event) => {
+  const rect = canvas.getBoundingClientRect();
+
+  // Use event.touches for touchstart and touchmove, use event.changedTouches for touchend
+  const touch = event.touches[0] || event.changedTouches[0];
+
+  if (!touch) {
+    return null; // Ensure the function doesn't break if there's no touch
+  }
+
+  return {
+    x: (touch.clientX - rect.left) * (canvas.width / rect.width),
+    y: (touch.clientY - rect.top) * (canvas.height / rect.height),
+  };
+};

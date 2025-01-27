@@ -23,6 +23,10 @@ export const handleKeyDown = (
   if (event.key === "Delete") {
     deleteShape(selectedShapeIndex, drawAllShapes);
   }
+  if (event.ctrlKey && event.key === "x") {
+    copyShape(selectedShapeIndex, setCopiedShape);
+    deleteShape(selectedShapeIndex, drawAllShapes);
+  }
 
   // Handle Control + C (copy)
   if (event.ctrlKey && event.key === "c") {

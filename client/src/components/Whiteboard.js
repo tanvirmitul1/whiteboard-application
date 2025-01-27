@@ -9,6 +9,7 @@ import {
   drawPen,
   drawShape,
   getMousePosition,
+  getTouchPosition,
   isPointInShape,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
@@ -198,7 +199,7 @@ const Whiteboard = ({
 
     setStartPoint(mousePos); // Update the starting point for the next movement
     dispatch(setShapes(updatedShapes)); // Update shapes in the Redux store
-
+    onShapesUpdate(updatedShapes);
     const canvasElement = document.querySelector("canvas");
     if (canvasElement) {
       canvasElement.style.cursor = "move"; // Optional: Update cursor style to indicate movement
@@ -317,22 +318,6 @@ const Whiteboard = ({
     }
 
     setIsDrawing(false);
-  };
-
-  const getTouchPosition = (canvas, event) => {
-    const rect = canvas.getBoundingClientRect();
-
-    // Use event.touches for touchstart and touchmove, use event.changedTouches for touchend
-    const touch = event.touches[0] || event.changedTouches[0];
-
-    if (!touch) {
-      return null; // Ensure the function doesn't break if there's no touch
-    }
-
-    return {
-      x: (touch.clientX - rect.left) * (canvas.width / rect.width),
-      y: (touch.clientY - rect.top) * (canvas.height / rect.height),
-    };
   };
 
   useEffect(() => {
