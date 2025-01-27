@@ -360,6 +360,7 @@ const Whiteboard = ({
     >
       {/* Canvas */}
       <canvas
+        id="drawing-canvas"
         ref={canvasRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}

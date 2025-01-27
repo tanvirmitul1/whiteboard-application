@@ -48,12 +48,14 @@ const getAllDrawings = async (req, res) => {
 // Create a new drawing
 
 const createDrawing = async (req, res) => {
-  const { drawingTitle, shapes, userId, backgroundColor } = req.body;
+  const { drawingTitle, shapes, canvasSize, userId, backgroundColor } =
+    req.body;
 
   try {
     // Create and save the drawing
     const whiteboard = new Whiteboard({
       drawingTitle,
+      canvasSize,
       shapes,
       user: userId,
       backgroundColor,

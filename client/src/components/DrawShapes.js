@@ -1,206 +1,107 @@
-export const drawShapes = (canvas, shapes) => {
+export const drawShapes = (canvas, shapes, canvasSize) => {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
-  // Set canvas size to fill the parent container
+  // Get the current canvas size
   const canvasWidth = canvas.parentElement.offsetWidth;
   const canvasHeight = canvas.parentElement.offsetHeight;
 
-  // Initialize bounding box values
-  let minX = Infinity,
-    minY = Infinity,
-    maxX = -Infinity,
-    maxY = -Infinity;
-  const updatedShapes = [...shapes].reverse();
+  // Calculate scaling factors
+  const scaleX = canvasWidth / canvasSize.width;
+  const scaleY = canvasHeight / canvasSize.height;
+  const scale = Math.min(scaleX, scaleY); // Maintain aspect ratio
 
-  // Calculate the bounding box for all shapes
-  updatedShapes.forEach((shape) => {
-    const { start = {}, end = {}, path = [], position = {}, type } = shape;
-
-    if (start.x !== undefined && start.y !== undefined) {
-      minX = Math.min(minX, start.x);
-      minY = Math.min(minY, start.y);
-      maxX = Math.max(maxX, start.x);
-      maxY = Math.max(maxY, start.y);
-    }
-    if (end.x !== undefined && end.y !== undefined) {
-      minX = Math.min(minX, end.x);
-      minY = Math.min(minY, end.y);
-      maxX = Math.max(maxX, end.x);
-      maxY = Math.max(maxY, end.y);
-    }
-
-    if (type === "pen" && path.length) {
-      path.forEach(({ x, y }) => {
-        minX = Math.min(minX, x);
-        minY = Math.min(minY, y);
-        maxX = Math.max(maxX, x);
-        maxY = Math.max(maxY, y);
-      });
-    }
-
-    if (
-      type === "text" &&
-      position.x !== undefined &&
-      position.y !== undefined
-    ) {
-      minX = Math.min(minX, position.x);
-      minY = Math.min(minY, position.y);
-      maxX = Math.max(maxX, position.x);
-      maxY = Math.max(maxY, position.y);
-    }
-  });
-
-  // Add some padding to the bounding box
-  const padding = 20;
-  minX -= padding;
-  minY -= padding;
-  maxX += padding;
-  maxY += padding;
-
-  // Calculate the scale factor to fit the bounding box within the canvas
-  const widthScale = canvasWidth / (maxX - minX);
-  const heightScale = canvasHeight / (maxY - minY);
-  const scale = Math.min(widthScale, heightScale);
-
-  // Set canvas size and clear it
+  // Set canvas dimensions
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
+
+  // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw each shape with scaling applied
-  updatedShapes?.forEach((shape) => {
+  shapes.forEach((shape) => {
     const {
+      type,
       start = {},
       end = {},
-      type,
-      text,
       path = [],
       position = {},
+      text,
+      color,
+      fill,
     } = shape;
 
     switch (type) {
       case "line":
-        if (
-          start.x !== undefined &&
-          start.y !== undefined &&
-          end.x !== undefined &&
-          end.y !== undefined
-        ) {
-          const scaledStart = {
-            x: (start.x - minX) * scale,
-            y: (start.y - minY) * scale,
-          };
-          const scaledEnd = {
-            x: (end.x - minX) * scale,
-            y: (end.y - minY) * scale,
-          };
-
+        if (start.x && start.y && end.x && end.y) {
           ctx.beginPath();
-          ctx.moveTo(scaledStart.x, scaledStart.y);
-          ctx.lineTo(scaledEnd.x, scaledEnd.y);
-          ctx.strokeStyle = shape?.color ?? "#C735BB";
-          ctx.stroke();
-        }
-        break;
-
-      case "circle":
-        if (
-          start.x !== undefined &&
-          start.y !== undefined &&
-          end.x !== undefined &&
-          end.y !== undefined
-        ) {
-          const scaledStart = {
-            x: (start.x - minX) * scale,
-            y: (start.y - minY) * scale,
-          };
-          const scaledEnd = {
-            x: (end.x - minX) * scale,
-            y: (end.y - minY) * scale,
-          };
-          const radius = Math.sqrt(
-            (scaledEnd.x - scaledStart.x) ** 2 +
-              (scaledEnd.y - scaledStart.y) ** 2
-          );
-
-          ctx.beginPath();
-          ctx.arc(scaledStart.x, scaledStart.y, radius, 0, 2 * Math.PI);
-          ctx.fillStyle = shape?.fill ?? "#ff0909";
-          ctx.fill();
-          ctx.strokeStyle = shape?.color ?? "#C735BB";
+          ctx.moveTo(start.x * scale, start.y * scale);
+          ctx.lineTo(end.x * scale, end.y * scale);
+          ctx.strokeStyle = color || "#C735BB";
           ctx.stroke();
         }
         break;
 
       case "rectangle":
-        if (
-          start.x !== undefined &&
-          start.y !== undefined &&
-          end.x !== undefined &&
-          end.y !== undefined
-        ) {
-          const scaledStart = {
-            x: (start.x - minX) * scale,
-            y: (start.y - minY) * scale,
-          };
-          const scaledEnd = {
-            x: (end.x - minX) * scale,
-            y: (end.y - minY) * scale,
-          };
-          const width = scaledEnd.x - scaledStart.x;
-          const height = scaledEnd.y - scaledStart.y;
-
+        if (start.x && start.y && end.x && end.y) {
           ctx.beginPath();
-          ctx.rect(scaledStart.x, scaledStart.y, width, height);
-          ctx.fillStyle = shape?.fill ?? "#ff0909";
+          ctx.rect(
+            start.x * scale,
+            start.y * scale,
+            (end.x - start.x) * scale,
+            (end.y - start.y) * scale
+          );
+          ctx.fillStyle = fill || "#ff0909";
           ctx.fill();
-          ctx.strokeStyle = shape?.color ?? "#C735BB";
+          ctx.strokeStyle = color || "#C735BB";
+          ctx.stroke();
+        }
+        break;
+
+      case "circle":
+        if (start.x && start.y && end.x && end.y) {
+          const centerX = start.x * scale;
+          const centerY = start.y * scale;
+          const radius = Math.sqrt(
+            (end.x - start.x) ** 2 + (end.y - start.y) ** 2
+          );
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius * scale, 0, Math.PI * 2);
+          ctx.fillStyle = fill || "#ff0909";
+          ctx.fill();
+          ctx.strokeStyle = color || "#C735BB";
           ctx.stroke();
         }
         break;
 
       case "triangle":
-        if (
-          start.x !== undefined &&
-          start.y !== undefined &&
-          end.x !== undefined &&
-          end.y !== undefined
-        ) {
-          const scaledStart = {
-            x: (start.x - minX) * scale,
-            y: (start.y - minY) * scale,
-          };
-          const scaledEnd = {
-            x: (end.x - minX) * scale,
-            y: (end.y - minY) * scale,
-          };
+        if (start.x && start.y && end.x && end.y) {
+          const scaledStart = { x: start.x * scale, y: start.y * scale };
+          const scaledEnd = { x: end.x * scale, y: end.y * scale };
           const thirdPoint = {
             x: scaledStart.x + (scaledEnd.x - scaledStart.x) / 2,
             y: scaledStart.y,
           };
-
           ctx.beginPath();
           ctx.moveTo(scaledStart.x, scaledEnd.y);
           ctx.lineTo(scaledEnd.x, scaledEnd.y);
           ctx.lineTo(thirdPoint.x, thirdPoint.y);
           ctx.closePath();
-
-          ctx.fillStyle = shape?.fill ?? "#ff0909";
+          ctx.fillStyle = fill || "#ff0909";
           ctx.fill();
-          ctx.strokeStyle = shape?.color ?? "#C735BB";
+          ctx.strokeStyle = color || "#C735BB";
           ctx.stroke();
         }
         break;
 
       case "text":
-        if (position.x !== undefined && position.y !== undefined) {
+        if (position.x && position.y) {
           const scaledPosition = {
-            x: (position.x - minX) * scale,
-            y: (position.y - minY) * scale,
+            x: position.x * scale,
+            y: position.y * scale,
           };
-          ctx.font = "16px Arial";
-          ctx.fillStyle = shape?.color ?? "#C735BB";
+          ctx.font = `${16 * scale}px Arial`; // Scale font size
+          ctx.fillStyle = color || "#C735BB";
           ctx.fillText(
             text || "Default Text",
             scaledPosition.x,
@@ -212,15 +113,14 @@ export const drawShapes = (canvas, shapes) => {
       case "pen":
         if (path.length) {
           ctx.beginPath();
-          const firstPoint = path[0];
-          ctx.moveTo(
-            (firstPoint.x - minX) * scale,
-            (firstPoint.y - minY) * scale
-          );
-          path.forEach(({ x, y }) => {
-            ctx.lineTo((x - minX) * scale, (y - minY) * scale);
-          });
-          ctx.strokeStyle = shape?.color ?? "#C735BB";
+          const scaledPath = path.map(({ x, y }) => ({
+            x: x * scale,
+            y: y * scale,
+          }));
+          const firstPoint = scaledPath[0];
+          ctx.moveTo(firstPoint.x, firstPoint.y);
+          scaledPath.forEach(({ x, y }) => ctx.lineTo(x, y));
+          ctx.strokeStyle = color || "#C735BB";
           ctx.stroke();
         }
         break;

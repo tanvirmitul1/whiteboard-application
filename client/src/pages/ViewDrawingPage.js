@@ -180,7 +180,14 @@ const ViewDrawingPage = () => {
                           id={`drawingCanvas-${index}`}
                           ref={(canvas) => {
                             if (canvas) {
-                              drawShapes(canvas, whiteboard.shapes);
+                              drawShapes(
+                                canvas,
+                                whiteboard.shapes,
+                                whiteboard.canvasSize || {
+                                  width: 1400,
+                                  height: 600,
+                                }
+                              );
                             }
                           }}
                           className="canvas-style"

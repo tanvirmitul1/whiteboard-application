@@ -23,7 +23,26 @@ const CreateDrawingPage = () => {
   const [createDraw, { isLoading }] = useCreateDrawMutation();
   const { userId, token } = useAuth();
   const [isFillColorActive, setIsFillColorActive] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  // Update canvas size dynamically
+  useEffect(() => {
+    const updateCanvasSize = () => {
+      const container = document.getElementById("drawing-canvas");
+      if (container) {
+        setCanvasSize({
+          width: container.offsetWidth,
+          height: container.offsetHeight,
+        });
+      }
+    };
 
+    updateCanvasSize();
+    window.addEventListener("resize", updateCanvasSize);
+
+    return () => {
+      window.removeEventListener("resize", updateCanvasSize);
+    };
+  }, []);
   const handleShapeUpdate = (newShapes) => {
     // const filteredShapes = newShapes.filter(
     //   (item) => !(item.type === "pen" && item.path.length === 0)
@@ -80,6 +99,7 @@ const CreateDrawingPage = () => {
         await createDraw({
           drawingTitle,
           shapes: validShapes,
+          canvasSize,
           userId,
           token,
           backgroundColor,
@@ -98,6 +118,7 @@ const CreateDrawingPage = () => {
 
             navigate("/drawing-list");
             localStorage.removeItem("shapes");
+            dispatch(setShapes([]));
           });
       } catch (error) {
         console.error("Error saving drawing:", error);

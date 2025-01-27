@@ -5,6 +5,10 @@ const whiteboardSchema = new mongoose.Schema(
     drawingTitle: { type: String, required: true },
 
     backgroundColor: { type: String, required: false },
+    canvasSize: {
+      width: { type: Number, required: true },
+      height: { type: Number, required: true },
+    },
     shapes: [
       {
         type: {

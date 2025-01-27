@@ -22,7 +22,14 @@ const ViewSingleDrawingPage = () => {
 
     const draw = () => {
       if (drawing) {
-        drawShapes(canvas, drawing.shapes);
+        drawShapes(
+          canvas,
+          drawing?.shapes,
+          drawing?.canvasSize || {
+            width: 1400,
+            height: 600,
+          }
+        );
       }
     };
 

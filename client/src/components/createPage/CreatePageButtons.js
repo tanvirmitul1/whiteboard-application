@@ -18,6 +18,7 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
   const handleShowUsers = () => {
     navigate("/user-list");
   };
+
   const [openInstructionsModal, setOpenInstructionsModal] =
     React.useState(false);
 
@@ -38,7 +39,9 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         disabled={isLoading}
         sx={{ textTransform: "none", padding: 1 }}
       >
-        <AddTaskIcon sx={{ marginRight: 1 }} />
+        <AddTaskIcon
+          sx={{ marginRight: 1, display: { xs: "none", md: "inline" } }}
+        />
         {isLoading ? "Saving..." : "Save"}
       </Button>
       <Button
@@ -48,7 +51,9 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         onClick={handleShowDrawings}
         sx={{ textTransform: "none", padding: 1 }}
       >
-        <ChecklistIcon sx={{ marginRight: 1 }} />
+        <ChecklistIcon
+          sx={{ marginRight: 1, display: { xs: "none", md: "inline" } }}
+        />
         Draw Lists
       </Button>
       {/* {isAdmin && ( */}
@@ -73,7 +78,7 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
       >
         <MdOutlineIntegrationInstructions
           size={20}
-          style={{ marginRight: "10px" }}
+          style={{ marginRight: "10px", display: "inline" }}
         />
         Instruction
       </Button>
