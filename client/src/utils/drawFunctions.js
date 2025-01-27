@@ -1,3 +1,6 @@
+import { setShapes } from "../slices/canvasSlice";
+import { store } from "../store";
+
 const selectionColor = "#4EDBFF";
 const selectionLineWidth = 4;
 const selectionLineWidthText = 1;
@@ -227,4 +230,64 @@ export const getTouchPosition = (canvas, event) => {
     x: (touch.clientX - rect.left) * (canvas.width / rect.width),
     y: (touch.clientY - rect.top) * (canvas.height / rect.height),
   };
+};
+export const moveShape = (
+  mousePos,
+  selectedShapeIndex,
+  startPoint,
+  setStartPoint,
+  onShapesUpdate
+) => {
+  const shapes = store.getState().canvas.shapes;
+  const deltaX = mousePos.x - startPoint.x;
+  const deltaY = mousePos.y - startPoint.y;
+
+  // To smooth the movement, we can apply a constant factor to reduce the delta movement
+  const smoothingFactor = 0.1; // Adjust this factor to make the movement slower or faster
+
+  const smoothedDeltaX = deltaX * smoothingFactor;
+  const smoothedDeltaY = deltaY * smoothingFactor;
+
+  const updatedShapes = shapes.map((shape, index) => {
+    if (index === selectedShapeIndex) {
+      if (shape.type === "pen") {
+        // Move the entire pen path
+        const newPath = shape.path.map((point) => ({
+          x: point.x + smoothedDeltaX,
+          y: point.y + smoothedDeltaY,
+        }));
+        return { ...shape, path: newPath };
+      } else if (shape.type === "text") {
+        // Move the text position
+        return {
+          ...shape,
+          position: {
+            x: shape.position.x + smoothedDeltaX,
+            y: shape.position.y + smoothedDeltaY,
+          },
+        };
+      } else {
+        return {
+          ...shape,
+          start: {
+            x: shape.start.x + smoothedDeltaX,
+            y: shape.start.y + smoothedDeltaY,
+          },
+          end: {
+            x: shape.end.x + smoothedDeltaX,
+            y: shape.end.y + smoothedDeltaY,
+          },
+        };
+      }
+    }
+    return shape;
+  });
+
+  setStartPoint(mousePos); // Update the starting point for the next movement
+  store.dispatch(setShapes(updatedShapes));
+  onShapesUpdate(updatedShapes);
+  const canvasElement = document.querySelector("canvas");
+  if (canvasElement) {
+    canvasElement.style.cursor = "move"; // Optional: Update cursor style to indicate movement
+  }
 };

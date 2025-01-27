@@ -207,8 +207,6 @@ const CreateDrawingPage = () => {
           drawColor={drawColor}
           backgroundColor={backgroundColor}
           fillColor={fillColor}
-          setFillColor={setFillColor}
-          isFillColorActive={isFillColorActive}
         />
       </Box>
     </Box>

@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState, useEffect } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import "../index.css";
 import Swal from "sweetalert2";
 import {
-  distance,
   drawCurrentShape,
   drawPen,
   drawShape,
   getMousePosition,
   getTouchPosition,
   isPointInShape,
+  moveShape,
 } from "../utils/drawFunctions";
 import { handleKeyDown } from "../utils/keyHandlers";
 import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
@@ -27,8 +27,6 @@ const Whiteboard = ({
   drawColor,
   backgroundColor,
   fillColor,
-  setFillColor,
-  isFillColorActive,
 }) => {
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
@@ -43,28 +41,6 @@ const Whiteboard = ({
   const [textInput, setTextInput] = useState(null);
   const [currentPenPath, setCurrentPenPath] = useState([]);
   const [copiedShape, setCopiedShape] = useState(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-
-    const setCanvasSize = () => {
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
-
-      setCanvasScale({
-        x: canvas.width / container.clientWidth,
-        y: canvas.height / container.clientHeight,
-      });
-
-      drawAllShapes();
-    };
-
-    setCanvasSize();
-    window.addEventListener("resize", setCanvasSize);
-
-    return () => window.removeEventListener("resize", setCanvasSize);
-  }, [shapeType, shapes, drawColor]);
 
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
@@ -104,7 +80,13 @@ const Whiteboard = ({
     } else if (isDrawing && shapeType !== "eraser") {
       drawCurrentShape(ctx, startPoint, mousePos, shapeType, drawColor);
     } else if (isMoving && selectedShapeIndex !== null) {
-      moveShape(mousePos);
+      moveShape(
+        mousePos,
+        selectedShapeIndex,
+        startPoint,
+        setStartPoint,
+        onShapesUpdate
+      );
     }
   };
 
@@ -150,60 +132,6 @@ const Whiteboard = ({
     }
 
     setIsDrawing(false);
-  };
-
-  const moveShape = (mousePos) => {
-    const deltaX = mousePos.x - startPoint.x;
-    const deltaY = mousePos.y - startPoint.y;
-
-    // To smooth the movement, we can apply a constant factor to reduce the delta movement
-    const smoothingFactor = 0.1; // Adjust this factor to make the movement slower or faster
-
-    const smoothedDeltaX = deltaX * smoothingFactor;
-    const smoothedDeltaY = deltaY * smoothingFactor;
-
-    const updatedShapes = shapes.map((shape, index) => {
-      if (index === selectedShapeIndex) {
-        if (shape.type === "pen") {
-          // Move the entire pen path
-          const newPath = shape.path.map((point) => ({
-            x: point.x + smoothedDeltaX,
-            y: point.y + smoothedDeltaY,
-          }));
-          return { ...shape, path: newPath };
-        } else if (shape.type === "text") {
-          // Move the text position
-          return {
-            ...shape,
-            position: {
-              x: shape.position.x + smoothedDeltaX,
-              y: shape.position.y + smoothedDeltaY,
-            },
-          };
-        } else {
-          return {
-            ...shape,
-            start: {
-              x: shape.start.x + smoothedDeltaX,
-              y: shape.start.y + smoothedDeltaY,
-            },
-            end: {
-              x: shape.end.x + smoothedDeltaX,
-              y: shape.end.y + smoothedDeltaY,
-            },
-          };
-        }
-      }
-      return shape;
-    });
-
-    setStartPoint(mousePos); // Update the starting point for the next movement
-    dispatch(setShapes(updatedShapes)); // Update shapes in the Redux store
-    onShapesUpdate(updatedShapes);
-    const canvasElement = document.querySelector("canvas");
-    if (canvasElement) {
-      canvasElement.style.cursor = "move"; // Optional: Update cursor style to indicate movement
-    }
   };
 
   const drawAllShapes = () => {
@@ -275,7 +203,13 @@ const Whiteboard = ({
     } else if (isDrawing && shapeType !== "eraser") {
       drawCurrentShape(ctx, startPoint, touchPos, shapeType, drawColor);
     } else if (isMoving && selectedShapeIndex !== null) {
-      moveShape(touchPos);
+      moveShape(
+        touchPos,
+        selectedShapeIndex,
+        startPoint,
+        setStartPoint,
+        onShapesUpdate
+      );
     }
   };
 
@@ -342,6 +276,27 @@ const Whiteboard = ({
     setCanvasCursor(canvas, shapeType);
   }, [shapeType, shapes.length]);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+
+    const setCanvasSize = () => {
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+
+      setCanvasScale({
+        x: canvas.width / container.clientWidth,
+        y: canvas.height / container.clientHeight,
+      });
+
+      drawAllShapes();
+    };
+
+    setCanvasSize();
+    window.addEventListener("resize", setCanvasSize);
+
+    return () => window.removeEventListener("resize", setCanvasSize);
+  }, [shapeType, shapes, drawColor]);
   // useEffect(() => {
   //   if (selectedShapeIndex !== null) {
   //     const updatedShapes = shapes.map((shape, index) => {

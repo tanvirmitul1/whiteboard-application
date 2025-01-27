@@ -91,8 +91,6 @@ export const pasteShape = (copiedShape, drawAllShapes) => {
 
 export const deleteShape = (selectedShapeIndex, drawAllShapes) => {
   const shapes = store.getState().canvas.shapes;
-  console.log("selectedShapeIndex", selectedShapeIndex);
-  console.log("shapes before delete", shapes);
   if (selectedShapeIndex !== null) {
     const filteredShapes = shapes.filter(
       (_, index) => index !== selectedShapeIndex
