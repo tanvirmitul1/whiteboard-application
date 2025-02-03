@@ -30,7 +30,26 @@ const EditDrawingPage = () => {
   const [backgroundColor, setBackgroundColor] = useState("#242441");
   const [fillColor, setFillColor] = useState("#58da1d");
   const [isFillColorActive, setIsFillColorActive] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  // Update canvas size dynamically
+  useEffect(() => {
+    const updateCanvasSize = () => {
+      const container = document.getElementById("drawing-canvas");
+      if (container) {
+        setCanvasSize({
+          width: container.offsetWidth,
+          height: container.offsetHeight,
+        });
+      }
+    };
 
+    updateCanvasSize();
+    window.addEventListener("resize", updateCanvasSize);
+
+    return () => {
+      window.removeEventListener("resize", updateCanvasSize);
+    };
+  }, []);
   const { userId } = useAuth();
 
   const { id } = useParams();
@@ -122,6 +141,7 @@ const EditDrawingPage = () => {
         id,
         shapes: validShapes,
         drawingTitle,
+        canvasSize,
         userId,
         backgroundColor,
       })

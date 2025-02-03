@@ -389,6 +389,7 @@ const Whiteboard = ({
 
       {/* Text Input for Text Tool */}
       <TextToolInput
+        canvasRef={canvasRef}
         textInput={textInput}
         canvasScale={canvasScale}
         setTextInput={setTextInput}

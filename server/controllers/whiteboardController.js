@@ -94,14 +94,17 @@ const getDrawingById = async (req, res) => {
 // Update a specific drawing by ID
 const updateDrawing = async (req, res) => {
   const { id } = req.params;
-  const { shapes, drawingTitle, userId, backgroundColor } = req.body;
+  const { shapes, drawingTitle, canvasSize, userId, backgroundColor } =
+    req.body;
 
   try {
     const whiteboard = await Whiteboard.findByIdAndUpdate(
       id,
-      { shapes, drawingTitle, backgroundColor },
+      { shapes, drawingTitle, backgroundColor, canvasSize },
       { new: true }
     );
+
+    console.log({ canvasSize });
 
     if (!whiteboard) {
       return res.status(404).json({ message: "Drawing not found" });
