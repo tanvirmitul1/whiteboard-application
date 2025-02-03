@@ -11,6 +11,7 @@ const whiteboardSchema = new mongoose.Schema(
     },
     shapes: [
       {
+        uuid: { type: String, required: true },
         type: {
           type: String,
           enum: ["line", "circle", "rectangle", "triangle", "text", "pen"],
