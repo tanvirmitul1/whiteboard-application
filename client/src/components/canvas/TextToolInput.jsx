@@ -91,9 +91,6 @@ const TextToolInput = ({
           flexGrow: 1,
           backgroundColor: "white",
           borderRadius: "5px",
-          "& .MuiInputBase-input": {
-            fontSize: `${fontSize}px`,
-          },
         }}
       />
 

@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Watermark from "./canvas/Watermark";
 import TextToolInput from "./canvas/TextToolInput";
 import ClearButton from "./canvas/ClearButton";
-
+import { v4 as uuidv4 } from "uuid";
 const Whiteboard = ({
   shapeType,
   onShapesUpdate,
@@ -130,6 +130,7 @@ const Whiteboard = ({
       setTextInput({ x: mousePos.x, y: mousePos.y, value: "" });
     } else if (isDrawing) {
       const newShape = {
+        uuid: uuidv4(),
         type: shapeType,
         start: startPoint,
         end: mousePos,
