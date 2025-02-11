@@ -10,6 +10,8 @@ import {
   FaFillDrip,
   FaFont,
 } from "react-icons/fa";
+import { IoMdColorFilter } from "react-icons/io";
+
 import {
   copyShape,
   deleteShape,
@@ -132,7 +134,7 @@ const ShapeContextBar = ({
           onMouseLeave={closeContextMenu}
         >
           <ContextMenuItem onClick={handleDelete}>
-            <FaTrashAlt /> Delete
+            <FaTrashAlt /> Delete <SuggestionBox>(Delete)</SuggestionBox>
           </ContextMenuItem>
           <ContextMenuItem onClick={handleCopy}>
             <FaCopy /> Copy <SuggestionBox>(Ctrl + C)</SuggestionBox>
@@ -150,11 +152,13 @@ const ShapeContextBar = ({
           </ContextMenuItem>
           {!["text", "pen", "line"].includes(selectedShape?.type) && (
             <ContextMenuItem onClick={() => handleOpenColorPicker("fill")}>
-              <FaFillDrip /> Change Fill Color
+              <FaFillDrip style={{ color: selectedShape?.fill }} /> Change Fill
+              Color
             </ContextMenuItem>
           )}
           <ContextMenuItem onClick={() => handleOpenColorPicker("stroke")}>
-            <FaFillDrip /> Change Color
+            <IoMdColorFilter style={{ color: selectedShape?.color }} />
+            Change Color
           </ContextMenuItem>
           {["text"].includes(selectedShape?.type) && (
             <ContextMenuItem onClick={() => handleChangeFontSize()}>
