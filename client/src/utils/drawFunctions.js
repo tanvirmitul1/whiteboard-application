@@ -246,14 +246,12 @@ export const moveShape = (
   selectedShapeIndex,
   startPoint,
   setStartPoint,
-  onShapesUpdate
+  onShapesUpdate,
+  smoothingFactor
 ) => {
   const shapes = store.getState().canvas.shapes;
   const deltaX = mousePos.x - startPoint.x;
   const deltaY = mousePos.y - startPoint.y;
-
-  // To smooth the movement, we can apply a constant factor to reduce the delta movement
-  const smoothingFactor = 0.05; // Adjust this factor to make the movement slower or faster
 
   const smoothedDeltaX = deltaX * smoothingFactor;
   const smoothedDeltaY = deltaY * smoothingFactor;

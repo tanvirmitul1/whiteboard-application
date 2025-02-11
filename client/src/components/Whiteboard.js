@@ -41,6 +41,7 @@ const Whiteboard = ({
   const [textInput, setTextInput] = useState(null);
   const [currentPenPath, setCurrentPenPath] = useState([]);
   const [copiedShape, setCopiedShape] = useState(null);
+  const smoothingFactor = Number(process.env.REACT_APP_SMOOTH_FACTOR);
 
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
@@ -95,7 +96,8 @@ const Whiteboard = ({
         selectedShapeIndex,
         startPoint,
         setStartPoint,
-        onShapesUpdate
+        onShapesUpdate,
+        smoothingFactor
       );
     }
   };
@@ -219,7 +221,8 @@ const Whiteboard = ({
         selectedShapeIndex,
         startPoint,
         setStartPoint,
-        onShapesUpdate
+        onShapesUpdate,
+        smoothingFactor
       );
     }
   };
