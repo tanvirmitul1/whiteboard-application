@@ -25,9 +25,25 @@ const DrawPageLoader = () => {
                   boxShadow: 3,
                 }}
               >
-                <Skeleton variant="text" height={40} />
-                <Skeleton variant="rectangular" height={200} />
-                <Skeleton variant="text" height={20} width="60%" />
+                <Skeleton
+                  variant="text"
+                  height={40}
+                  animation="wave"
+                  sx={{ bgcolor: "rgba(255, 255, 255, 0.2)" }}
+                />
+                <Skeleton
+                  variant="rectangular"
+                  height={200}
+                  animation="wave"
+                  sx={{ bgcolor: "rgba(255, 255, 255, 0.3)" }}
+                />
+                <Skeleton
+                  variant="text"
+                  height={20}
+                  width="60%"
+                  animation="wave"
+                  sx={{ bgcolor: "rgba(255, 255, 255, 0.2)" }}
+                />
               </Paper>
             </Grid>
           ))}
