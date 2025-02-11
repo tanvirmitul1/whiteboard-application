@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import useAuth from "../../customHooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import InstructionModal from "../instructions/InstructionModal";
@@ -42,7 +42,7 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         <AddTaskIcon
           sx={{ marginRight: 1, display: { xs: "none", md: "inline" } }}
         />
-        {isLoading ? "Saving..." : "Save"}
+        {isLoading ? <CircularProgress size={20} color="inherit" /> : "Save"}
       </Button>
       <Button
         variant="contained"
@@ -51,9 +51,6 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         onClick={handleShowDrawings}
         sx={{ textTransform: "none", padding: 1 }}
       >
-        <ChecklistIcon
-          sx={{ marginRight: 1, display: { xs: "none", md: "inline" } }}
-        />
         Draw Lists
       </Button>
       {/* {isAdmin && ( */}
@@ -76,10 +73,6 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         onClick={() => setOpenInstructionsModal(true)}
         sx={{ textTransform: "none", padding: 1 }}
       >
-        <MdOutlineIntegrationInstructions
-          size={20}
-          style={{ marginRight: "10px", display: "inline" }}
-        />
         Instruction
       </Button>
 
