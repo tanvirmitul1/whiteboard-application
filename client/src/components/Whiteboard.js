@@ -21,12 +21,14 @@ import Watermark from "./canvas/Watermark";
 import TextToolInput from "./canvas/TextToolInput";
 import ClearButton from "./canvas/ClearButton";
 import { v4 as uuidv4 } from "uuid";
+import DownloadButton from "./canvas/DownloadButton";
 const Whiteboard = ({
   shapeType,
   onShapesUpdate,
   drawColor,
   backgroundColor,
   fillColor,
+  drawingTitle,
 }) => {
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
@@ -118,6 +120,7 @@ const Whiteboard = ({
       onShapesUpdate(updatedShapes);
     } else if (shapeType === "pen") {
       const newPenShape = {
+        uuid: uuidv4(),
         type: "pen",
         path: currentPenPath,
         color: drawColor,
@@ -394,6 +397,7 @@ const Whiteboard = ({
 
       {/* Text Input for Text Tool */}
       <TextToolInput
+        uuid
         canvasRef={canvasRef}
         textInput={textInput}
         canvasScale={canvasScale}
@@ -405,6 +409,11 @@ const Whiteboard = ({
 
       {/* Clear Button */}
       <ClearButton clearCanvas={clearCanvas} shapes={shapes} />
+      <DownloadButton
+        backgroundColor={backgroundColor}
+        drawingTitle={drawingTitle}
+        shapes={shapes}
+      />
     </Box>
   );
 };

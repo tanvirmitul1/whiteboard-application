@@ -228,6 +228,7 @@ const CreateDrawingPage = () => {
           drawColor={drawColor}
           backgroundColor={backgroundColor}
           fillColor={fillColor}
+          drawingTitle={drawingTitle}
         />
       </Box>
     </Box>

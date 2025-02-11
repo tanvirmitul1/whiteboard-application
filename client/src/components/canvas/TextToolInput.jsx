@@ -10,7 +10,7 @@ import {
 import { Check, Close } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../../slices/canvasSlice";
-
+import { v4 as uuidv4 } from "uuid";
 const fontSizes = [12, 16, 20, 24, 28, 32, 40];
 
 const TextToolInput = ({
@@ -49,6 +49,7 @@ const TextToolInput = ({
   const handleTextSubmit = () => {
     if (textInput.value.trim() !== "") {
       const newTextShape = {
+        uuid: uuidv4(),
         type: "text",
         text: textInput.value,
         position: { x: safeX, y: safeY },

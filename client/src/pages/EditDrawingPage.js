@@ -228,6 +228,7 @@ const EditDrawingPage = () => {
           drawColor={drawColor}
           backgroundColor={backgroundColor}
           fillColor={fillColor}
+          drawingTitle={drawingTitle}
         />
 
         <Box
