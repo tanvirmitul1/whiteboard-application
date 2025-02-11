@@ -188,7 +188,7 @@ const Whiteboard = ({
 
     if (shapeType === "pen") {
       setIsDrawing(true);
-      setCurrentPenPath([touchPos]); // Start the pen path
+      setCurrentPenPath([touchPos]);
     } else {
       const shapeIndex = shapes.findIndex((shape) =>
         isPointInShape(ctx, touchPos, shape)
@@ -245,9 +245,11 @@ const Whiteboard = ({
       onShapesUpdate(updatedShapes);
     } else if (shapeType === "pen") {
       const newPenShape = {
+        uuid: uuidv4(),
         type: "pen",
         path: currentPenPath,
         color: drawColor,
+        fill: fillColor,
       };
       const updatedShapes = [...shapes, newPenShape];
       dispatch(setShapes(updatedShapes));
@@ -258,10 +260,12 @@ const Whiteboard = ({
       setTextInput({ x: touchPos.x, y: touchPos.y, value: "" });
     } else if (isDrawing) {
       const newShape = {
+        uuid: uuidv4(),
         type: shapeType,
         start: startPoint,
         end: touchPos,
         color: drawColor,
+        fill: fillColor,
       };
       const updatedShapes = [...shapes, newShape];
       dispatch(setShapes(updatedShapes));

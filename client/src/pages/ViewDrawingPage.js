@@ -49,12 +49,13 @@ const ViewDrawingPage = () => {
   );
 
   const { data: usersData } = useGetAllUsersQuery();
-  const { data, error, isLoading, refetch } = useGetAllDrawingsQuery({
-    searchedUser: selectedUser,
-    titleFilter: filterTitle,
-    page,
-    limit: itemsPerPage,
-  });
+  const { data, error, isLoading, isFetching, refetch } =
+    useGetAllDrawingsQuery({
+      searchedUser: selectedUser,
+      titleFilter: filterTitle,
+      page,
+      limit: itemsPerPage,
+    });
 
   const [deleteDrawing] = useDeleteDrawingMutation();
 
@@ -151,7 +152,7 @@ const ViewDrawingPage = () => {
             Total Drawings: {data?.totalDrawings}
           </Typography> */}
 
-          {isLoading ? (
+          {isLoading || isFetching ? (
             <DrawPageLoader />
           ) : (
             <Grid container spacing={3} justifyContent="center">

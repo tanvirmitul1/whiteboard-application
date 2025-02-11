@@ -7,6 +7,7 @@ const {
   updateDrawing,
   deleteDrawing,
   submitReaction,
+  getTotalDrawCount,
 } = require("../controllers/whiteboardController");
 const router = express.Router();
 
@@ -27,5 +28,8 @@ router.delete("/drawings/:id", deleteDrawing);
 
 //
 router.post("/reactions", submitReaction);
+
+//
+router.get("/total-draw-count", getTotalDrawCount);
 
 module.exports = router;

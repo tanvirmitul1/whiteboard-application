@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Box } from "@mui/material";
 import Swal from "sweetalert2";
-import { useCreateDrawMutation } from "../Apis/whiteboardApiSlice";
+import {
+  useCreateDrawMutation,
+  useGetTotalDrawCountQuery,
+} from "../Apis/whiteboardApiSlice";
 import LeftSidebar from "../components/createPage/LeftSidebar";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
@@ -9,10 +12,14 @@ import Whiteboard from "../components/Whiteboard";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../slices/canvasSlice";
 const CreateDrawingPage = () => {
+  const { data: totalDrawCount } = useGetTotalDrawCountQuery();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
-  const [drawingTitle, setDrawingTitle] = useState("New drawing 1");
+
+  const [drawingTitle, setDrawingTitle] = useState(
+    `New Drawing ${totalDrawCount?.totalDrawCount}`
+  );
   const [shapeType, setShapeType] = useState("line");
   const [drawColor, setDrawColor] = useState("#C735BB");
   const [backgroundColor, setBackgroundColor] = useState("#242441");
@@ -176,6 +183,12 @@ const CreateDrawingPage = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (totalDrawCount) {
+      setDrawingTitle(`New Drawing ${totalDrawCount?.totalDrawCount}`);
+    }
+  }, [totalDrawCount]);
 
   return (
     <Box

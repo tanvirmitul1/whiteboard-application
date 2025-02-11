@@ -14,7 +14,15 @@ const whiteboardSchema = new mongoose.Schema(
         uuid: { type: String, required: true },
         type: {
           type: String,
-          enum: ["line", "circle", "rectangle", "triangle", "text", "pen"],
+          enum: [
+            "line",
+            "circle",
+            "rectangle",
+            "triangle",
+            "text",
+            "pen",
+            "emoji",
+          ],
           required: true,
         },
         color: { type: String, required: false },
@@ -85,6 +93,13 @@ const whiteboardSchema = new mongoose.Schema(
             required: function () {
               return this.type === "text"; // Required only for text type
             },
+          },
+        },
+        // Emoji field
+        emoji: {
+          type: String, // Emoji as a string
+          required: function () {
+            return this.type === "emoji"; // Required only for emoji type
           },
         },
       },

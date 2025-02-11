@@ -52,9 +52,15 @@ const whiteboardApiSlice = apiSlice.injectEndpoints({
     }),
     submitReaction: build.mutation({
       query: (data) => ({
-        url: `/whiteboards/reactions`,
+        url: `whiteboards/reactions`,
         method: "POST",
         body: data,
+      }),
+    }),
+    getTotalDrawCount: build.query({
+      query: () => ({
+        url: `whiteboards/total-draw-count`,
+        method: "GET",
       }),
     }),
   }),
@@ -67,4 +73,5 @@ export const {
   useGetDrawingByIdQuery,
   useDeleteDrawingMutation,
   useSubmitReactionMutation,
+  useGetTotalDrawCountQuery,
 } = whiteboardApiSlice;
