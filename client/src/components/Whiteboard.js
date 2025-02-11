@@ -383,6 +383,7 @@ const Whiteboard = ({
         drawAllShapes={drawAllShapes}
         onShapesUpdate={onShapesUpdate}
         canvasScale={canvasScale}
+        reference={canvasRef}
       />
       {/* Watercolor Mark */}
 

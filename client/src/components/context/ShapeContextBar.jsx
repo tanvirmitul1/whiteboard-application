@@ -28,13 +28,37 @@ const ShapeContextBar = ({
   drawAllShapes,
   copiedShape,
   setCopiedShape,
+  reference,
 }) => {
+  const canvas = reference?.current;
   const shapes = useSelector((state) => state.canvas.shapes);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [currentColor, setCurrentColor] = useState("#000000");
   const colorPickerRef = useRef(null);
   const [pickerType, setPickerType] = useState("fill");
   const selectedShape = shapes[selectedShapeIndex];
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+
+  useEffect(() => {
+    if (contextMenu.visible && canvas) {
+      const { x, y } = contextMenu;
+      const menuWidth = 200;
+      const menuHeight = 300;
+      const canvasRect = canvas.getBoundingClientRect();
+
+      let adjustedX = x;
+      let adjustedY = y;
+
+      if (x + menuWidth > canvasRect.width) {
+        adjustedX = canvasRect.width - menuWidth - 10;
+      }
+      if (y + menuHeight > canvasRect.height) {
+        adjustedY = canvasRect.height - menuHeight - 10;
+      }
+
+      setMenuPosition({ top: adjustedY, left: adjustedX });
+    }
+  }, [contextMenu, canvas]);
 
   const handleDelete = () => {
     deleteShape(selectedShapeIndex, drawAllShapes);
@@ -103,8 +127,8 @@ const ShapeContextBar = ({
     <div>
       {contextMenu.visible && selectedShape && (
         <ContextMenu
-          top={contextMenu.y}
-          left={contextMenu.x}
+          top={menuPosition.top}
+          left={menuPosition.left}
           onMouseLeave={closeContextMenu}
         >
           <ContextMenuItem onClick={handleDelete}>
