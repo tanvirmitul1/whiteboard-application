@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const Watermark = () => {
   return (
@@ -17,7 +17,7 @@ const Watermark = () => {
         pointerEvents: "none",
       }}
     >
-      mitul@seopage1.net
+      tanvirimruet@gmail.com
     </Typography>
   );
 };
