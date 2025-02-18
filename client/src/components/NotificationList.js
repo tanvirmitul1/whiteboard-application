@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   List,
@@ -6,7 +6,7 @@ import {
   Divider,
   Button,
   Typography,
-  Skeleton,
+  CircularProgress,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 
@@ -17,52 +17,31 @@ const NotificationList = ({
 }) => {
   const [visibleNotifications, setVisibleNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
-  const containerRef = useRef(null);
+  const [page, setPage] = useState(1);
+
+  const notificationsPerPage = 5;
 
   useEffect(() => {
     // Load the initial notifications
-    setVisibleNotifications(notifications.slice(0, 5));
+    setVisibleNotifications(notifications.slice(0, notificationsPerPage));
   }, [notifications]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const container = containerRef.current;
-      if (
-        container.scrollTop + container.clientHeight >=
-        container.scrollHeight
-      ) {
-        // Check if we have more notifications to load
-        if (visibleNotifications.length < notifications.length && !loading) {
-          loadMoreNotifications();
-        }
-      }
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [visibleNotifications, notifications, loading]);
 
   const loadMoreNotifications = () => {
     setLoading(true);
     setTimeout(() => {
-      setVisibleNotifications((prev) => [
-        ...prev,
-        ...notifications.slice(prev.length, prev.length + 5),
-      ]);
+      const nextPage = page + 1;
+      const nextNotifications = notifications.slice(
+        0,
+        nextPage * notificationsPerPage
+      );
+      setVisibleNotifications(nextNotifications);
+      setPage(nextPage);
       setLoading(false);
     }, 1000);
   };
 
   return (
-    <Box className="notification-container" ref={containerRef}>
+    <Box className="notification-container">
       <List className="notification-list">
         {visibleNotifications.length === 0 ? (
           <ListItem>
@@ -103,17 +82,32 @@ const NotificationList = ({
             </div>
           ))
         )}
-
-        {loading && (
-          <>
-            {[...Array(5)].map((_, index) => (
-              <ListItem key={index}>
-                <Skeleton variant="rectangular" width="100%" height={50} />
-              </ListItem>
-            ))}
-          </>
-        )}
       </List>
+
+      {visibleNotifications.length < notifications.length && (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            onClick={loadMoreNotifications}
+            sx={{
+              cursor: "pointer",
+              color: "white",
+              padding: "5px",
+              marginBottom: "10px",
+              borderRadius: "5px",
+              backgroundColor: "#007acc",
+            }}
+          >
+            {loading ? (
+              <span>
+                <CircularProgress size={15} color="inherit" sx={{ mr: 1 }} />
+                Processing...
+              </span>
+            ) : (
+              "See More"
+            )}
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };
