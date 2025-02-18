@@ -36,13 +36,21 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         color="primary"
         size="small"
         onClick={handleSaveDrawing}
-        disabled={isLoading}
         sx={{ textTransform: "none", padding: 1 }}
       >
-        <AddTaskIcon
-          sx={{ marginRight: 1, display: { xs: "none", md: "inline" } }}
-        />
-        {isLoading ? <CircularProgress size={20} color="inherit" /> : "Save"}
+        {isLoading ? (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+            <span> Saving...</span>
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <AddTaskIcon
+              sx={{ marginRight: 1, display: { xs: "none", md: "inline" } }}
+            />{" "}
+            <span>Save</span>
+          </Box>
+        )}
       </Button>
       <Button
         variant="contained"
