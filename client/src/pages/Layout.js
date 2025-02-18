@@ -10,6 +10,7 @@ const Layout = ({ children }) => {
 
   const isAuthRoute =
     location.pathname === "/" ||
+    location.pathname === "/register" ||
     location.pathname === "/change-password" ||
     location.pathname === "/register/public";
 

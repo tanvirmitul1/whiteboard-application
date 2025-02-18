@@ -2,9 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useLoginMutation } from "../Apis/userApiSlice";
 import styled from "styled-components";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Import Link
 import useAuth from "../customHooks/useAuth";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
+import { Box, Button, CircularProgress } from "@mui/material";
+import TypingGame from "../components/TypingGame";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("mitul");
@@ -15,10 +17,6 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [showLoading, setShowLoading] = useState(false);
   const [countdown, setCountdown] = useState(40);
-  const [typedWord, setTypedWord] = useState("");
-  const [randomWord, setRandomWord] = useState("");
-
-  const words = ["React", "Node", "MongoDB", "Canvas", "Drawing"];
 
   useEffect(() => {
     if (userId) {
@@ -30,7 +28,6 @@ const LoginPage = () => {
     async (e) => {
       if (e) e.preventDefault();
       setShowLoading(true);
-      setRandomWord(words[Math.floor(Math.random() * words.length)]); // Set random word for game
 
       try {
         const response = await login({ username, password }).unwrap();
@@ -70,7 +67,7 @@ const LoginPage = () => {
     <FormContainer>
       <form onSubmit={handleSubmit}>
         <div className="brand">
-          <EditCalendarIcon sx={{ color: "#ea05ff", fontSize: 50 }} />
+          <EditCalendarIcon sx={{ color: "#ff6f61", fontSize: 50 }} />
           <h1>Color Board</h1>
         </div>
         <input
@@ -85,100 +82,131 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? "Processing..." : "Login"}
-        </button>
+        <Button type="submit">
+          {isLoading ? (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+              <span> Processing...</span>
+            </Box>
+          ) : (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <span>Login</span>
+            </Box>
+          )}
+        </Button>
       </form>
       {error && <Error>{error}</Error>}
-
+      <div style={{ marginTop: "1rem", textAlign: "center" }}>
+        <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+          No account?{" "}
+          <Link
+            to="/register"
+            style={{ color: "#ff6f61", textDecoration: "none" }}
+          >
+            Go to register page
+          </Link>
+        </span>
+      </div>
       {showLoading && (
         <LoadingModal>
-          <h2>Logging in...</h2>
+          <h2>
+            {" "}
+            <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+            <span> Processing...</span>
+          </h2>
+          <h5>Please wait for Server to process your request</h5>
           <p>Estimated wait time: {countdown}s</p>
-          <h3>Mini Typing Challenge:</h3>
-          <p>
-            Type: <b>{randomWord}</b>
-          </p>
-          <input
-            type="text"
-            placeholder="Type here..."
-            value={typedWord}
-            onChange={(e) => setTypedWord(e.target.value)}
-          />
-          {typedWord.toLowerCase() === randomWord.toLowerCase() && (
-            <p style={{ color: "green" }}>Great job! 🎉</p>
-          )}
+          <TypingGame />
         </LoadingModal>
       )}
     </FormContainer>
   );
 };
 
-const FormContainer = styled.div`
-  height: 100vh;
+export const FormContainer = styled.div`
+  height: ${(props) => props.height || "100vh"};
   width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #131324;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
 
   .brand {
     display: flex;
     align-items: center;
     gap: 1rem;
     justify-content: center;
+    margin-bottom: 2rem;
 
     h1 {
       color: white;
       text-transform: uppercase;
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff6f61, #ffcc00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
 
   form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    background-color: #00000076;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 1rem;
-    padding: 3rem;
-  }
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 400px;
+    margin: 10px;
 
-  input {
-    background-color: transparent;
-    padding: 0.8rem;
-    border: 0.1rem solid #4e0eff;
-    border-radius: 0.4rem;
-    color: white;
-    width: 100%;
-    font-size: 1rem;
+    input {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0.5rem;
+      color: white;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
 
-    &:focus {
-      border: 0.1rem solid #997af0;
-      outline: none;
+      &:focus {
+        border-color: #ff6f61;
+        outline: none;
+      }
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
     }
-  }
 
-  button {
-    background-color: #4e0eff;
-    color: white;
-    padding: 0.8rem 1.5rem;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 0.4rem;
-    font-size: 1rem;
-    text-transform: uppercase;
+    button {
+      background: linear-gradient(45deg, #ff6f61, #ffcc00);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      text-transform: uppercase;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    &:hover {
-      background-color: #4e0eff;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4);
+      }
     }
   }
 `;
 
-const Error = styled.div`
-  color: red;
+export const Error = styled.div`
+  color: #ff6f61;
   margin-top: 1rem;
+  font-weight: bold;
 `;
 
 const LoadingModal = styled.div`
@@ -186,24 +214,32 @@ const LoadingModal = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.9);
   color: white;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 1rem;
   text-align: center;
   z-index: 1000;
-  box-shadow: 0px 0px 10px #4e0eff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  max-width: 500px;
 
   h2 {
     margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #ff6f61;
   }
 
-  input {
-    margin-top: 1rem;
-    padding: 0.5rem;
-    border-radius: 5px;
-    border: none;
-    text-align: center;
+  h5 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
   }
 `;
 
