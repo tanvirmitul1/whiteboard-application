@@ -27,6 +27,10 @@ const DownloadButton = ({ backgroundColor, drawingTitle, shapes }) => {
         top: 16,
         right: 16,
         textTransform: "none",
+        width: { xs: 32, sm: 36, md: 40 }, // Responsive width
+        height: { xs: 32, sm: 36, md: 40 }, // Responsive height
+        minWidth: { xs: 32, sm: 36, md: 40 },
+        padding: 0,
       }}
       variant="contained"
       color="success"
@@ -35,9 +39,12 @@ const DownloadButton = ({ backgroundColor, drawingTitle, shapes }) => {
       disabled={shapes.length === 0}
     >
       <Tooltip title="Download" placement="top">
-        <IconButton size="small">
-          <IoMdDownload color="white" size={20} />
-        </IconButton>
+        <IoMdDownload
+          color="white"
+          size={
+            window.innerWidth < 600 ? 12 : window.innerWidth < 960 ? 15 : 18
+          } // Responsive icon size
+        />
       </Tooltip>
     </Button>
   );
