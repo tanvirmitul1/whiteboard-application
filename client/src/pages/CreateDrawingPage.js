@@ -231,7 +231,7 @@ const CreateDrawingPage = () => {
         sx={{
           width: {
             xs: "72%",
-            md: "85%",
+            md: "87%",
           },
         }}
       >

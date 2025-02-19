@@ -365,6 +365,7 @@ const Whiteboard = ({
       ref={containerRef}
       sx={{
         height: "90vh",
+        width: "100%",
         position: "relative",
       }}
       onContextMenu={handleContextMenu}
