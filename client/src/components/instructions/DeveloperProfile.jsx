@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
 import styled from "styled-components";
 import CustomModal from "../modal/CustomModal";
 
@@ -9,7 +8,6 @@ const DeveloperProfile = ({ isOpen, onClose, username }) => {
 
   useEffect(() => {
     if (username) {
-      // Fetch GitHub data
       fetch(`https://api.github.com/users/${username}`)
         .then((response) => response.json())
         .then((data) => setDeveloperData(data))
@@ -17,15 +15,13 @@ const DeveloperProfile = ({ isOpen, onClose, username }) => {
           console.error("Error fetching developer data:", error)
         );
 
-      // Fetch portfolio data (mock data based on the provided portfolio link)
-      const mockPortfolioData = {
+      setPortfolioData({
         contact: {
-          email: "tanvir.mitul@example.com",
+          email: "tanvirimruet@gmail.com",
           linkedin: "https://linkedin.com/in/tanu0",
           facebook: "https://facebook.com/tanu0",
         },
-      };
-      setPortfolioData(mockPortfolioData);
+      });
     }
   }, [username]);
 
@@ -36,73 +32,79 @@ const DeveloperProfile = ({ isOpen, onClose, username }) => {
   return (
     <CustomModal open={isOpen} onClose={onClose} title="Developer Profile">
       <ModalContainer>
-        <ProfileImage
-          src={developerData.avatar_url}
-          alt={`${developerData.name}'s avatar`}
-        />
-        <ModalHeader>{developerData.name}</ModalHeader>
-        <Bio>{developerData.bio}</Bio>
+        <ProfileImage src={developerData.avatar_url} alt="Profile" />
+        <ModalHeader>{developerData.name || "No Name Available"}</ModalHeader>
+        <Bio>{developerData.bio || "No bio available"}</Bio>
 
-        <AboutText>
-          Hi, I'm Tanvir Mitul, a passionate full-stack developer with expertise
-          in building scalable web applications. I love solving complex problems
-          and creating user-friendly experiences.
-        </AboutText>
-        <SectionTitle>GitHub Stats</SectionTitle>
-        <InfoList>
-          <InfoItem>
-            <strong>Username:</strong> {developerData.login}
-          </InfoItem>
-          <InfoItem>
-            <strong>Location:</strong>{" "}
-            {developerData.location || "Not available"}
-          </InfoItem>
-          <InfoItem>
-            <strong>Public Repos:</strong> {developerData.public_repos}
-          </InfoItem>
-          <InfoItem>
-            <strong>Followers:</strong> {developerData.followers}
-          </InfoItem>
-          <InfoItem>
-            <strong>Following:</strong> {developerData.following}
-          </InfoItem>
-          <InfoItem>
-            <strong>GitHub Profile:</strong>{" "}
-            <ProfileLink
-              href={developerData.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {developerData.html_url}
-            </ProfileLink>
-          </InfoItem>
-        </InfoList>
-        <SectionTitle>Contact</SectionTitle>
-        <ContactContainer>
-          <ContactItem>
-            <strong>Email:</strong> {portfolioData.contact.email}
-          </ContactItem>
-          <ContactItem>
-            <strong>LinkedIn:</strong>{" "}
-            <ProfileLink
-              href={portfolioData.contact.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {portfolioData.contact.linkedin}
-            </ProfileLink>
-          </ContactItem>
-          <ContactItem>
-            <strong>Facebook:</strong>{" "}
-            <ProfileLink
-              href={portfolioData.contact.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {portfolioData.contact.facebook}
-            </ProfileLink>
-          </ContactItem>
-        </ContactContainer>
+        <Section>
+          <SectionTitle>About</SectionTitle>
+          <AboutText>
+            Hi, I'm Tanvir Mitul, a passionate full-stack developer with
+            expertise in building scalable web applications. I love solving
+            complex problems and creating user-friendly experiences.
+          </AboutText>
+        </Section>
+
+        <Section>
+          <SectionTitle>GitHub Stats</SectionTitle>
+          <InfoList>
+            <InfoItem>
+              <strong>Username:</strong> {developerData.login}
+            </InfoItem>
+            <InfoItem>
+              <strong>Location:</strong>{" "}
+              {developerData.location || "Not available"}
+            </InfoItem>
+            <InfoItem>
+              <strong>Public Repos:</strong> {developerData.public_repos}
+            </InfoItem>
+            <InfoItem>
+              <strong>Followers:</strong> {developerData.followers}
+            </InfoItem>
+            <InfoItem>
+              <strong>Following:</strong> {developerData.following}
+            </InfoItem>
+            <InfoItem>
+              <strong>GitHub:</strong>{" "}
+              <ProfileLink
+                href={developerData.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Profile
+              </ProfileLink>
+            </InfoItem>
+          </InfoList>
+        </Section>
+
+        <Section>
+          <SectionTitle>Contact</SectionTitle>
+          <ContactList>
+            <ContactItem>
+              <strong>Email:</strong> {portfolioData.contact.email}
+            </ContactItem>
+            <ContactItem>
+              <strong>LinkedIn:</strong>{" "}
+              <ProfileLink
+                href={portfolioData.contact.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn Profile
+              </ProfileLink>
+            </ContactItem>
+            <ContactItem>
+              <strong>Facebook:</strong>{" "}
+              <ProfileLink
+                href={portfolioData.contact.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Facebook Profile
+              </ProfileLink>
+            </ContactItem>
+          </ContactList>
+        </Section>
       </ModalContainer>
     </CustomModal>
   );
@@ -115,110 +117,114 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  border-radius: 10px;
-  color: #f5f5f5;
+  padding: 25px;
+  border-radius: 12px;
+
+  color: #fff;
+  width: 100%;
+  max-width: 800px;
+
+  overflow: auto;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    max-width: 90%;
+    padding: 15px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 10px;
+  }
 `;
 
 const ProfileImage = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  margin-bottom: 20px;
-  border: 3px solid #ff6f61;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border: 4px solid #ff6f61;
+  margin-bottom: 15px;
+  box-shadow: 0 6px 12px rgba(255, 111, 97, 0.5);
+
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 120px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100px;
+    height: 100px;
+  }
 `;
 
 const ModalHeader = styled.h2`
-  color: #ff6f61;
   font-size: 1.8rem;
-  margin-bottom: 10px;
-  text-align: center;
   font-weight: bold;
+  color: #ff6f61;
+  margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.4rem;
+  }
 `;
 
 const Bio = styled.p`
-  font-style: italic;
+  font-size: 1rem;
   text-align: center;
-  margin-bottom: 20px;
   color: #ddd;
+  font-style: italic;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
+`;
+
+const Section = styled.div`
+  width: 100%;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 5px;
 `;
 
 const SectionTitle = styled.h3`
+  font-size: 1.4rem;
   color: #ff6f61;
-  font-size: 1.5rem;
-  margin: 20px 0 10px;
   text-align: center;
   font-weight: bold;
+  margin-bottom: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const AboutText = styled.p`
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 1rem;
   color: #f5f5f5;
   line-height: 1.6;
-`;
 
-const SkillsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-`;
-
-const Skill = styled.span`
-  background: #ff6f61;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.9rem;
-`;
-
-const ProjectsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
-`;
-
-const Project = styled.div`
-  background: #2a2a40;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-`;
-
-const ProjectName = styled.h4`
-  color: #ff6f61;
-  margin-bottom: 5px;
-`;
-
-const ProjectDescription = styled.p`
-  color: #ddd;
-  margin-bottom: 10px;
-`;
-
-const ProjectLink = styled.a`
-  color: #00d1b2;
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
   }
-`;
 
-const ContactContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-`;
-
-const ContactItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0 10px;
-  color: #f5f5f5;
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const InfoList = styled.ul`
@@ -228,19 +234,51 @@ const InfoList = styled.ul`
 `;
 
 const InfoItem = styled.li`
-  margin-bottom: 10px;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #f5f5f5;
   display: flex;
   justify-content: space-between;
-  padding: 0 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+  color: #f5f5f5;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
+`;
+
+const ContactList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+`;
+
+const ContactItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  color: #f5f5f5;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const ProfileLink = styled.a`
   color: #00d1b2;
+  font-weight: bold;
   text-decoration: none;
+  transition: 0.3s ease-in-out;
   &:hover {
+    color: #00ffea;
     text-decoration: underline;
   }
 `;

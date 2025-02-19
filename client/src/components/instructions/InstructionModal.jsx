@@ -1,125 +1,175 @@
 import React, { useState } from "react";
-import Modal from "react-modal";
 import styled from "styled-components";
 import CustomModal from "../modal/CustomModal";
+import {
+  MdUndo,
+  MdRedo,
+  MdContentCopy,
+  MdDelete,
+  MdFormatColorFill,
+  MdMoveToInbox,
+  MdTextFields,
+  MdGesture,
+  MdBrush,
+  MdColorLens,
+  MdDownload,
+  MdEdit,
+  MdSearch,
+  MdOutlineFormatSize,
+  MdLayers,
+  MdFileDownload,
+} from "react-icons/md";
+
+const activityInstructions = [
+  {
+    activity: "Draw Pencil/Pen",
+    icon: <MdBrush />,
+    details: [
+      "Use the pencil for freehand sketching.",
+      "The pen tool allows smoother, controlled strokes.",
+    ],
+  },
+  {
+    activity: "Shapes",
+    icon: <MdGesture />,
+    details: [
+      "Draw rectangles, circles, and other shapes.",
+      "Use the fill option to color inside shapes.",
+    ],
+  },
+  {
+    activity: "Move Shapes",
+    icon: <MdMoveToInbox />,
+    details: [
+      "Drag shapes to reposition them.",
+      "Right-click for additional options like bring to front or send to back.",
+    ],
+  },
+  {
+    activity: "Change Color",
+    icon: <MdFormatColorFill />,
+    details: [
+      "Click the shape to change its color.",
+      "Use the background color tool to set a canvas background.",
+    ],
+  },
+  {
+    activity: "Copy & Paste",
+    icon: <MdContentCopy />,
+    details: [
+      "Press Ctrl + C to copy a shape.",
+      "Press Ctrl + V to paste the copied shape beside the original.",
+    ],
+  },
+  {
+    activity: "Undo/Redo",
+    icon: <MdUndo />,
+    details: [
+      "Press Ctrl + Z to undo the last action.",
+      "Press Ctrl + Y to redo the last undone action.",
+    ],
+  },
+  {
+    activity: "Delete",
+    icon: <MdDelete />,
+    details: [
+      "Press Delete to remove the selected shape.",
+      "Click the 'Clear' button to remove all shapes on the canvas.",
+    ],
+  },
+  {
+    activity: "Text",
+    icon: <MdTextFields />,
+    details: [
+      "Click to add text anywhere on the canvas.",
+      "Right-click to change font size and color.",
+    ],
+  },
+  {
+    activity: "Download/Save",
+    icon: <MdDownload />,
+    details: [
+      "Save your drawing to your account.",
+      "Download your work as an image file.",
+    ],
+  },
+  {
+    activity: "Search & Filter Drawings",
+    icon: <MdSearch />,
+    details: [
+      "Search drawings based on user.",
+      "Filter drawings by type, date, or creator.",
+    ],
+  },
+  {
+    activity: "Edit Drawings",
+    icon: <MdEdit />,
+    details: [
+      "Modify existing drawings easily.",
+      "Use selection tools to adjust properties of a shape.",
+    ],
+  },
+  {
+    activity: "Context Menu",
+    icon: <MdOutlineFormatSize />,
+    details: [
+      "Right-click a text to change font size.",
+      "Right-click a shape to adjust color or layer positioning.",
+    ],
+  },
+  {
+    activity: "Layering",
+    icon: <MdLayers />,
+    details: [
+      "Move shapes forward or backward in the layer stack.",
+      "Use right-click options for fine control.",
+    ],
+  },
+  {
+    activity: "File Download",
+    icon: <MdFileDownload />,
+    details: [
+      "Save your drawing as PNG or JPG.",
+      "Option to keep high-quality resolution.",
+    ],
+  },
+];
 
 const InstructionModal = ({ isOpen, onClose }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const instructions = [
-    {
-      category: "Mouse Features",
-      items: [
-        { id: 1, text: "Draw lines by clicking and dragging." },
-        { id: 2, text: "Draw rectangles with or without fill color." },
-        { id: 3, text: "Move shapes by clicking and dragging them." },
-        {
-          id: 4,
-          text: "Erase shapes by clicking near them (like a blackboard eraser).",
-        },
-        {
-          id: 5,
-          text: "Draw independently with the Pen tool (click and drag to draw).",
-        },
-        {
-          id: 6,
-          text: "Resize shapes dynamically by dragging the edges while drawing.",
-        },
-        {
-          id: 7,
-          text: "Change the size of drawn lines, circles, and rectangles directly on the canvas.",
-        },
-      ],
-    },
-    {
-      category: "Keyboard Shortcuts",
-      items: [
-        { id: 8, text: "Undo: Press Ctrl + Z." },
-        { id: 9, text: "Redo: Press Ctrl + Y." },
-        { id: 10, text: "Select a shape and use the arrow keys to nudge." },
-        { id: 11, text: "Press ESC to remove fill color mode." },
-        { id: 12, text: "Press Delete to remove the selected shape." },
-        { id: 13, text: "Press Ctrl + C to copy the selected shape." },
-        {
-          id: 14,
-          text: "Press Ctrl + V to paste the copied shape beside the original.",
-        },
-        {
-          id: 15,
-          text: "Move a shape by holding down 'Ctrl' and dragging it.",
-        },
-      ],
-    },
-    {
-      category: "Other Features",
-      items: [
-        { id: 16, text: "Use the text tool to add text to the canvas." },
-        {
-          id: 17,
-          text: "Resize text dynamically by dragging the text box corners.",
-        },
-        {
-          id: 18,
-          text: "Change shape color by clicking the shape color icon in the toolbar.",
-        },
-        {
-          id: 19,
-          text: "Change canvas background color by clicking the background color icon.",
-        },
-        {
-          id: 20,
-          text: "Move drawn objects (shapes or text) with a move tool.",
-        },
-        {
-          id: 21,
-          text: "Undo or redo your drawing actions using the toolbar buttons.",
-        },
-        {
-          id: 22,
-          text: "You can clear all shapes on the canvas by clicking the 'Clear' button.",
-        },
-        {
-          id: 23,
-          text: "Save the drawing to your local device or cloud storage.",
-        },
-        {
-          id: 24,
-          text: "Zoom in or out by holding 'Ctrl' and scrolling with your mouse.",
-        },
-      ],
-    },
-  ];
-
-  const filteredInstructions = instructions.map((section) => ({
-    ...section,
-    items: section.items.filter((item) =>
-      item.text.toLowerCase().includes(searchQuery.toLowerCase())
-    ),
-  }));
+  const filteredInstructions = activityInstructions.filter(
+    ({ activity, details }) =>
+      activity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      details.some((detail) =>
+        detail.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  );
 
   return (
     <CustomModal open={isOpen} onClose={onClose} title="Instructions">
       <ModalContainer>
-        <SearchBar
+        <SearchInput
           type="text"
           placeholder="Search instructions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {filteredInstructions.map(
-          (section) =>
-            section.items.length > 0 && (
-              <InstructionSection key={section.category}>
-                <SectionTitle>{section.category}</SectionTitle>
-                <InstructionList>
-                  {section.items.map((item) => (
-                    <InstructionItem key={item.id}>
-                      {highlightText(item.text, searchQuery)}
-                    </InstructionItem>
-                  ))}
-                </InstructionList>
-              </InstructionSection>
-            )
+        {filteredInstructions.map(({ activity, icon, details }) => (
+          <InstructionCard key={activity}>
+            <CardHeader>
+              <Icon>{icon}</Icon>
+              <ActivityTitle>{activity}</ActivityTitle>
+            </CardHeader>
+            <InstructionList>
+              {details.map((text, index) => (
+                <InstructionItem key={index}>• {text}</InstructionItem>
+              ))}
+            </InstructionList>
+          </InstructionCard>
+        ))}
+        {filteredInstructions.length === 0 && (
+          <NoResults>No instructions found.</NoResults>
         )}
       </ModalContainer>
     </CustomModal>
@@ -128,85 +178,78 @@ const InstructionModal = ({ isOpen, onClose }) => {
 
 export default InstructionModal;
 
-// Helper function to highlight search query
-const highlightText = (text, query) => {
-  if (!query) return text;
-  const parts = text.split(new RegExp(`(${query})`, "gi"));
-  return parts.map((part, index) =>
-    part.toLowerCase() === query.toLowerCase() ? (
-      <HighlightedText key={index}>{part}</HighlightedText>
-    ) : (
-      part
-    )
-  );
-};
-
 // Styled Components
 const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 15px;
+  margin: 0 10px;
   justify-content: center;
 `;
 
-const ModalHeader = styled.h2`
-  color: #ff6f61;
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: bold;
-`;
-
-const SearchBar = styled.input`
-  width: 95%;
-  padding: 12px;
-
-  border: none;
+const SearchInput = styled.input`
+  padding: 10px;
   border-radius: 5px;
+  border: 1px solid #ccc;
   font-size: 1rem;
-  outline: none;
-  background-color: #444;
-  color: #fff;
-  transition: all 0.3s;
-  ::placeholder {
-    color: #bbb;
-  }
-  &:focus {
-    background-color: #333;
-    border: 2px solid #ff6f61;
+  width: 100%;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+  background-color: #333;
+  color: #f5f5f5;
+
+  &:hover {
+    box-shadow: 0 0 0 2px #00d1b2;
   }
 `;
 
-const InstructionSection = styled.div`
-  margin-bottom: 20px;
+const InstructionCard = styled.div`
+  background: #222;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
-const SectionTitle = styled.h3`
-  color: #00d1b2;
+const CardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 10px;
-  font-size: 1.3rem;
+`;
+
+const Icon = styled.div`
+  font-size: 24px;
+  color: #ff6f61;
+`;
+
+const ActivityTitle = styled.h3`
+  font-size: 1.2rem;
+  color: #00d1b2;
   font-weight: bold;
-  text-transform: uppercase;
 `;
 
 const InstructionList = styled.ul`
   list-style: none;
   padding: 0;
+  margin: 0;
 `;
 
 const InstructionItem = styled.li`
-  margin-bottom: 12px;
   font-size: 1rem;
-  line-height: 1.6;
   color: #f5f5f5;
-  transition: color 0.3s;
-  &:hover {
-    color: #ff6f61;
-  }
+  line-height: 1.6;
+  margin-bottom: 5px;
 `;
 
-const HighlightedText = styled.span`
-  background-color: #ffeb3b;
-  color: #000;
-  padding: 0 3px;
-  border-radius: 3px;
+const NoResults = styled.p`
+  text-align: center;
+  color: #f5f5f5;
+  font-size: 1rem;
+  font-style: italic;
 `;
