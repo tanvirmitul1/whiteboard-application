@@ -87,23 +87,19 @@ const ViewSingleDrawingPage = () => {
     <Box
       sx={{
         display: "flex",
-
-        flexDirection: {
-          xs: "column",
-          md: "row",
-        },
+        flexDirection: { xs: "column", md: "row" },
         gap: "10px",
         justifyContent: "center",
-        overflow: "hidden",
+        overflowY: "auto",
         paddingX: { xs: "10px", md: "100px" },
         paddingY: "20px",
       }}
     >
+      {/* Drawing Section */}
       <Box
         sx={{
           position: "relative",
-          width: { xs: "100vw", md: "65vw" },
-          overflow: "hidden",
+          width: { xs: "100%", md: "65%" },
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
@@ -114,51 +110,51 @@ const ViewSingleDrawingPage = () => {
           className="canvas-style-single-draw"
           style={{
             backgroundColor: drawing?.backgroundColor || "#242441",
+            width: "100%",
+            height: "auto",
+            maxHeight: "70vh",
           }}
         />
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            gap: "10px",
-            alignSelf: "flex-start",
-            marginLeft: "80px",
-            marginTop: "10px",
-          }}
-        >
-          <Avatar sx={{ height: "20px", width: "20px" }} />
-          <a
-            style={{
-              fontSize: "12px",
-            }}
-            href={`/user-list?type=profile&user_id=${drawing?.user._id}`}
-            className="user-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {drawing?.user?.username}
-          </a>
-          <div
-            style={{
-              fontSize: "12px",
-              color: "gray",
-              opacity: 0.5,
-            }}
-          >
-            {formatDistanceToNow(new Date(drawing?.createdAt), {
-              addSuffix: true,
-            })}
-          </div>
-        </div>
-
+        {/* User Info Section */}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            justifyContent: "space-between",
+            alignSelf: "flex-start",
+            marginTop: "10px",
+            width: "100%",
+            paddingX: { xs: "10px", md: "80px" },
+          }}
+        >
+          <Avatar sx={{ height: "30px", width: "30px" }} />
+          <a
+            href={`/user-list?type=profile&user_id=${drawing?.user._id}`}
+            className="user-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: "14px" }}
+          >
+            {drawing?.user?.username}
+          </a>
+          <Typography sx={{ fontSize: "12px", color: "gray", opacity: 0.7 }}>
+            {formatDistanceToNow(new Date(drawing?.createdAt), {
+              addSuffix: true,
+            })}
+          </Typography>
+        </Box>
+
+        {/* Buttons Section */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: "center",
+            gap: "10px",
             marginTop: "20px",
+            width: "100%",
+            paddingX: { xs: "10px", md: "80px" },
           }}
         >
           <Download
@@ -180,16 +176,23 @@ const ViewSingleDrawingPage = () => {
         </Box>
       </Box>
 
-      <Box sx={{ width: { xs: "100vw", md: "35vw" } }}>
+      {/* Comments Section */}
+      <Box
+        sx={{
+          width: { xs: "100%", md: "35%" },
+          maxHeight: "70vh",
+          overflowY: "auto",
+          paddingX: { xs: "10px", md: "20px" },
+        }}
+      >
         <CommentsSection whiteboard={drawing} />
         <Button
           variant="contained"
           color="secondary"
           size="small"
           onClick={() => navigate(-1)}
-          sx={{ marginTop: "10px" }}
+          sx={{ marginTop: "10px", width: "100%" }}
         >
-          {" "}
           <IoMdArrowRoundBack size={20} style={{ marginRight: "10px" }} />
           Go Back
         </Button>
