@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
+import CustomModal from "../modal/CustomModal";
 
 const InstructionModal = ({ isOpen, onClose }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,30 +98,8 @@ const InstructionModal = ({ isOpen, onClose }) => {
   }));
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      style={{
-        content: {
-          top: "50%",
-          left: "50%",
-          right: "auto",
-          bottom: "auto",
-          transform: "translate(-50%, -50%)",
-          borderRadius: "10px",
-          padding: "20px 40px",
-          width: "90%",
-          maxWidth: "70%",
-          height: "90%",
-          background: "linear-gradient(135deg, #2e2e2e, #4b4b4b)",
-          color: "#fff",
-        },
-        overlay: { backgroundColor: "rgba(0, 0, 0, 0.8)" },
-      }}
-      ariaHideApp={false}
-    >
+    <CustomModal open={isOpen} onClose={onClose} title="Instructions">
       <ModalContainer>
-        <ModalHeader>How to Use the Color board App</ModalHeader>
         <SearchBar
           type="text"
           placeholder="Search instructions..."
@@ -143,8 +122,7 @@ const InstructionModal = ({ isOpen, onClose }) => {
             )
         )}
       </ModalContainer>
-      <CloseButton onClick={onClose}>Got It!</CloseButton>
-    </Modal>
+    </CustomModal>
   );
 };
 
@@ -231,20 +209,4 @@ const HighlightedText = styled.span`
   color: #000;
   padding: 0 3px;
   border-radius: 3px;
-`;
-
-const CloseButton = styled.button`
-  background-color: #00d1b2;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-top: 20px;
-  width: 100%;
-  transition: background-color 0.3s;
-  &:hover {
-    background-color: #007acc;
-  }
 `;

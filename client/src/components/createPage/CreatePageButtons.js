@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Button, CircularProgress } from "@mui/material";
 import useAuth from "../../customHooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import InstructionModal from "../instructions/InstructionModal";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import { MdOutlineIntegrationInstructions } from "react-icons/md";
+import DeveloperProfile from "../instructions/DeveloperProfile";
 
 const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
   const navigate = useNavigate();
@@ -19,8 +20,14 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
     navigate("/user-list");
   };
 
-  const [openInstructionsModal, setOpenInstructionsModal] =
-    React.useState(false);
+  const [isInstructionModalOpen, setInstructionModalOpen] = useState(false);
+  const [isDeveloperModalOpen, setDeveloperModalOpen] = useState(false);
+
+  const openInstructionModal = () => setInstructionModalOpen(true);
+  const closeInstructionModal = () => setInstructionModalOpen(false);
+
+  const openDeveloperModal = () => setDeveloperModalOpen(true);
+  const closeDeveloperModal = () => setDeveloperModalOpen(false);
 
   return (
     <Box
@@ -78,15 +85,29 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
         variant="contained"
         color="secondary"
         size="small"
-        onClick={() => setOpenInstructionsModal(true)}
         sx={{ textTransform: "none", padding: 1 }}
+        onClick={openInstructionModal}
       >
-        Instruction
+        How to Use
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        size="small"
+        sx={{ textTransform: "none", padding: 1 }}
+        onClick={openDeveloperModal}
+      >
+        About
       </Button>
 
       <InstructionModal
-        isOpen={openInstructionsModal}
-        onClose={() => setOpenInstructionsModal(false)}
+        isOpen={isInstructionModalOpen}
+        onClose={closeInstructionModal}
+      />
+      <DeveloperProfile
+        isOpen={isDeveloperModalOpen}
+        onClose={closeDeveloperModal}
+        username="tanvirmitul1" // Replace with the actual GitHub username
       />
     </Box>
   );
