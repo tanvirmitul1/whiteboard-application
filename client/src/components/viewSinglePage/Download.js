@@ -42,6 +42,7 @@ const Download = ({ resolution, setResolution, handleDownload }) => {
       </FormControl>
 
       <Button
+        sx={{ textTransform: "none" }}
         variant="contained"
         color="primary"
         onClick={handleDownload}

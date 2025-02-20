@@ -23,8 +23,6 @@ const CommentList = ({ comments }) => {
     <Box
       sx={{
         width: { xs: "80vw", md: "25vw" },
-        maxHeight: "45vh",
-        overflow: "auto",
         borderRadius: 2,
         backgroundColor: colors.primaryBgColor,
         padding: 2,

@@ -93,6 +93,7 @@ const ViewSingleDrawingPage = () => {
         overflowY: "auto",
         paddingX: { xs: "10px", md: "100px" },
         paddingY: "20px",
+        overflowX: "hidden",
       }}
     >
       {/* Drawing Section */}
@@ -101,7 +102,6 @@ const ViewSingleDrawingPage = () => {
           position: "relative",
           width: { xs: "100%", md: "65%" },
           display: "flex",
-          alignItems: "center",
           flexDirection: "column",
         }}
       >
@@ -112,7 +112,7 @@ const ViewSingleDrawingPage = () => {
             backgroundColor: drawing?.backgroundColor || "#242441",
             width: "100%",
             height: "auto",
-            maxHeight: "70vh",
+            maxHeight: "80vh",
           }}
         />
 
@@ -144,17 +144,24 @@ const ViewSingleDrawingPage = () => {
             })}
           </Typography>
         </Box>
+      </Box>
 
+      {/* Comments Section */}
+      <Box
+        sx={{
+          width: { xs: "100%", md: "35%" },
+          maxHeight: "80vh",
+          overflowY: "auto",
+          paddingX: { xs: "10px", md: "20px" },
+        }}
+      >
         {/* Buttons Section */}
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
             alignItems: "center",
             gap: "10px",
-            marginTop: "20px",
-            width: "100%",
-            paddingX: { xs: "10px", md: "80px" },
+            marginBottom: "20px",
           }}
         >
           <Download
@@ -169,29 +176,18 @@ const ViewSingleDrawingPage = () => {
               onClick={() => handleEditClick(drawing)}
               startIcon={<EditIcon />}
               size="large"
+              sx={{ textTransform: "none" }}
             >
               Edit
             </Button>
           )}
         </Box>
-      </Box>
-
-      {/* Comments Section */}
-      <Box
-        sx={{
-          width: { xs: "100%", md: "35%" },
-          maxHeight: "70vh",
-          overflowY: "auto",
-          paddingX: { xs: "10px", md: "20px" },
-        }}
-      >
         <CommentsSection whiteboard={drawing} />
         <Button
           variant="contained"
           color="secondary"
           size="small"
           onClick={() => navigate(-1)}
-          sx={{ marginTop: "10px", width: "100%" }}
         >
           <IoMdArrowRoundBack size={20} style={{ marginRight: "10px" }} />
           Go Back

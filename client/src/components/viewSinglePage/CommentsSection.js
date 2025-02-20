@@ -20,6 +20,7 @@ import {
 import useAuth from "../../customHooks/useAuth";
 import CommentList from "./CommentLish";
 import Reactions from "../viewPage/Reactions";
+import { AddCircle, PlusOneOutlined, PlusOneSharp } from "@mui/icons-material";
 
 const socket = io(process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL, {
   reconnectionAttempts: 5,
@@ -114,6 +115,7 @@ const CommentsSection = ({ whiteboard }) => {
             size="small"
             onClick={handlePostComment}
             disabled={isCommentPosting}
+            sx={{ textTransform: "none" }}
           >
             {isCommentPosting ? (
               <>
@@ -121,7 +123,9 @@ const CommentsSection = ({ whiteboard }) => {
                 Processing...
               </>
             ) : (
-              "Add comment"
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <AddCircle sx={{ mr: 1 }} /> <span>Add comment</span>
+              </Box>
             )}
           </Button>
           <IconButton onClick={handleEmojiClick} className="emoji-button">
