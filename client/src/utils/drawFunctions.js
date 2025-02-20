@@ -275,15 +275,21 @@ export const moveShape = (
           },
         };
       } else {
+        // Normalize the start and end points
+        const normalizedStartX = Math.min(shape.start.x, shape.end.x);
+        const normalizedStartY = Math.min(shape.start.y, shape.end.y);
+        const normalizedEndX = Math.max(shape.start.x, shape.end.x);
+        const normalizedEndY = Math.max(shape.start.y, shape.end.y);
+
         return {
           ...shape,
           start: {
-            x: shape.start.x + smoothedDeltaX,
-            y: shape.start.y + smoothedDeltaY,
+            x: normalizedStartX + smoothedDeltaX,
+            y: normalizedStartY + smoothedDeltaY,
           },
           end: {
-            x: shape.end.x + smoothedDeltaX,
-            y: shape.end.y + smoothedDeltaY,
+            x: normalizedEndX + smoothedDeltaX,
+            y: normalizedEndY + smoothedDeltaY,
           },
         };
       }

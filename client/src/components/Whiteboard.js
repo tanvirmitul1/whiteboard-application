@@ -134,14 +134,25 @@ const Whiteboard = ({
     } else if (shapeType === "text") {
       setTextInput({ x: mousePos.x, y: mousePos.y, value: "" });
     } else if (isDrawing) {
+      // Normalize start and end points
+      const normalizedStart = {
+        x: Math.min(startPoint.x, mousePos.x),
+        y: Math.min(startPoint.y, mousePos.y),
+      };
+      const normalizedEnd = {
+        x: Math.max(startPoint.x, mousePos.x),
+        y: Math.max(startPoint.y, mousePos.y),
+      };
+
       const newShape = {
         uuid: uuidv4(),
         type: shapeType,
-        start: startPoint,
-        end: mousePos,
+        start: normalizedStart,
+        end: normalizedEnd,
         color: drawColor,
         fill: fillColor,
       };
+
       const updatedShapes = [newShape, ...shapes];
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
