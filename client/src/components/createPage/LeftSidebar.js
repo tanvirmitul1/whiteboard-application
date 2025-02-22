@@ -1,32 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, TextField, IconButton, Tooltip, Popover } from "@mui/material";
-import DriveFileRenameOutlineTwoToneIcon from "@mui/icons-material/DriveFileRenameOutlineTwoTone";
-import GestureTwoToneIcon from "@mui/icons-material/GestureTwoTone";
-import CircleTwoToneIcon from "@mui/icons-material/CircleTwoTone";
-import RectangleTwoToneIcon from "@mui/icons-material/RectangleTwoTone";
-import { LuEraser } from "react-icons/lu";
-import RttTwoToneIcon from "@mui/icons-material/RttTwoTone";
-import UndoTwoToneIcon from "@mui/icons-material/UndoTwoTone";
-import RedoTwoToneIcon from "@mui/icons-material/RedoTwoTone";
-import CreatePageButtons from "./CreatePageButtons";
+import { Box, IconButton, Tooltip, Popover } from "@mui/material";
+import {
+  GestureTwoTone as PenIcon,
+  DriveFileRenameOutlineTwoTone as LineIcon,
+  CircleTwoTone as CircleIcon,
+  RectangleTwoTone as RectangleIcon,
+  ChangeHistory as TriangleIcon,
+  Pentagon as PentagonIcon,
+  Hexagon as HexagonIcon,
+  RttTwoTone as TextIcon,
+  UndoTwoTone as UndoIcon,
+  RedoTwoTone as RedoIcon,
+  ColorLens as BgColorIcon,
+  FormatColorText as DrawColorIcon,
+  FormatColorFill as FillColorIcon,
+  DeleteOutline as EraserIcon,
+  Padding,
+} from "@mui/icons-material";
+import { ChromePicker } from "react-color";
 import { useParams } from "react-router-dom";
 import useColors from "../../customHooks/useColors";
-import { ChromePicker } from "react-color";
-import ColorLensIcon from "@mui/icons-material/ColorLens";
-import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
-import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
-import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
-import PentagonIcon from "@mui/icons-material/Pentagon";
-import HexagonIcon from "@mui/icons-material/Hexagon";
+import CreatePageButtons from "./CreatePageButtons";
+
+const shapeOptions = [
+  { type: "pen", label: "Pen", icon: <PenIcon /> },
+  { type: "line", label: "Line", icon: <LineIcon /> },
+  { type: "circle", label: "Circle", icon: <CircleIcon /> },
+  { type: "rectangle", label: "Rectangle", icon: <RectangleIcon /> },
+  { type: "triangle", label: "Triangle", icon: <TriangleIcon /> },
+  { type: "pentagon", label: "Pentagon", icon: <PentagonIcon /> },
+  { type: "hexagon", label: "Hexagon", icon: <HexagonIcon /> },
+  { type: "text", label: "Text", icon: <TextIcon /> },
+  { type: "eraser", label: "Eraser", icon: <EraserIcon /> },
+];
+
 const LeftSidebar = ({
   drawingTitle,
   setDrawingTitle,
   shapeType,
   setShapeType,
-  isLoading,
-  handleSaveDrawing,
-  handleUndo,
-  handleRedo,
   drawColor,
   setDrawColor,
   backgroundColor,
@@ -35,61 +47,58 @@ const LeftSidebar = ({
   setFillColor,
   isFillColorActive,
   setIsFillColorActive,
+  handleUndo,
+  handleRedo,
+  handleSaveDrawing,
+  isLoading,
 }) => {
   const { colors } = useColors();
-
-  //remove save button for edit mode
   const { id } = useParams();
-  const [drawAnchorEl, setDrawAnchorEl] = useState(null);
-  const [bgAnchorEl, setBgAnchorEl] = useState(null);
-  const [fillAnchorEl, setFillAnchorEl] = useState(null);
+  const inputRef = useRef(null);
 
-  const handleDrawClick = (event) => {
-    setDrawAnchorEl(event.currentTarget);
-  };
+  useEffect(() => inputRef.current.focus(), []);
 
-  const handleBgClick = (event) => {
-    setBgAnchorEl(event.currentTarget);
-  };
+  const [colorPickers, setColorPickers] = useState({
+    draw: null,
+    bg: null,
+    fill: null,
+  });
 
-  const handleFillClick = (event) => {
-    setFillAnchorEl(event.currentTarget);
-    setIsFillColorActive(true);
-  };
+  const handleColorClick = (type) => (event) =>
+    setColorPickers({ ...colorPickers, [type]: event.currentTarget });
 
-  const handleDrawClose = () => {
-    setDrawAnchorEl(null);
-  };
+  const handleColorClose = (type) => () =>
+    setColorPickers({ ...colorPickers, [type]: null });
 
-  const handleBgClose = () => {
-    setBgAnchorEl(null);
-  };
+  const renderColorPicker = (type, color, setColor, IconComponent, title) => (
+    <div>
+      <Tooltip title={title} arrow>
+        <IconButton onClick={handleColorClick(type)}>
+          <IconComponent sx={{ color: colors.textColor }} />
+        </IconButton>
+      </Tooltip>
+      <Box
+        sx={{
+          height: "5px",
+          width: "25px",
+          backgroundColor: color,
+          margin: "4px auto 0",
+          borderRadius: "3px",
+          boxShadow: "0 0 2px rgba(0,0,0,0.5)",
+        }}
+      />
+      <Popover
+        open={Boolean(colorPickers[type])}
+        anchorEl={colorPickers[type]}
+        onClose={handleColorClose(type)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        transformOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <ChromePicker color={color} onChangeComplete={(c) => setColor(c.hex)} />
+      </Popover>
+    </div>
+  );
 
-  const handleFillClose = () => {
-    setFillAnchorEl(null);
-  };
-
-  const drawOpen = Boolean(drawAnchorEl);
-  const bgOpen = Boolean(bgAnchorEl);
-  const fillOpen = Boolean(fillAnchorEl);
-  const inputRef = useRef(null); // Create a ref for the input
-
-  useEffect(() => {
-    inputRef.current.focus(); // Set focus to the input on component mount
-  }, []);
-
-  //  useEffect(() => {
-  //     if (isFillColorActive) {
-  //       changeFillColor(
-  //             pickerType,
-  //             selectedShapeIndex,
-  //             color.hex,
-  //             shapes,
-  //             setShapes,
-  //             drawAllShapes
-  //           );
-  //     }
-  //   }, [fillColor, selectedShapeIndex]);
   return (
     <Box className="left-sidebar-container">
       <input
@@ -100,239 +109,78 @@ const LeftSidebar = ({
         placeholder="Enter Title..."
       />
       <Box className="button-container">
-        {/* Shape selection buttons */}
-        <Tooltip title="Pen" arrow>
-          <IconButton onClick={() => setShapeType("pen")}>
-            <GestureTwoToneIcon
-              sx={{
-                color: shapeType === "pen" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Line" arrow>
-          <IconButton onClick={() => setShapeType("line")}>
-            <DriveFileRenameOutlineTwoToneIcon
-              sx={{
-                color:
-                  shapeType === "line" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Circle" arrow>
-          <IconButton onClick={() => setShapeType("circle")}>
-            <CircleTwoToneIcon
-              sx={{
-                color:
-                  shapeType === "circle" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Rectangle" arrow>
-          <IconButton onClick={() => setShapeType("rectangle")}>
-            <RectangleTwoToneIcon
-              sx={{
-                color:
-                  shapeType === "rectangle"
-                    ? colors.buttonBg
-                    : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Triangle" arrow>
-          <IconButton onClick={() => setShapeType("triangle")}>
-            <ChangeHistoryIcon
-              sx={{
-                color:
-                  shapeType === "triangle" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Pentagon" arrow>
-          <IconButton onClick={() => setShapeType("pentagon")}>
-            <PentagonIcon
-              sx={{
-                color:
-                  shapeType === "pentagon" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Hexagon" arrow>
-          <IconButton onClick={() => setShapeType("hexagon")}>
-            <HexagonIcon
-              sx={{
-                color:
-                  shapeType === "hexagon" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Eraser" arrow>
-          <IconButton onClick={() => setShapeType("eraser")}>
-            <LuEraser
-              style={{
-                color:
-                  shapeType === "eraser" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Text" arrow>
-          <IconButton onClick={() => setShapeType("text")}>
-            <RttTwoToneIcon
-              sx={{
-                color:
-                  shapeType === "text" ? colors.buttonBg : colors.textColor,
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <div>
-          {/* Background Color */}
-          <Tooltip title="Background Color" arrow>
-            <IconButton onClick={handleBgClick}>
-              <ColorLensIcon sx={{ color: colors.textColor }} />
+        {/* Shape Selection Buttons */}
+
+        {shapeOptions.map(({ type, label, icon }) => (
+          <Tooltip key={type} title={label} arrow>
+            <IconButton
+              sx={{ padding: "8px" }}
+              onClick={() => setShapeType(type)}
+            >
+              {React.cloneElement(icon, {
+                sx: {
+                  color:
+                    shapeType === type ? colors.buttonBg : colors.textColor,
+                  transition: "color 0.3s ease",
+                  fontSize: "1.2rem",
+                },
+              })}
             </IconButton>
           </Tooltip>
-          <Box
-            sx={{
-              height: "5px",
-              width: "25px",
-              backgroundColor: backgroundColor,
-              margin: "4px auto 0",
-              borderRadius: "3px",
-              boxShadow: "0 0 2px rgba(0,0,0,0.5)",
-            }}
-          />
-          <Popover
-            open={bgOpen}
-            anchorEl={bgAnchorEl}
-            onClose={handleBgClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-          >
-            <ChromePicker
-              color={backgroundColor}
-              onChangeComplete={(color) => {
-                setBackgroundColor(color.hex);
-              }}
-            />
-          </Popover>
-        </div>
-        <div>
-          {/* Draw Color */}
-          <Tooltip title=" Draw color" arrow>
-            <IconButton onClick={handleDrawClick}>
-              <FormatColorTextIcon sx={{ color: colors.textColor }} />
-            </IconButton>
-          </Tooltip>
-          <Box
-            sx={{
-              height: "5px",
-              width: "25px",
-              backgroundColor: drawColor,
-              margin: "4px auto 0",
-              borderRadius: "3px",
-              boxShadow: "0 0 2px rgba(0,0,0,0.5)",
-            }}
-          />
-          <Popover
-            open={drawOpen}
-            anchorEl={drawAnchorEl}
-            onClose={handleDrawClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-          >
-            <ChromePicker
-              color={drawColor}
-              onChangeComplete={(color) => {
-                setDrawColor(color.hex);
-              }}
-            />
-          </Popover>
-        </div>
-        <div>
-          {/* fill Color */}
+        ))}
+
+        <Box className="color-pickers-container">
+          {/* Color Pickers */}
+          {renderColorPicker(
+            "bg",
+            backgroundColor,
+            setBackgroundColor,
+            BgColorIcon,
+            "Background Color"
+          )}
+          {renderColorPicker(
+            "draw",
+            drawColor,
+            setDrawColor,
+            DrawColorIcon,
+            "Draw Color"
+          )}
           <Tooltip
             title={
-              isFillColorActive
-                ? "Press Esc to remove fill color mode"
-                : "Fill color"
+              isFillColorActive ? "Press Esc to remove fill mode" : "Fill Color"
             }
             arrow
           >
             <IconButton
-              onClick={handleFillClick}
+              onClick={handleColorClick("fill")}
               sx={{
-                backgroundColor: isFillColorActive ? "#242441" : "transparent", // Highlight when active
+                backgroundColor: isFillColorActive ? "#242441" : "transparent",
                 transition: "background-color 0.3s ease",
               }}
             >
-              <FormatColorFillIcon
-                sx={{
-                  color: isFillColorActive ? "#00796b" : "white", // Change icon color when active
-                }}
+              <FillColorIcon
+                sx={{ color: isFillColorActive ? "#00796b" : "white" }}
               />
             </IconButton>
           </Tooltip>
-          <Box
-            sx={{
-              height: "5px",
-              width: "25px",
-              backgroundColor: fillColor,
-              margin: "4px auto 0",
-              borderRadius: "3px",
-              boxShadow: "0 0 2px rgba(0,0,0,0.5)",
-            }}
-          />
-          <Popover
-            open={fillOpen}
-            anchorEl={fillAnchorEl}
-            onClose={handleFillClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-          >
-            <ChromePicker
-              color={fillColor}
-              onChangeComplete={(color) => {
-                setFillColor(color.hex);
-              }}
-            />
-          </Popover>
-        </div>
-
+          {renderColorPicker(
+            "fill",
+            fillColor,
+            setFillColor,
+            FillColorIcon,
+            "Fill Color"
+          )}
+        </Box>
+        {/* Undo & Redo Buttons */}
         <Box className="undo-redo-container">
           <Tooltip title="Undo" arrow>
-            <IconButton onClick={handleUndo}>
-              <UndoTwoToneIcon sx={{ color: colors.textColor }} />
+            <IconButton onClick={handleUndo} sx={{ padding: "2px" }}>
+              <UndoIcon sx={{ color: colors.textColor }} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Redo" arrow>
-            <IconButton onClick={handleRedo}>
-              <RedoTwoToneIcon sx={{ color: colors.textColor }} />
+            <IconButton onClick={handleRedo} sx={{ padding: "2px" }}>
+              <RedoIcon sx={{ color: colors.textColor }} />
             </IconButton>
           </Tooltip>
         </Box>

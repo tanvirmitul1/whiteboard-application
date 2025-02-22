@@ -1,116 +1,107 @@
 import React, { useState } from "react";
 import { Box, Button, CircularProgress } from "@mui/material";
-import useAuth from "../../customHooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../customHooks/useAuth";
 import InstructionModal from "../instructions/InstructionModal";
-import AddTaskIcon from "@mui/icons-material/AddTask";
-import ChecklistIcon from "@mui/icons-material/Checklist";
-import { MdOutlineIntegrationInstructions } from "react-icons/md";
 import DeveloperProfile from "../instructions/DeveloperProfile";
+import AddTaskIcon from "@mui/icons-material/AddTask";
 
 const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
 
-  const handleShowDrawings = () => {
-    navigate("/drawing-list");
+  const [modals, setModals] = useState({
+    instruction: false,
+    developer: false,
+  });
+
+  const toggleModal = (key, value) => {
+    setModals((prev) => ({ ...prev, [key]: value }));
   };
-
-  const handleShowUsers = () => {
-    navigate("/user-list");
-  };
-
-  const [isInstructionModalOpen, setInstructionModalOpen] = useState(false);
-  const [isDeveloperModalOpen, setDeveloperModalOpen] = useState(false);
-
-  const openInstructionModal = () => setInstructionModalOpen(true);
-  const closeInstructionModal = () => setInstructionModalOpen(false);
-
-  const openDeveloperModal = () => setDeveloperModalOpen(true);
-  const closeDeveloperModal = () => setDeveloperModalOpen(false);
 
   return (
     <Box
       sx={{
-        padding: 1,
         display: "flex",
         flexDirection: "column",
         gap: 2,
+        margin: "0 auto",
       }}
     >
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
+      <CustomButton
         onClick={handleSaveDrawing}
-        sx={{ textTransform: "none", padding: 1 }}
-      >
-        {isLoading ? (
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
-            <span> Saving...</span>
-          </Box>
-        ) : (
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <AddTaskIcon
-              sx={{ marginRight: 1, display: { xs: "none", md: "inline" } }}
-            />{" "}
-            <span>Save</span>
-          </Box>
-        )}
-      </Button>
-      <Button
-        variant="contained"
+        text="Save"
+        icon={<AddTaskIcon />}
+        isLoading={isLoading}
+      />
+      <CustomButton
+        onClick={() => navigate("/drawing-list")}
+        text="Draw Lists"
         color="secondary"
-        size="small"
-        onClick={handleShowDrawings}
-        sx={{ textTransform: "none", padding: 1 }}
-      >
-        Draw Lists
-      </Button>
-      {/* {isAdmin && ( */}
+      />
       {false && (
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={handleShowUsers}
-          sx={{ textTransform: "none", padding: 1 }}
-        >
-          Users
-        </Button>
+        <CustomButton onClick={() => navigate("/user-list")} text="Users" />
       )}
-
-      <Button
-        variant="contained"
+      <CustomButton
+        onClick={() => toggleModal("instruction", true)}
+        text="How to Use"
         color="secondary"
-        size="small"
-        sx={{ textTransform: "none", padding: 1 }}
-        onClick={openInstructionModal}
-      >
-        How to Use
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        size="small"
-        sx={{ textTransform: "none", padding: 1 }}
-        onClick={openDeveloperModal}
-      >
-        About
-      </Button>
+      />
+      <CustomButton
+        onClick={() => toggleModal("developer", true)}
+        text="About"
+        color="tertiary"
+      />
 
+      {/* Modals */}
       <InstructionModal
-        isOpen={isInstructionModalOpen}
-        onClose={closeInstructionModal}
+        isOpen={modals.instruction}
+        onClose={() => toggleModal("instruction", false)}
       />
       <DeveloperProfile
-        isOpen={isDeveloperModalOpen}
-        onClose={closeDeveloperModal}
-        username="tanvirmitul1" // Replace with the actual GitHub username
+        isOpen={modals.developer}
+        onClose={() => toggleModal("developer", false)}
+        username="tanvirmitul1"
       />
     </Box>
   );
 };
 
 export default CreatePageButtons;
+
+const CustomButton = ({
+  onClick,
+  icon,
+  text,
+  isLoading,
+  color = "primary",
+}) => (
+  <Button
+    variant="contained"
+    color={color}
+    size="small"
+    onClick={onClick}
+    sx={{
+      textTransform: "none",
+      padding: { xs: "4px", md: "6px" },
+      fontSize: { xs: "0.5rem", md: ".75rem" },
+      display: "flex",
+      alignItems: "center",
+    }}
+  >
+    {isLoading ? (
+      <>
+        <CircularProgress size={16} color="inherit" />
+      </>
+    ) : (
+      <>
+        {icon && (
+          <Box sx={{ mr: 1, display: { xs: "none", md: "inline" } }}>
+            {icon}
+          </Box>
+        )}
+        {text}
+      </>
+    )}
+  </Button>
+);
