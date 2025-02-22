@@ -76,6 +76,7 @@ const Whiteboard = ({
       }
     }
   };
+  console.log({ selectedShapeIndex });
 
   const handleMouseMove = (e) => {
     if (!isDrawing && !isMoving) return;
@@ -228,7 +229,14 @@ const Whiteboard = ({
       setCurrentPenPath([...currentPenPath, touchPos]);
       drawPen(ctx, currentPenPath);
     } else if (isDrawing && shapeType !== "eraser") {
-      drawCurrentShape(ctx, startPoint, touchPos, shapeType, drawColor);
+      drawCurrentShape(
+        ctx,
+        startPoint,
+        touchPos,
+        shapeType,
+        drawColor,
+        fillColor
+      );
     } else if (isMoving && selectedShapeIndex !== null) {
       moveShape(
         touchPos,

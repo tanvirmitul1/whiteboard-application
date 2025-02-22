@@ -27,6 +27,12 @@ export const drawShape = (ctx, shape) => {
     case "triangle":
       drawTriangle(ctx, start, end, color, fill, selected);
       break;
+    case "pentagon":
+      drawPentagon(ctx, start, end, color, fill, selected);
+      break;
+    case "hexagon":
+      drawHexagon(ctx, start, end, color, fill, selected);
+      break;
     case "circle":
       drawCircle(ctx, start, end, color, fill, selected);
       break;
@@ -40,19 +46,25 @@ export const drawShape = (ctx, shape) => {
       break;
   }
 };
-export const drawCurrentShape = (ctx, start, end, shapeType, color) => {
+export const drawCurrentShape = (ctx, start, end, shapeType, color, fill) => {
   switch (shapeType) {
     case "line":
       drawLine(ctx, start, end, color);
       break;
     case "rectangle":
-      drawRectangle(ctx, start, end, color);
+      drawRectangle(ctx, start, end, color, fill);
       break;
     case "triangle":
-      drawTriangle(ctx, start, end, color);
+      drawTriangle(ctx, start, end, color, fill);
+      break;
+    case "pentagon":
+      drawPentagon(ctx, start, end, color, fill);
+      break;
+    case "hexagon":
+      drawHexagon(ctx, start, end, color, fill);
       break;
     case "circle":
-      drawCircle(ctx, start, end, color);
+      drawCircle(ctx, start, end, color, fill);
       break;
     default:
       break;
@@ -131,6 +143,75 @@ export const drawTriangle = (ctx, start, end, color, fill, isSelected) => {
     ctx.stroke();
   }
 };
+export const drawPentagon = (ctx, start, end, color, fill, isSelected) => {
+  const centerX = (start.x + end.x) / 2;
+  const centerY = (start.y + end.y) / 2;
+  const radius = Math.min(end.x - start.x, end.y - start.y) / 2;
+  const angle = (2 * Math.PI) / 5; // 360° / 5 sides
+
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const x = centerX + radius * Math.cos(i * angle - Math.PI / 2);
+    const y = centerY + radius * Math.sin(i * angle - Math.PI / 2);
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+  ctx.closePath();
+
+  if (color) {
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
+  if (fill) {
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+
+  if (isSelected) {
+    ctx.lineWidth = selectionLineWidth;
+    ctx.strokeStyle = selectionColor;
+    ctx.stroke();
+  }
+};
+
+export const drawHexagon = (ctx, start, end, color, fill, isSelected) => {
+  const centerX = (start.x + end.x) / 2;
+  const centerY = (start.y + end.y) / 2;
+  const radius = Math.min(end.x - start.x, end.y - start.y) / 2;
+  const angle = (2 * Math.PI) / 6; // 360° / 6 sides
+
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const x = centerX + radius * Math.cos(i * angle);
+    const y = centerY + radius * Math.sin(i * angle);
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+  ctx.closePath();
+
+  if (color) {
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
+  if (fill) {
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+
+  if (isSelected) {
+    ctx.lineWidth = selectionLineWidth;
+    ctx.strokeStyle = selectionColor;
+    ctx.stroke();
+  }
+};
 
 export const drawCircle = (ctx, start, end, color, fill, isSelected) => {
   const radius = distance(start, end);
@@ -167,43 +248,32 @@ export const distance = (point1, point2) => {
 };
 
 export const isPointInShape = (ctx, point, shape) => {
-  const { type, start, end, text, position } = shape;
+  const { type, start, end, text, position, path } = shape;
 
   switch (type) {
-    case "line":
+    case "line": {
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
       const distanceToLine =
         Math.abs(
-          (end.y - start.y) * point.x -
-            (end.x - start.x) * point.y +
-            end.x * start.y -
-            end.y * start.x
-        ) /
-        Math.sqrt(Math.pow(end.y - start.y, 2) + Math.pow(end.x - start.x, 2));
+          dy * point.x - dx * point.y + end.x * start.y - end.y * start.x
+        ) / Math.sqrt(dx * dx + dy * dy);
       return distanceToLine < 5;
+    }
 
     case "rectangle":
-      return (
-        point.x >= start.x &&
-        point.x <= end.x &&
-        point.y >= start.y &&
-        point.y <= end.y
-      );
-
     case "triangle":
-      return (
-        point.x >= start.x &&
-        point.x <= end.x &&
-        point.y >= start.y &&
-        point.y <= end.y
-      );
+    case "pentagon":
+    case "hexagon":
+      return isPointInBounds(point, start, end);
 
-    case "circle":
+    case "circle": {
       const radius = distance(start, end);
-      const distanceToCenter = distance(point, start);
-      return distanceToCenter <= radius;
+      return distance(point, start) <= radius;
+    }
 
     case "pen":
-      return shape.path.some((penPoint) => distance(penPoint, point) < 5);
+      return path?.some((penPoint) => distance(penPoint, point) < 5);
 
     case "text":
       return (
@@ -218,6 +288,11 @@ export const isPointInShape = (ctx, point, shape) => {
       return false;
   }
 };
+const isPointInBounds = (point, start, end) =>
+  point.x >= start.x &&
+  point.x <= end.x &&
+  point.y >= start.y &&
+  point.y <= end.y;
 
 export const getMousePosition = (canvas, event) => {
   const rect = canvas.getBoundingClientRect();

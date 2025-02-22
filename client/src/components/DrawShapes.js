@@ -97,6 +97,23 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
             ctx.stroke();
           }
           break;
+        case "pentagon":
+          if (start.x && start.y && end.x && end.y) {
+            const centerX = ((start.x + end.x) / 2) * scale;
+            const centerY = ((start.y + end.y) / 2) * scale;
+            const radius = (Math.abs(end.x - start.x) / 2) * scale;
+            drawPolygon(ctx, centerX, centerY, 5, radius, fill, color);
+          }
+          break;
+
+        case "hexagon":
+          if (start.x && start.y && end.x && end.y) {
+            const centerX = ((start.x + end.x) / 2) * scale;
+            const centerY = ((start.y + end.y) / 2) * scale;
+            const radius = (Math.abs(end.x - start.x) / 2) * scale;
+            drawPolygon(ctx, centerX, centerY, 6, radius, fill, color);
+          }
+          break;
 
         case "text":
           if (position.x && position.y) {
@@ -134,4 +151,22 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
           break;
       }
     });
+};
+
+const drawPolygon = (ctx, centerX, centerY, sides, radius, fill, stroke) => {
+  const angleStep = (2 * Math.PI) / sides;
+  ctx.beginPath();
+
+  for (let i = 0; i < sides; i++) {
+    const x = centerX + radius * Math.cos(i * angleStep);
+    const y = centerY + radius * Math.sin(i * angleStep);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+
+  ctx.closePath();
+  ctx.fillStyle = fill || "#ff0909";
+  ctx.fill();
+  ctx.strokeStyle = stroke || "#C735BB";
+  ctx.stroke();
 };

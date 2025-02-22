@@ -19,6 +19,8 @@ const whiteboardSchema = new mongoose.Schema(
             "circle",
             "rectangle",
             "triangle",
+            "pentagon",
+            "hexagon",
             "text",
             "pen",
             "emoji",
@@ -33,13 +35,25 @@ const whiteboardSchema = new mongoose.Schema(
           x: {
             type: Number,
             required: function () {
-              return this.type === "line" || this.type === "rectangle";
+              return (
+                this.type === "line" ||
+                this.type === "rectangle" ||
+                this.type === "triangle" ||
+                this.type === "pentagon" ||
+                this.type === "hexagon"
+              );
             },
           },
           y: {
             type: Number,
             required: function () {
-              return this.type === "line" || this.type === "rectangle";
+              return (
+                this.type === "line" ||
+                this.type === "rectangle" ||
+                this.type === "triangle" ||
+                this.type === "pentagon" ||
+                this.type === "hexagon"
+              );
             },
           },
         },
@@ -47,13 +61,25 @@ const whiteboardSchema = new mongoose.Schema(
           x: {
             type: Number,
             required: function () {
-              return this.type === "line" || this.type === "rectangle";
+              return (
+                this.type === "line" ||
+                this.type === "rectangle" ||
+                this.type === "triangle" ||
+                this.type === "pentagon" ||
+                this.type === "hexagon"
+              );
             },
           },
           y: {
             type: Number,
             required: function () {
-              return this.type === "line" || this.type === "rectangle";
+              return (
+                this.type === "line" ||
+                this.type === "rectangle" ||
+                this.type === "triangle" ||
+                this.type === "pentagon" ||
+                this.type === "hexagon"
+              );
             },
           },
         },

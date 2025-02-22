@@ -16,6 +16,8 @@ import ColorLensIcon from "@mui/icons-material/ColorLens";
 import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
 import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
 import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
+import PentagonIcon from "@mui/icons-material/Pentagon";
+import HexagonIcon from "@mui/icons-material/Hexagon";
 const LeftSidebar = ({
   drawingTitle,
   setDrawingTitle,
@@ -146,6 +148,26 @@ const LeftSidebar = ({
               sx={{
                 color:
                   shapeType === "triangle" ? colors.buttonBg : colors.textColor,
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Pentagon" arrow>
+          <IconButton onClick={() => setShapeType("pentagon")}>
+            <PentagonIcon
+              sx={{
+                color:
+                  shapeType === "pentagon" ? colors.buttonBg : colors.textColor,
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Hexagon" arrow>
+          <IconButton onClick={() => setShapeType("hexagon")}>
+            <HexagonIcon
+              sx={{
+                color:
+                  shapeType === "hexagon" ? colors.buttonBg : colors.textColor,
               }}
             />
           </IconButton>
