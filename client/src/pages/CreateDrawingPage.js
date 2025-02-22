@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Box } from "@mui/material";
 import Swal from "sweetalert2";
 import {
@@ -11,12 +11,13 @@ import useAuth from "../customHooks/useAuth";
 import Whiteboard from "../components/Whiteboard";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../slices/canvasSlice";
+import RightSideBar from "../components/createPage/RightSideBar";
 const CreateDrawingPage = () => {
   const { data: totalDrawCount } = useGetTotalDrawCountQuery();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
-
+  const canvasRef = useRef(null);
   const [drawingTitle, setDrawingTitle] = useState(
     `New Drawing ${totalDrawCount?.totalDrawCount}`
   );
@@ -31,6 +32,7 @@ const CreateDrawingPage = () => {
   const { userId, token } = useAuth();
   const [isFillColorActive, setIsFillColorActive] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const [selectedShapeIndex, setSelectedShapeIndex] = useState(null);
   // Update canvas size dynamically
   useEffect(() => {
     const updateCanvasSize = () => {
@@ -203,8 +205,8 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "20%",
-            md: "8%",
+            xs: "18%",
+            md: "7%",
           },
         }}
       >
@@ -230,8 +232,8 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "67%",
-            md: "84%",
+            xs: "64%",
+            md: "82%",
           },
         }}
       >
@@ -242,17 +244,24 @@ const CreateDrawingPage = () => {
           backgroundColor={backgroundColor}
           fillColor={fillColor}
           drawingTitle={drawingTitle}
+          selectedShapeIndex={selectedShapeIndex}
+          setSelectedShapeIndex={setSelectedShapeIndex}
+          canvasRef={canvasRef}
         />
       </Box>
       <Box
         sx={{
           width: {
-            xs: "10%",
-            md: "5%",
+            xs: "15%",
+            md: "8%",
           },
         }}
       >
-        <div> hifdsaf fdsfds right sidebar</div>
+        <RightSideBar
+          shapeType={shapeType}
+          selectedShapeIndex={selectedShapeIndex}
+          canvasRef={canvasRef}
+        />
       </Box>
     </Box>
   );

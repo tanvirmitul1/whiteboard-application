@@ -5,7 +5,7 @@ import useAuth from "../../customHooks/useAuth";
 import InstructionModal from "../instructions/InstructionModal";
 import DeveloperProfile from "../instructions/DeveloperProfile";
 import AddTaskIcon from "@mui/icons-material/AddTask";
-
+import InfoIcon from "@mui/icons-material/Info";
 const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -50,7 +50,7 @@ const CreatePageButtons = ({ handleSaveDrawing, isLoading }) => {
       <CustomButton
         onClick={() => toggleModal("developer", true)}
         text="About"
-        color="tertiary"
+        color="secondary"
       />
 
       {/* Modals */}

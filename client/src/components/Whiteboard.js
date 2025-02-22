@@ -29,15 +29,18 @@ const Whiteboard = ({
   backgroundColor,
   fillColor,
   drawingTitle,
+  selectedShapeIndex,
+  setSelectedShapeIndex,
+  canvasRef,
 }) => {
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
   console.log({ shapes });
-  const canvasRef = useRef(null);
+
   const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
-  const [selectedShapeIndex, setSelectedShapeIndex] = useState(null);
+
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
   const [canvasScale, setCanvasScale] = useState({ x: 1, y: 1 });
   const [textInput, setTextInput] = useState(null);
@@ -76,7 +79,6 @@ const Whiteboard = ({
       }
     }
   };
-  console.log({ selectedShapeIndex });
 
   const handleMouseMove = (e) => {
     if (!isDrawing && !isMoving) return;

@@ -16,6 +16,7 @@ import { MdUpdate } from "react-icons/md";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../slices/canvasSlice";
+import RightSideBar from "../components/createPage/RightSideBar";
 
 const EditDrawingPage = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const EditDrawingPage = () => {
   const [fillColor, setFillColor] = useState("#58da1d");
   const [isFillColorActive, setIsFillColorActive] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const [selectedShapeIndex, setSelectedShapeIndex] = useState(null);
   // Update canvas size dynamically
   useEffect(() => {
     const updateCanvasSize = () => {
@@ -191,8 +193,8 @@ const EditDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "25%",
-            md: "10%",
+            xs: "18%",
+            md: "7%",
           },
         }}
       >
@@ -217,8 +219,8 @@ const EditDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "68%",
-            md: "83%",
+            xs: "64%",
+            md: "82%",
           },
         }}
       >
@@ -229,6 +231,8 @@ const EditDrawingPage = () => {
           backgroundColor={backgroundColor}
           fillColor={fillColor}
           drawingTitle={drawingTitle}
+          selectedShapeIndex={selectedShapeIndex}
+          setSelectedShapeIndex={setSelectedShapeIndex}
         />
 
         <Box
@@ -261,6 +265,16 @@ const EditDrawingPage = () => {
             Go Back
           </Button>
         </Box>
+      </Box>
+      <Box
+        sx={{
+          width: {
+            xs: "15%",
+            md: "8%",
+          },
+        }}
+      >
+        <RightSideBar shapeType={shapeType} />
       </Box>
     </Box>
   );
