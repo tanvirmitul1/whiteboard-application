@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Slider, TextField, IconButton } from "@mui/material";
+import { Box, Slider, TextField, IconButton } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { drawShape } from "../../utils/drawFunctions";
 import { setShapes } from "../../slices/canvasSlice";
-import { resizeShape } from "../../utils/resizeShape";
+import { getShapeSize, resizeShape } from "../../utils/resizeShape";
 import { Add, Remove } from "@mui/icons-material"; // For the increase/decrease buttons
 
 const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
@@ -20,86 +20,14 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
 
   useEffect(() => {
     if (selectedShapeIndex !== null) {
-      let calculatedSize = initialState.shapeSize;
-
-      switch (selectedShape?.type) {
-        case "line":
-          calculatedSize = calculateLineSize(selectedShape);
-          break;
-
-        case "circle":
-          calculatedSize = calculateCircleSize(selectedShape);
-          break;
-
-        case "rectangle":
-          calculatedSize = calculateRectangleSize(selectedShape);
-          break;
-
-        case "triangle":
-          calculatedSize = calculateTriangleSize(selectedShape);
-          break;
-
-        case "pentagon":
-          calculatedSize = calculatePentagonSize(selectedShape);
-          break;
-
-        case "hexagon":
-          calculatedSize = calculateHexagonSize(selectedShape);
-          break;
-
-        case "text":
-          setFontSize(selectedShape?.fontSize);
-          return; // No size calculation needed for text
-        default:
-          break;
+      const calculatedSize = getShapeSize(selectedShape);
+      if (selectedShape?.type === "text") {
+        setFontSize(selectedShape?.fontSize);
+      } else {
+        setSize(calculatedSize);
       }
-
-      setSize(calculatedSize);
     }
   }, [selectedShapeIndex, shapes]);
-
-  const calculateLineSize = (shape) => {
-    return Math.sqrt(
-      Math.pow(shape.end.x - shape.start.x, 2) +
-        Math.pow(shape.end.y - shape.start.y, 2)
-    );
-  };
-
-  const calculateCircleSize = (shape) => {
-    const radius =
-      Math.sqrt(
-        Math.pow(shape.end.x - shape.start.x, 2) +
-          Math.pow(shape.end.y - shape.start.y, 2)
-      ) / 2;
-    return radius * 2; // Diameter
-  };
-
-  const calculateRectangleSize = (shape) => {
-    const rectWidth = shape.end.x - shape.start.x;
-    const rectHeight = shape.end.y - shape.start.y;
-    return Math.max(rectWidth, rectHeight); // Use max of width or height for resizing
-  };
-
-  const calculateTriangleSize = (shape) => {
-    return Math.sqrt(
-      Math.pow(shape.end.x - shape.start.x, 2) +
-        Math.pow(shape.end.y - shape.start.y, 2)
-    );
-  };
-
-  const calculatePentagonSize = (shape) => {
-    return Math.sqrt(
-      Math.pow(shape.end.x - shape.start.x, 2) +
-        Math.pow(shape.end.y - shape.start.y, 2)
-    );
-  };
-
-  const calculateHexagonSize = (shape) => {
-    return Math.sqrt(
-      Math.pow(shape.end.x - shape.start.x, 2) +
-        Math.pow(shape.end.y - shape.start.y, 2)
-    );
-  };
 
   const handleResize = (event, newSize) => {
     if (selectedShapeIndex === null) return;
@@ -114,14 +42,6 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
     );
 
     drawAllShapes(); // Redraw with new size
-  };
-
-  const drawAllShapes = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
   };
 
   const handleSizeChange = (event) => {
@@ -140,33 +60,65 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
     handleResize(null, size - 5);
   };
 
+  const drawAllShapes = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
+  };
+
   return (
     <Box
       sx={{
         color: "white",
         backgroundColor: "#131324",
-        p: 0.5,
+        p: 1,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        borderRadius: "8px",
       }}
     >
       {selectedShapeIndex !== null && (
         <>
-          <Box sx={{ margin: "0 auto" }}>{selectedShape?.type}</Box>
+          <Box
+            sx={{
+              margin: "0 auto",
+              fontSize: { xs: "0.65rem", sm: "0.75rem" }, // Smaller font size on mobile
+              textAlign: "center",
+            }}
+          >
+            {selectedShape?.type}
+          </Box>
 
           {shapes?.length > 0 && (
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 1 }}>
               {shapeType === "text" ? (
                 <>
-                  <p>Font Size: {fontSize}</p>
+                  <p
+                    style={{
+                      fontSize: "0.75rem",
+                      textAlign: "center",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Font Size: {fontSize}
+                  </p>
                   <Slider
                     value={fontSize}
                     min={8}
                     max={72}
                     step={1}
                     onChange={(e, newValue) => setFontSize(newValue)}
-                    sx={{ width: "100%" }}
+                    sx={{
+                      width: "100%",
+                      height: "4px",
+                      "& .MuiSlider-thumb": {
+                        width: 12,
+                        height: 12,
+                      },
+                    }}
                   />
                 </>
               ) : (
@@ -176,11 +128,30 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
                     min={1}
                     step={1}
                     onChange={handleResize}
-                    sx={{ width: "90%" }}
+                    sx={{
+                      width: "100%",
+                      height: "4px",
+                      marginBottom: "10px",
+                      "& .MuiSlider-thumb": {
+                        width: 12,
+                        height: 12,
+                      },
+                    }}
                   />
-                  <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                    <IconButton onClick={decreaseSize} color="primary">
-                      <Remove />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" }, // Corrected flexDirection
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <IconButton
+                      onClick={decreaseSize}
+                      color="primary"
+                      size="small"
+                    >
+                      <Remove sx={{ fontSize: { xs: "16px", sm: "18px" } }} />
                     </IconButton>
                     <TextField
                       value={size}
@@ -188,10 +159,19 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
                       variant="outlined"
                       size="small"
                       type="number"
-                      sx={{ width: "60px", mx: 1 }}
+                      sx={{
+                        input: {
+                          textAlign: "center",
+                          color: "white",
+                        },
+                      }}
                     />
-                    <IconButton onClick={increaseSize} color="primary">
-                      <Add />
+                    <IconButton
+                      onClick={increaseSize}
+                      color="primary"
+                      size="small"
+                    >
+                      <Add sx={{ fontSize: { xs: "16px", sm: "18px" } }} />
                     </IconButton>
                   </Box>
                 </>

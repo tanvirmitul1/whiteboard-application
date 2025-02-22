@@ -232,8 +232,8 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "64%",
-            md: "82%",
+            xs: "60%",
+            md: "78%",
           },
         }}
       >
@@ -252,8 +252,8 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "15%",
-            md: "8%",
+            xs: "22%",
+            md: "14%",
           },
         }}
       >

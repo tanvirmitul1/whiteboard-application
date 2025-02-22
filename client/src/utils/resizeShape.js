@@ -75,3 +75,66 @@ export const resizeShape = (shape, newSize) => {
       return shape;
   }
 };
+export const getShapeSize = (shape) => {
+  switch (shape?.type) {
+    case "line":
+      return calculateLineSize(shape);
+    case "circle":
+      return calculateCircleSize(shape);
+    case "rectangle":
+      return calculateRectangleSize(shape);
+    case "triangle":
+      return calculateTriangleSize(shape);
+    case "pentagon":
+      return calculatePentagonSize(shape);
+    case "hexagon":
+      return calculateHexagonSize(shape);
+    case "text":
+      return shape.fontSize; // For text, we return the font size directly
+    default:
+      return 50; // Default size if no shape is matched
+  }
+};
+
+export const calculateLineSize = (shape) => {
+  return Math.sqrt(
+    Math.pow(shape.end.x - shape.start.x, 2) +
+      Math.pow(shape.end.y - shape.start.y, 2)
+  );
+};
+
+export const calculateCircleSize = (shape) => {
+  const radius =
+    Math.sqrt(
+      Math.pow(shape.end.x - shape.start.x, 2) +
+        Math.pow(shape.end.y - shape.start.y, 2)
+    ) / 2;
+  return radius * 2; // Diameter
+};
+
+export const calculateRectangleSize = (shape) => {
+  const rectWidth = shape.end.x - shape.start.x;
+  const rectHeight = shape.end.y - shape.start.y;
+  return Math.max(rectWidth, rectHeight); // Use max of width or height for resizing
+};
+
+export const calculateTriangleSize = (shape) => {
+  return Math.sqrt(
+    Math.pow(shape.end.x - shape.start.x, 2) +
+      Math.pow(shape.end.y - shape.start.y, 2)
+  );
+};
+
+export const calculatePentagonSize = (shape) => {
+  return Math.sqrt(
+    Math.pow(shape.end.x - shape.start.x, 2) +
+      Math.pow(shape.end.y - shape.start.y, 2)
+  );
+};
+
+export const calculateHexagonSize = (shape) => {
+  return Math.sqrt(
+    Math.pow(shape.end.x - shape.start.x, 2) +
+      Math.pow(shape.end.y - shape.start.y, 2)
+  );
+};
