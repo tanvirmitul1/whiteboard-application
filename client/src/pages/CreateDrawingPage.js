@@ -203,8 +203,8 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "25%",
-            md: "10%",
+            xs: "20%",
+            md: "8%",
           },
         }}
       >
@@ -230,8 +230,8 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "72%",
-            md: "87%",
+            xs: "67%",
+            md: "84%",
           },
         }}
       >
@@ -243,6 +243,16 @@ const CreateDrawingPage = () => {
           fillColor={fillColor}
           drawingTitle={drawingTitle}
         />
+      </Box>
+      <Box
+        sx={{
+          width: {
+            xs: "10%",
+            md: "5%",
+          },
+        }}
+      >
+        <div> hifdsaf fdsfds right sidebar</div>
       </Box>
     </Box>
   );
