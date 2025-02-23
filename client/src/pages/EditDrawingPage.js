@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   useGetDrawingByIdQuery,
@@ -23,7 +23,7 @@ const EditDrawingPage = () => {
   const shapes = useSelector((state) => state.canvas.shapes);
   const [drawingTitle, setDrawingTitle] = useState("");
   const [shapeType, setShapeType] = useState("line");
-
+  const canvasRef = useRef(null);
   const [isSaved, setIsSaved] = useState(false);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
@@ -233,6 +233,7 @@ const EditDrawingPage = () => {
           drawingTitle={drawingTitle}
           selectedShapeIndex={selectedShapeIndex}
           setSelectedShapeIndex={setSelectedShapeIndex}
+          canvasRef={canvasRef}
         />
 
         <Box
@@ -269,12 +270,16 @@ const EditDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "15%",
-            md: "8%",
+            xs: "22%",
+            md: "14%",
           },
         }}
       >
-        <RightSideBar shapeType={shapeType} />
+        <RightSideBar
+          shapeType={shapeType}
+          selectedShapeIndex={selectedShapeIndex}
+          canvasRef={canvasRef}
+        />
       </Box>
     </Box>
   );

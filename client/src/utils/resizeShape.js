@@ -119,22 +119,28 @@ export const calculateRectangleSize = (shape) => {
 };
 
 export const calculateTriangleSize = (shape) => {
-  return Math.sqrt(
-    Math.pow(shape.end.x - shape.start.x, 2) +
-      Math.pow(shape.end.y - shape.start.y, 2)
+  return Math.floor(
+    Math.sqrt(
+      Math.pow(shape.end.x - shape.start.x, 2) +
+        Math.pow(shape.end.y - shape.start.y, 2)
+    )
   );
 };
 
 export const calculatePentagonSize = (shape) => {
-  return Math.sqrt(
-    Math.pow(shape.end.x - shape.start.x, 2) +
-      Math.pow(shape.end.y - shape.start.y, 2)
+  return Math.floor(
+    Math.sqrt(
+      Math.pow(shape.end.x - shape.start.x, 2) +
+        Math.pow(shape.end.y - shape.start.y, 2)
+    )
   );
 };
 
 export const calculateHexagonSize = (shape) => {
-  return Math.sqrt(
-    Math.pow(shape.end.x - shape.start.x, 2) +
-      Math.pow(shape.end.y - shape.start.y, 2)
+  return Math.floor(
+    Math.sqrt(
+      Math.pow(shape.end.x - shape.start.x, 2) +
+        Math.pow(shape.end.y - shape.start.y, 2)
+    )
   );
 };
