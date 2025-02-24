@@ -5,8 +5,24 @@ import { drawShape } from "../../utils/drawFunctions";
 import { setShapes } from "../../slices/canvasSlice";
 import { getShapeSize, resizeShape } from "../../utils/resizeShape";
 import { Add, Remove } from "@mui/icons-material"; // For the increase/decrease buttons
+import ColorPickerComponent from "../colorPicker/ColorPickerComponent ";
+import SelectedShapeChangeColor from "../colorPicker/SelectedShapeChangeColor";
+import Tools from "../tools/Tools";
 
-const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
+const RightSideBar = ({
+  shapeType,
+  selectedShapeIndex,
+  canvasRef,
+  ...props
+}) => {
+  const {
+    drawColor,
+    setDrawColor,
+    fillColor,
+    setFillColor,
+    backgroundColor,
+    setBackgroundColor,
+  } = props;
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
   const selectedShape = shapes[selectedShapeIndex];
@@ -82,6 +98,8 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
         borderRadius: "8px",
       }}
     >
+      <ColorPickerComponent {...props} />
+
       {selectedShapeIndex !== null && (
         <>
           <Box
@@ -94,7 +112,7 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
             {selectedShape?.type}
           </Box>
 
-          {shapes?.length > 0 && (
+          {shapes?.length > 0 && selectedShape?.type !== "pen" && (
             <Box sx={{ mt: 1 }}>
               {selectedShape?.type === "text" ? (
                 <>
@@ -180,6 +198,20 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
                 </>
               )}
             </Box>
+          )}
+          {shapes?.length > 0 && (
+            <>
+              <SelectedShapeChangeColor
+                drawAllShapes={drawAllShapes}
+                selectedShape={selectedShape}
+                selectedShapeIndex={selectedShapeIndex}
+              />
+
+              <Tools
+                selectedShapeIndex={selectedShapeIndex}
+                drawAllShapes={drawAllShapes}
+              />
+            </>
           )}
         </>
       )}

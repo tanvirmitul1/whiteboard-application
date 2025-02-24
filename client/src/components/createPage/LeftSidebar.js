@@ -145,24 +145,7 @@ const LeftSidebar = ({
             DrawColorIcon,
             "Draw Color"
           )}
-          <Tooltip
-            title={
-              isFillColorActive ? "Press Esc to remove fill mode" : "Fill Color"
-            }
-            arrow
-          >
-            <IconButton
-              onClick={handleColorClick("fill")}
-              sx={{
-                backgroundColor: isFillColorActive ? "#242441" : "transparent",
-                transition: "background-color 0.3s ease",
-              }}
-            >
-              <FillColorIcon
-                sx={{ color: isFillColorActive ? "#00796b" : "white" }}
-              />
-            </IconButton>
-          </Tooltip>
+
           {renderColorPicker(
             "fill",
             fillColor,

@@ -97,9 +97,11 @@ export const getShapeSize = (shape) => {
 };
 
 export const calculateLineSize = (shape) => {
-  return Math.sqrt(
-    Math.pow(shape.end.x - shape.start.x, 2) +
-      Math.pow(shape.end.y - shape.start.y, 2)
+  return Math.floor(
+    Math.sqrt(
+      Math.pow(shape.end.x - shape.start.x, 2) +
+        Math.pow(shape.end.y - shape.start.y, 2)
+    )
   );
 };
 
@@ -109,13 +111,13 @@ export const calculateCircleSize = (shape) => {
       Math.pow(shape.end.x - shape.start.x, 2) +
         Math.pow(shape.end.y - shape.start.y, 2)
     ) / 2;
-  return radius * 2; // Diameter
+  return Math.floor(radius * 2);
 };
 
 export const calculateRectangleSize = (shape) => {
   const rectWidth = shape.end.x - shape.start.x;
   const rectHeight = shape.end.y - shape.start.y;
-  return Math.max(rectWidth, rectHeight); // Use max of width or height for resizing
+  return Math.floor(Math.max(rectWidth, rectHeight));
 };
 
 export const calculateTriangleSize = (shape) => {

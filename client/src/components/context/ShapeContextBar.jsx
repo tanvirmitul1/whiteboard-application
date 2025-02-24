@@ -182,7 +182,7 @@ const ShapeContextBar = ({
 
 export default ShapeContextBar;
 
-const SuggestionBox = styled.span`
+export const SuggestionBox = styled.span`
   opacity: 0.4;
 `;
 
