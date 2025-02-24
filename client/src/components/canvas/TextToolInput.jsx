@@ -21,6 +21,7 @@ const TextToolInput = ({
   onShapesUpdate,
   drawColor,
   fillColor,
+  setShapeType,
 }) => {
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
@@ -62,11 +63,16 @@ const TextToolInput = ({
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
       setTextInput(null);
+      setShapeType(null);
     }
   };
 
   return (
-    <div
+    <form // eslint-disable-line
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleTextSubmit();
+      }}
       style={{
         position: "absolute",
         top: `${safeY}px`,
@@ -81,7 +87,7 @@ const TextToolInput = ({
         gap: "10px",
         zIndex: 1000,
       }}
-      onMouseDown={(e) => e.stopPropagation()} // Prevent blur when clicking inside
+      onMouseDown={(e) => e.stopPropagation()}
     >
       <TextField
         placeholder="Enter text"
@@ -110,14 +116,20 @@ const TextToolInput = ({
         </Select>
       </FormControl>
 
-      <IconButton color="success" onClick={handleTextSubmit}>
+      <IconButton type="submit" color="success">
         <Check />
       </IconButton>
 
-      <IconButton color="error" onClick={() => setTextInput(null)}>
+      <IconButton
+        color="error"
+        onClick={() => {
+          setTextInput(null);
+          setShapeType(null);
+        }}
+      >
         <Close />
       </IconButton>
-    </div>
+    </form>
   );
 };
 

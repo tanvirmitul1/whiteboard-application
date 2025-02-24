@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Slider, TextField, IconButton } from "@mui/material";
+import { Box, Slider, TextField, IconButton, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { drawShape } from "../../utils/drawFunctions";
 import { setShapes } from "../../slices/canvasSlice";
@@ -8,6 +8,7 @@ import { Add, Remove } from "@mui/icons-material"; // For the increase/decrease 
 import ColorPickerComponent from "../colorPicker/ColorPickerComponent ";
 import SelectedShapeChangeColor from "../colorPicker/SelectedShapeChangeColor";
 import Tools from "../tools/Tools";
+import ShapeIcon from "../tools/ShapeIcon";
 
 const RightSideBar = ({
   shapeType,
@@ -108,12 +109,26 @@ const RightSideBar = ({
               fontSize: { xs: "0.65rem", sm: "0.75rem" }, // Smaller font size on mobile
               textAlign: "center",
             }}
-          >
-            {selectedShape?.type}
+          ></Box>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+            {" "}
+            <ShapeIcon selectedShape={selectedShape} />
           </Box>
 
           {shapes?.length > 0 && selectedShape?.type !== "pen" && (
-            <Box sx={{ mt: 1 }}>
+            <Box>
+              <Typography
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  color: "#b8b0b0",
+                  fontSize: "12px",
+
+                  mt: 2,
+                }}
+              >
+                Size
+              </Typography>
               {selectedShape?.type === "text" ? (
                 <>
                   <p
@@ -184,6 +199,8 @@ const RightSideBar = ({
                         input: {
                           textAlign: "center",
                           color: "white",
+                          fontSize: { xs: "12px", md: "14px" },
+                          width: { xs: "60px", md: "80px" }, // Adjusted width for mobile
                         },
                       }}
                     />

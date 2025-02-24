@@ -239,6 +239,7 @@ const CreateDrawingPage = () => {
       >
         <Whiteboard
           shapeType={shapeType}
+          setShapeType={setShapeType}
           onShapesUpdate={handleShapeUpdate}
           drawColor={drawColor}
           backgroundColor={backgroundColor}

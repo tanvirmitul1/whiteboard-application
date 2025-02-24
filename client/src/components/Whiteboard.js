@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from "uuid";
 import DownloadButton from "./canvas/DownloadButton";
 const Whiteboard = ({
   shapeType,
+  setShapeType,
   onShapesUpdate,
   drawColor,
   backgroundColor,
@@ -431,6 +432,7 @@ const Whiteboard = ({
         onShapesUpdate={onShapesUpdate}
         drawColor={drawColor}
         fillColor={fillColor}
+        setShapeType={setShapeType}
       />
 
       {/* Clear Button */}
