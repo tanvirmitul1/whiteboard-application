@@ -146,3 +146,74 @@ export const calculateHexagonSize = (shape) => {
     )
   );
 };
+
+export const rotateShape = (shape, angle) => {
+  const {
+    type,
+    start,
+    end,
+    position,
+    path,
+    fontSize,
+    angle: currentAngle,
+  } = shape;
+  const angleRad = (angle * Math.PI) / 180; // Convert degrees to radians
+
+  // Function to rotate a point around a center
+  const rotatePoint = (point, center, angleRad) => {
+    const cos = Math.cos(angleRad);
+    const sin = Math.sin(angleRad);
+    return {
+      x: center.x + (point.x - center.x) * cos - (point.y - center.y) * sin,
+      y: center.y + (point.x - center.x) * sin + (point.y - center.y) * cos,
+    };
+  };
+
+  switch (type) {
+    case "line":
+    case "rectangle":
+    case "circle":
+    case "triangle":
+    case "pentagon":
+    case "hexagon":
+      // Calculate center of shape (for most shapes, it's the center of the bounding box)
+      const center = {
+        x: (start.x + end.x) / 2,
+        y: (start.y + end.y) / 2,
+      };
+      // Rotate the start and end points
+      const newStart = rotatePoint(start, center, angleRad);
+      const newEnd = rotatePoint(end, center, angleRad);
+
+      return {
+        ...shape,
+        start: newStart,
+        end: newEnd,
+      };
+
+    // case "text":
+    //   // Handle text's rotation: add rotation angle property
+    //   const textCenter = {
+    //     x: position.x + fontSize / 2, // Adjusted for text center
+    //     y: position.y + fontSize / 2,
+    //   };
+
+    //   const newPosition = rotatePoint(position, textCenter, angleRad); // Rotate around the center
+    //   return {
+    //     ...shape,
+    //     position: newPosition,
+    //     angle: (currentAngle + angle) % 360, // Update angle for rotation (keep it in range [0, 360])
+    //   };
+
+    // case "pen":
+    //   // Rotate all path points for pen
+    //   const newPath = path.map((point) => rotatePoint(point, center, angleRad));
+    //   return {
+    //     ...shape,
+    //     path: newPath,
+    //   };
+
+    default:
+      return shape; // Return unchanged if shape type is unknown
+  }
+};

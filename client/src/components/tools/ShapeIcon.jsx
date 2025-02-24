@@ -1,11 +1,10 @@
 import {
   FaRegCircle as CircleIcon, // Circle icon
   FaRegSquare as RectangleIcon, // Rectangle icon
-  FaRegHandshake as LineIcon, // For a line, you might use a generic line-like icon
   FaTextHeight as TextIcon, // Text icon from React Icons
   FaPen as PenIcon, // Pen icon
 } from "react-icons/fa"; // Importing icons from react-icons/fa
-
+import { FaGripLines as LineIcon } from "react-icons/fa";
 import { IoTriangle as TriangleIcon } from "react-icons/io5";
 import { BsPentagon as PentagonIcon } from "react-icons/bs";
 import { MdOutlineHexagon as HexagonIcon } from "react-icons/md";

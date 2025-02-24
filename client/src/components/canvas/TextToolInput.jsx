@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  IconButton,
-} from "@mui/material";
+import { TextField, IconButton } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../../slices/canvasSlice";
 import { v4 as uuidv4 } from "uuid";
-const fontSizes = [12, 16, 20, 24, 28, 32, 40];
-
 const TextToolInput = ({
   canvasRef,
   textInput,
@@ -100,21 +91,6 @@ const TextToolInput = ({
           borderRadius: "5px",
         }}
       />
-
-      <FormControl size="small" sx={{ minWidth: 60 }}>
-        <InputLabel>Size</InputLabel>
-        <Select
-          value={fontSize}
-          onMouseDown={(e) => e.stopPropagation()}
-          onChange={(e) => setFontSize(e.target.value)}
-        >
-          {fontSizes.map((size) => (
-            <MenuItem key={size} value={size}>
-              {size}px
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
 
       <IconButton type="submit" color="success">
         <Check />

@@ -33,6 +33,10 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
         color,
         fill,
         fontSize,
+        fontWeight,
+        fontStyle,
+        textDecoration,
+        fontFamily,
       } = shape;
 
       switch (type) {
@@ -121,13 +125,29 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
               x: position.x * scale,
               y: position.y * scale,
             };
-            ctx.font = `${(fontSize || 16) * scale}px Arial`; // Scale font size
+
+            ctx.font = `${fontStyle || "normal"} ${fontWeight || "normal"} ${
+              (fontSize || 16) * scale
+            }px ${fontFamily || "Arial"}`;
             ctx.fillStyle = color || "#C735BB";
             ctx.fillText(
               text || "Default Text",
               scaledPosition.x,
               scaledPosition.y
             );
+
+            // Handle underline text decoration
+            if (textDecoration === "underline") {
+              const textWidth = ctx.measureText(text || "Default Text").width;
+              const underlineY = scaledPosition.y + 2 * scale; // Adjust underline position
+
+              ctx.beginPath();
+              ctx.moveTo(scaledPosition.x, underlineY);
+              ctx.lineTo(scaledPosition.x + textWidth, underlineY);
+              ctx.lineWidth = 2 * scale; // Adjust thickness
+              ctx.strokeStyle = color || "#C735BB";
+              ctx.stroke();
+            }
           }
           break;
 

@@ -16,6 +16,11 @@ export const drawShape = (ctx, shape) => {
     position,
     selected,
     fontSize,
+    fontWeight,
+    fontStyle,
+    textDecoration,
+    fontFamily,
+    angle,
   } = shape;
   switch (type) {
     case "line":
@@ -40,7 +45,18 @@ export const drawShape = (ctx, shape) => {
       drawPen(ctx, path, color, selected);
       break;
     case "text":
-      drawText(ctx, text, position, color, selected, fontSize);
+      drawText(
+        ctx,
+        text,
+        position,
+        color,
+        selected,
+        fontSize,
+        fontWeight,
+        fontStyle,
+        textDecoration,
+        fontFamily
+      );
       break;
     default:
       break;
@@ -228,11 +244,46 @@ export const drawCircle = (ctx, start, end, color, fill, isSelected) => {
   }
 };
 
-export const drawText = (ctx, text, position, color, isSelected, fontSize) => {
+// export const drawText = (ctx, text, position, color, isSelected, fontSize) => {
+//   if (position && text) {
+//     ctx.font = `${fontSize}px Arial`;
+//     ctx.fillStyle = color;
+//     ctx.fillText(text, position.x, position.y);
+//     if (isSelected) {
+//       ctx.lineWidth = selectionLineWidthText;
+//       ctx.strokeStyle = selectionColor;
+//       ctx.strokeText(text, position.x, position.y);
+//     }
+//   }
+// };
+export const drawText = (
+  ctx,
+  text,
+  position,
+  color,
+  isSelected,
+  fontSize,
+  fontWeight = "normal",
+  fontStyle = "normal",
+  textDecoration = "none",
+  fontFamily = "Arial"
+) => {
   if (position && text) {
-    ctx.font = `${fontSize}px Arial`;
+    ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
     ctx.fillStyle = color;
     ctx.fillText(text, position.x, position.y);
+
+    if (textDecoration === "underline") {
+      const textWidth = ctx.measureText(text).width;
+      const underlineY = position.y + 2; // Adjust as needed
+      ctx.beginPath();
+      ctx.moveTo(position.x, underlineY);
+      ctx.lineTo(position.x + textWidth, underlineY);
+      ctx.lineWidth = 2; // Adjust thickness
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    }
+
     if (isSelected) {
       ctx.lineWidth = selectionLineWidthText;
       ctx.strokeStyle = selectionColor;

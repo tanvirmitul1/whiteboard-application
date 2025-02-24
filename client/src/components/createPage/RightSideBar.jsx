@@ -9,6 +9,8 @@ import ColorPickerComponent from "../colorPicker/ColorPickerComponent ";
 import SelectedShapeChangeColor from "../colorPicker/SelectedShapeChangeColor";
 import Tools from "../tools/Tools";
 import ShapeIcon from "../tools/ShapeIcon";
+import TextEditor from "../tools/TextEditor";
+import RotateShape from "../tools/RotateShape";
 
 const RightSideBar = ({
   shapeType,
@@ -103,59 +105,42 @@ const RightSideBar = ({
 
       {selectedShapeIndex !== null && (
         <>
-          <Box
-            sx={{
-              margin: "0 auto",
-              fontSize: { xs: "0.65rem", sm: "0.75rem" }, // Smaller font size on mobile
-              textAlign: "center",
-            }}
-          ></Box>
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-            {" "}
-            <ShapeIcon selectedShape={selectedShape} />
-          </Box>
+          {shapes?.length > 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mt: 1,
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              {" "}
+              <Box sx={{ mb: 0.5 }}>
+                <ShapeIcon
+                  selectedShape={selectedShape}
+                  selectedShapeIndex={selectedShapeIndex}
+                />
+              </Box>
+              {selectedShape?.type !== "text" &&
+                selectedShape?.type !== "pen" && (
+                  <RotateShape
+                    selectedShape={selectedShape}
+                    selectedShapeIndex={selectedShapeIndex}
+                    drawAllShapes={drawAllShapes}
+                  />
+                )}
+            </Box>
+          )}
 
           {shapes?.length > 0 && selectedShape?.type !== "pen" && (
             <Box>
-              <Typography
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  color: "#b8b0b0",
-                  fontSize: "12px",
-
-                  mt: 2,
-                }}
-              >
-                Size
-              </Typography>
               {selectedShape?.type === "text" ? (
-                <>
-                  <p
-                    style={{
-                      fontSize: "0.75rem",
-                      textAlign: "center",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    Font Size: {fontSize}
-                  </p>
-                  <Slider
-                    value={fontSize}
-                    min={8}
-                    max={1000}
-                    step={1}
-                    onChange={handleResize}
-                    sx={{
-                      width: "100%",
-                      height: "4px",
-                      "& .MuiSlider-thumb": {
-                        width: 12,
-                        height: 12,
-                      },
-                    }}
-                  />
-                </>
+                <TextEditor
+                  selectedShapeIndex={selectedShapeIndex}
+                  selectedShape={selectedShape}
+                />
               ) : (
                 <>
                   <Slider
