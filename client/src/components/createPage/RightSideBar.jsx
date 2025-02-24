@@ -68,6 +68,8 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
     [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
   };
 
+  console.log({ selectedShapeIndex });
+
   return (
     <Box
       sx={{
@@ -94,7 +96,7 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
 
           {shapes?.length > 0 && (
             <Box sx={{ mt: 1 }}>
-              {shapeType === "text" ? (
+              {selectedShape?.type === "text" ? (
                 <>
                   <p
                     style={{
@@ -108,9 +110,9 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
                   <Slider
                     value={fontSize}
                     min={8}
-                    max={72}
+                    max={1000}
                     step={1}
-                    onChange={(e, newValue) => setFontSize(newValue)}
+                    onChange={handleResize}
                     sx={{
                       width: "100%",
                       height: "4px",
@@ -125,7 +127,8 @@ const RightSideBar = ({ shapeType, selectedShapeIndex, canvasRef }) => {
                 <>
                   <Slider
                     value={size}
-                    min={1}
+                    min={8}
+                    max={1000}
                     step={1}
                     onChange={handleResize}
                     sx={{
