@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import debounce from "lodash.debounce";
 import {
   useGetAllDrawingsQuery,
@@ -31,15 +31,17 @@ import useColors from "../customHooks/useColors";
 import Reactions from "../components/viewPage/Reactions";
 import Logo from "../files/dp.jpg";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const ViewDrawingPage = () => {
+  const [whiteboards, setWhiteboards] = useState([]);
   const { user } = useAuth();
   const { colors } = useColors();
   const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState(null);
   const [filterTitle, setFilterTitle] = useState("");
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [itemsPerPage, setItemsPerPage] = useState(100);
   const handleTitleChange = useCallback(
     debounce((value) => {
       setFilterTitle(value);
@@ -56,6 +58,11 @@ const ViewDrawingPage = () => {
       page,
       limit: itemsPerPage,
     });
+  useEffect(() => {
+    if (data?.whiteboards) {
+      setWhiteboards(data.whiteboards);
+    }
+  }, [data]);
 
   const [deleteDrawing] = useDeleteDrawingMutation();
 
@@ -113,8 +120,10 @@ const ViewDrawingPage = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteDrawing(whiteboardId);
-        Swal.fire("Deleted!", "Your drawing has been deleted.", "success");
-        refetch();
+        setWhiteboards((prev) =>
+          prev.filter((whiteboard) => whiteboard._id !== whiteboardId)
+        );
+        toast.success("Drawing deleted successfully!");
       }
     });
   };
@@ -142,7 +151,7 @@ const ViewDrawingPage = () => {
         users={usersData || []}
       />
 
-      {data?.whiteboards.length === 0 ? (
+      {whiteboards?.length === 0 ? (
         <Typography align="center" className="drawing-title">
           No drawings found
         </Typography>
@@ -156,7 +165,7 @@ const ViewDrawingPage = () => {
             <DrawPageLoader />
           ) : (
             <Grid container spacing={3} justifyContent="center">
-              {data.whiteboards.map((whiteboard, index) => (
+              {whiteboards?.map((whiteboard, index) => (
                 <Grid item xs={12} sm={6} md={4} key={whiteboard._id}>
                   <Box className="drawing-card">
                     <Typography

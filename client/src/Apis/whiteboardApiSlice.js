@@ -48,7 +48,7 @@ const whiteboardApiSlice = apiSlice.injectEndpoints({
         url: `whiteboards/drawings/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["ALLDRAWINGS"],
+      // invalidatesTags: ["ALLDRAWINGS"],
     }),
     submitReaction: build.mutation({
       query: (data) => ({
