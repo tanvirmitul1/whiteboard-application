@@ -151,7 +151,7 @@ const ViewDrawingPage = () => {
         users={usersData || []}
       />
 
-      {whiteboards?.length === 0 ? (
+      {data?.whiteboards?.length === 0 ? (
         <Typography align="center" className="drawing-title">
           No drawings found
         </Typography>
