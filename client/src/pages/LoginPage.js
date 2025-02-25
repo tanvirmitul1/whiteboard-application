@@ -7,6 +7,8 @@ import useAuth from "../customHooks/useAuth";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import { Box, Button, CircularProgress } from "@mui/material";
 import TypingGame from "../components/TypingGame";
+import { useDispatch } from "react-redux";
+import { setProfilePicture } from "../slices/authSlice";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("mitul");
@@ -17,7 +19,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [showLoading, setShowLoading] = useState(false);
   const [countdown, setCountdown] = useState(40);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (userId) {
       navigate("/create-drawing");
@@ -33,6 +35,8 @@ const LoginPage = () => {
         const response = await login({ username, password }).unwrap();
         localStorage.setItem("user", JSON.stringify(response.user));
         localStorage.setItem("token", response.token);
+        localStorage.setItem("imageUrl", response.user.image[0]?.imageUrl);
+        dispatch(setProfilePicture(response.user.image[0]?.imageUrl));
         toast.success("Login successful!");
 
         setTimeout(() => {

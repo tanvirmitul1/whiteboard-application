@@ -8,7 +8,7 @@ export const customModalStyles = {
   },
   content: {
     borderRadius: "16px",
-    height: "95vh",
+    height: "fit-content",
     maxHeight: "95vh",
     maxWidth: "900px",
     margin: "auto",

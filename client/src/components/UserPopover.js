@@ -6,13 +6,15 @@ import {
   Button,
   Divider,
   Avatar,
+  Tooltip,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { toast } from "react-toastify";
-import CustomModal from "./modal/CustomModal";
-import { useProfilePictureUploadMutation } from "../Apis/userApiSlice";
+
 import useAuth from "../customHooks/useAuth";
+import { useSelector } from "react-redux";
+import ProfileModal from "./ProfileModal";
 
 const UserPopover = ({
   openUserPopover,
@@ -21,50 +23,9 @@ const UserPopover = ({
   email,
   onLogout,
 }) => {
-  const { userName, role, isAdmin, userId, image: profilePicture } = useAuth();
+  const profilePicture = useSelector((state) => state.auth.profilePicture);
+  const { userName, role, userId } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
-  const onSettings = () => {
-    toast.success("Settings page coming soon!");
-  };
-
-  const handleOpenProfile = () => {
-    setIsProfileOpen(true);
-  };
-
-  const handleCloseProfile = () => {
-    setIsProfileOpen(false);
-  };
-  const [uploadProfilePicture, { isLoading }] =
-    useProfilePictureUploadMutation();
-  const [image, setImage] = useState(null);
-  const handleFileChange = (event) => {
-    setImage(event.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (!image) {
-      alert("Please select an image!");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("image", image);
-    formData.append("userId", userId);
-
-    try {
-      // const response = await axios.post("http://localhost:5000/upload", formData, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
-
-      // console.log("Upload success:", response.data);
-      await uploadProfilePicture(formData).unwrap();
-      alert("Image uploaded successfully!");
-    } catch (error) {
-      console.error("Upload failed:", error.response?.data);
-      alert("Upload failed. Please try again.");
-    }
-  };
 
   return (
     <>
@@ -72,59 +33,61 @@ const UserPopover = ({
         open={openUserPopover}
         anchorEl={anchorEl}
         onClose={onClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        sx={{
+          ".MuiPaper-root": {
+            borderRadius: 3,
+            boxShadow: 3,
+            background: "#1e1e1e",
+          },
         }}
       >
-        <Box className="user-popover">
+        <Box p={2} minWidth={250}>
           <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
           >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box display="flex" alignItems="center" gap={2}>
               <Avatar
-                sx={{ height: "30px", width: "30px" }}
-                src={profilePicture[0]?.imageUrl}
+                src={profilePicture}
+                sx={{ width: 40, height: 40, boxShadow: 2 }}
               />
               <Box>
-                <Typography className="user-name" variant="h6">
-                  {userName?.length > 10
-                    ? userName.slice(0, 10) + "..."
+                <Typography variant="h6" fontWeight="bold" color="white">
+                  {userName?.length > 12
+                    ? userName.slice(0, 12) + "..."
                     : userName}
                 </Typography>
-                <Typography className="user-role" variant="body2">
+                <Typography variant="body2" color="white">
                   {role}
                 </Typography>
-                <Typography className="user-role" variant="body2">
+                <Typography variant="body2" color="textSecondary">
                   {email}
                 </Typography>
               </Box>
             </Box>
-
-            <Button
-              onClick={onSettings}
-              variant="outlined"
-              size="small"
-              startIcon={<SettingsIcon />}
-              sx={{ textTransform: "none", height: "30px" }}
-            >
-              Settings
-            </Button>
+            <Tooltip title="Settings">
+              <Button
+                onClick={() => toast.info("Settings page coming soon!")}
+                variant="contained"
+                color="primary"
+                sx={{ minWidth: "30px", height: "30px", p: 0 }}
+              >
+                <SettingsIcon />
+              </Button>
+            </Tooltip>
           </Box>
 
-          <Divider sx={{ mb: 1 }} />
+          <Divider sx={{ my: 1 }} />
 
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box display="flex" justifyContent="space-between">
             <Button
-              onClick={handleOpenProfile}
+              onClick={() => setIsProfileOpen(true)}
               variant="contained"
-              color="primary"
+              color="secondary"
               size="small"
-              sx={{ textTransform: "none", height: "30px" }}
+              sx={{ textTransform: "none", width: "45%" }}
             >
               View Profile
             </Button>
@@ -133,39 +96,29 @@ const UserPopover = ({
               variant="contained"
               color="error"
               size="small"
-              className="logout-button"
-              sx={{ textTransform: "none", height: "30px" }}
+              sx={{
+                textTransform: "none",
+                width: "45%",
+                display: "flex",
+                gap: 1,
+              }}
             >
-              <LogoutIcon /> <span>Logout</span>
+              <LogoutIcon fontSize="small" /> Logout
             </Button>
           </Box>
         </Box>
       </Popover>
 
-      {/* Profile Modal */}
-      <CustomModal
+      {/* Extracted Profile Modal */}
+      <ProfileModal
         open={isProfileOpen}
-        onClose={handleCloseProfile}
-        title="Profile"
-      >
-        <Box sx={{ textAlign: "center", p: 2 }}>
-          <Avatar
-            sx={{ width: 80, height: 80, margin: "auto" }}
-            src={profilePicture[0]?.imageUrl}
-          />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            {userName}
-          </Typography>
-          <Typography variant="body1">{role}</Typography>
-          <Typography variant="body2">{email}</Typography>
-          {/* Add update functionality here */}
-        </Box>
-
-        <div>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
-          <button onClick={handleUpload}>Upload</button>
-        </div>
-      </CustomModal>
+        onClose={() => setIsProfileOpen(false)}
+        userName={userName}
+        role={role}
+        email={email}
+        profilePicture={profilePicture}
+        userId={userId}
+      />
     </>
   );
 };

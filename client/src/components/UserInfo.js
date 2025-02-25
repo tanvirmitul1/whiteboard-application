@@ -9,14 +9,13 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
-  Button,
 } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
+import { useSelector } from "react-redux";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import AddIcon from "@mui/icons-material/Add";
+
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
-import { LinkStyled } from "./styledComponents";
+
 import useAuth from "../customHooks/useAuth";
 import {
   useGetAllNotificationsQuery,
@@ -28,8 +27,9 @@ import UserPopover from "./UserPopover";
 const URL = process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL;
 const socket = io(URL);
 const UserInfo = () => {
+  const profilePicture = useSelector((state) => state.auth.profilePicture);
   const NotificationSound = new Audio("/audio/notifications.mp3");
-  const { userName, role, isAdmin, userId, image: profilePicture } = useAuth();
+  const { userName, role, isAdmin, userId } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const [notifications, setNotifications] = useState([]);
@@ -117,10 +117,7 @@ const UserInfo = () => {
     >
       <Tooltip title="User Profile" arrow>
         <IconButton onClick={handleAvatarClick} sx={{ padding: 0 }}>
-          <Avatar
-            sx={{ height: "25px", width: "25px" }}
-            src={profilePicture[0]?.imageUrl}
-          />
+          <Avatar sx={{ height: "25px", width: "25px" }} src={profilePicture} />
         </IconButton>
       </Tooltip>
 
