@@ -279,6 +279,12 @@ const EditDrawingPage = () => {
           shapeType={shapeType}
           selectedShapeIndex={selectedShapeIndex}
           canvasRef={canvasRef}
+          drawColor={drawColor}
+          setDrawColor={setDrawColor}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
+          fillColor={fillColor}
+          setFillColor={setFillColor}
         />
       </Box>
     </Box>
