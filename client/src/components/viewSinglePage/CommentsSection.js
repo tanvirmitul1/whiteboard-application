@@ -5,6 +5,7 @@ import {
   IconButton,
   Popover,
   CircularProgress,
+  TextField,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -82,8 +83,9 @@ const CommentsSection = ({ whiteboard }) => {
     }
   };
 
-  const onEmojiClick = (event, emojiObject) => {
-    setNewComment((prevComment) => prevComment + emojiObject.emoji);
+  const onEmojiClick = (emojiObject) => {
+    console.log("Emoji Object:", emojiObject);
+    setNewComment((prevComment) => prevComment + (emojiObject.emoji || ""));
   };
 
   const handleEmojiClick = (event) => {
@@ -101,11 +103,27 @@ const CommentsSection = ({ whiteboard }) => {
     <Box className="comments-container">
       <Reactions whiteboard={whiteboard} />
       <Box className="new-comment-input">
-        <textarea
+        <TextField
+          multiline
+          rows={2}
+          variant="outlined"
           placeholder="Write a comment..."
           value={newComment}
+          fullWidth
           onChange={(e) => setNewComment(e.target.value)}
-          className="text-field"
+          sx={{
+            "& .MuiInputBase-input": {
+              textAlign: "center",
+              color: "white",
+              borderRadius: "20px",
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "gray",
+                borderRadius: "20px",
+              },
+            },
+          }}
         />
 
         <Box className="comment-action-buttons">
@@ -116,6 +134,7 @@ const CommentsSection = ({ whiteboard }) => {
             onClick={handlePostComment}
             disabled={isCommentPosting}
             sx={{ textTransform: "none" }}
+            type="submit"
           >
             {isCommentPosting ? (
               <>
@@ -129,7 +148,12 @@ const CommentsSection = ({ whiteboard }) => {
             )}
           </Button>
           <IconButton onClick={handleEmojiClick} className="emoji-button">
-            <EmojiEmotionsIcon />
+            <img
+              src="https://i.ibb.co.com/j97PXw48/download.jpg"
+              alt="Emoji"
+              width={25}
+              style={{ cursor: "pointer", borderRadius: "50%" }}
+            />
           </IconButton>
 
           <Popover
