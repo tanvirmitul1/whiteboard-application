@@ -217,7 +217,7 @@ const ViewDrawingPage = () => {
                       >
                         <Avatar
                           sx={{ height: "15px", width: "15px" }}
-                          src={Logo}
+                          src={whiteboard.user?.imageUrl}
                         />
                         <a
                           style={{

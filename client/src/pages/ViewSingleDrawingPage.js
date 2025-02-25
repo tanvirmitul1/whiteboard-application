@@ -128,7 +128,11 @@ const ViewSingleDrawingPage = () => {
             paddingX: { xs: "10px", md: "80px" },
           }}
         >
-          <Avatar sx={{ height: "30px", width: "30px" }} />
+          <Avatar
+            sx={{ height: "30px", width: "30px" }}
+            src={drawing?.user?.imageUrl}
+          />
+          {console.log(drawing)}
           <a
             href={`/user-list?type=profile&user_id=${drawing?.user._id}`}
             className="user-link"

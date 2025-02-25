@@ -35,8 +35,8 @@ const LoginPage = () => {
         const response = await login({ username, password }).unwrap();
         localStorage.setItem("user", JSON.stringify(response.user));
         localStorage.setItem("token", response.token);
-        localStorage.setItem("imageUrl", response.user.image[0]?.imageUrl);
-        dispatch(setProfilePicture(response.user.image[0]?.imageUrl));
+        localStorage.setItem("imageUrl", response.user?.imageUrl);
+        dispatch(setProfilePicture(response.user?.imageUrl));
         toast.success("Login successful!");
 
         setTimeout(() => {

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const ImageSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   imageUrl: { type: String, required: true },
   deleteUrl: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },

@@ -52,9 +52,6 @@ exports.loginUser = async (req, res) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
-    const image = await Image.find({ userId: user._id });
-    const userWithImages = { ...user.toObject(), image };
-    console.log({ user });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign(
@@ -62,7 +59,7 @@ exports.loginUser = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
-      res.json({ user: userWithImages, token });
+      res.json({ user, token });
     } else {
       res.status(400).json({ message: "Invalid credentials" });
     }
@@ -99,7 +96,7 @@ exports.changePassword = async (req, res) => {
 // Get All Users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().populate("image");
+    const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
     console.error(error);
@@ -131,13 +128,26 @@ exports.uploadProfilePicture = async (req, res) => {
     const { userId } = req.body;
     const fileBuffer = req.file.buffer;
 
-    // Use the helper function to upload the image and save the info to MongoDB
+    // Upload image and get details
     const imageDetails = await uploadImageToImgBB(fileBuffer, userId);
 
-    // Send response to client with image details
+    // Update the User model with the new image details
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        imageUrl: imageDetails.imageUrl,
+        deleteUrl: imageDetails.deleteUrl,
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     res.status(201).json({
-      message: "Image uploaded successfully!",
-      imageUrl: imageDetails.imageUrl,
+      message: "Profile picture uploaded successfully!",
+      imageUrl: updatedUser.imageUrl,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

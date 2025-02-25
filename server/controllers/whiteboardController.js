@@ -30,7 +30,7 @@ const getAllDrawings = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(limitValue)
       .skip((pageValue - 1) * limitValue)
-      .populate("user", "username _id");
+      .populate("user", "username _id imageUrl");
 
     const totalDrawings = await Whiteboard.countDocuments(query);
     res.json({
@@ -80,7 +80,7 @@ const getDrawingById = async (req, res) => {
   try {
     const whiteboard = await Whiteboard.findById(id).populate(
       "user",
-      "username _id"
+      "username _id imageUrl"
     );
     if (!whiteboard) {
       return res.status(404).json({ message: "Drawing not found" });

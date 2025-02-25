@@ -30,24 +30,6 @@ const uploadImageToImgBB = async (fileBuffer, userId) => {
     // Extract image info from the response
     const { url, delete_url } = response.data.data;
 
-    // Check if the user already has an image
-    const existingImage = await Image.findOne({ userId });
-
-    if (existingImage) {
-      // If the image exists, update the existing record
-      existingImage.imageUrl = url;
-      existingImage.deleteUrl = delete_url;
-      await existingImage.save();
-    } else {
-      // If no image exists, create a new record
-      const newImage = new Image({
-        userId,
-        imageUrl: url,
-        deleteUrl: delete_url,
-      });
-      await newImage.save();
-    }
-
     // Return the image details and URL
     return { imageUrl: url, deleteUrl: delete_url };
   } catch (error) {
