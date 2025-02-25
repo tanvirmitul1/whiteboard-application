@@ -7,6 +7,7 @@ const useAuth = () => {
   const userId = user?._id || null;
   const userName = user?.username || null;
   const role = user?.role || null;
+  const image = user?.image || null;
 
   const isAdmin = useMemo(() => role === "Admin", [role]);
 
@@ -17,6 +18,7 @@ const useAuth = () => {
     role,
     isAdmin,
     token,
+    image,
   };
 };
 

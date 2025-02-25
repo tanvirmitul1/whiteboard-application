@@ -6,6 +6,8 @@ const {
   changePassword,
   getAllUsers,
   deleteUser,
+  uploadProfilePicture,
+  upload,
 } = require("../controllers/userController");
 const {
   validateCreateUser,
@@ -26,5 +28,10 @@ router.post("/login", validateLogin, loginUser);
 router.post("/update-password", changePassword);
 router.get("/get-all-users", getAllUsers);
 router.delete("/delete/:id", deleteUser);
+router.post(
+  "/profile-picture-upload",
+  upload.single("image"),
+  uploadProfilePicture
+);
 
 module.exports = router;

@@ -10,18 +10,18 @@ import {
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { toast } from "react-toastify";
-import Logo from "./../files/dp.jpg";
 import CustomModal from "./modal/CustomModal";
+import { useProfilePictureUploadMutation } from "../Apis/userApiSlice";
+import useAuth from "../customHooks/useAuth";
 
 const UserPopover = ({
   openUserPopover,
   anchorEl,
   onClose,
-  userName,
-  role,
   email,
   onLogout,
 }) => {
+  const { userName, role, isAdmin, userId, image: profilePicture } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const onSettings = () => {
@@ -34,6 +34,36 @@ const UserPopover = ({
 
   const handleCloseProfile = () => {
     setIsProfileOpen(false);
+  };
+  const [uploadProfilePicture, { isLoading }] =
+    useProfilePictureUploadMutation();
+  const [image, setImage] = useState(null);
+  const handleFileChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!image) {
+      alert("Please select an image!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("userId", userId);
+
+    try {
+      // const response = await axios.post("http://localhost:5000/upload", formData, {
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
+
+      // console.log("Upload success:", response.data);
+      await uploadProfilePicture(formData).unwrap();
+      alert("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Upload failed:", error.response?.data);
+      alert("Upload failed. Please try again.");
+    }
   };
 
   return (
@@ -56,7 +86,10 @@ const UserPopover = ({
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Avatar sx={{ height: "30px", width: "30px" }} src={Logo} />
+              <Avatar
+                sx={{ height: "30px", width: "30px" }}
+                src={profilePicture[0]?.imageUrl}
+              />
               <Box>
                 <Typography className="user-name" variant="h6">
                   {userName?.length > 10
@@ -116,7 +149,10 @@ const UserPopover = ({
         title="Profile"
       >
         <Box sx={{ textAlign: "center", p: 2 }}>
-          <Avatar sx={{ width: 80, height: 80, margin: "auto" }} src={Logo} />
+          <Avatar
+            sx={{ width: 80, height: 80, margin: "auto" }}
+            src={profilePicture[0]?.imageUrl}
+          />
           <Typography variant="h6" sx={{ mt: 2 }}>
             {userName}
           </Typography>
@@ -124,6 +160,11 @@ const UserPopover = ({
           <Typography variant="body2">{email}</Typography>
           {/* Add update functionality here */}
         </Box>
+
+        <div>
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <button onClick={handleUpload}>Upload</button>
+        </div>
       </CustomModal>
     </>
   );

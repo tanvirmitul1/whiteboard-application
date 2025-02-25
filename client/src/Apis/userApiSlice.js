@@ -36,7 +36,14 @@ const userApiSlice = apiSlice.injectEndpoints({
         url: `/users/delete/${userId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["ALLUSERS"], 
+      invalidatesTags: ["ALLUSERS"],
+    }),
+    profilePictureUpload: build.mutation({
+      query: (data) => ({
+        url: `/users/profile-picture-upload`,
+        method: "POST",
+        body: data,
+      }),
     }),
   }),
 });
@@ -46,5 +53,6 @@ export const {
   useCreateUserMutation,
   useUpdatePasswordMutation,
   useGetAllUsersQuery,
-  useDeleteUserMutation,  
+  useDeleteUserMutation,
+  useProfilePictureUploadMutation,
 } = userApiSlice;
