@@ -194,6 +194,13 @@ export const moveShapeByKeys = (dx, dy, selectedShapeIndex) => {
             y: shape.position.y + dy,
           },
         };
+      } else if (shape.type === "image") {
+        // Move the image position
+        return {
+          ...shape,
+          x: shape.x + dx,
+          y: shape.y + dy,
+        };
       } else {
         // Move other shapes (rectangles, circles, etc.)
         return {

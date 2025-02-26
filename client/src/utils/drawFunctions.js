@@ -58,6 +58,9 @@ export const drawShape = (ctx, shape) => {
         fontFamily
       );
       break;
+    case "image":
+      drawImage(shape, ctx);
+      break;
     default:
       break;
   }
@@ -82,6 +85,7 @@ export const drawCurrentShape = (ctx, start, end, shapeType, color, fill) => {
     case "circle":
       drawCircle(ctx, start, end, color, fill);
       break;
+
     default:
       break;
   }
@@ -244,18 +248,14 @@ export const drawCircle = (ctx, start, end, color, fill, isSelected) => {
   }
 };
 
-// export const drawText = (ctx, text, position, color, isSelected, fontSize) => {
-//   if (position && text) {
-//     ctx.font = `${fontSize}px Arial`;
-//     ctx.fillStyle = color;
-//     ctx.fillText(text, position.x, position.y);
-//     if (isSelected) {
-//       ctx.lineWidth = selectionLineWidthText;
-//       ctx.strokeStyle = selectionColor;
-//       ctx.strokeText(text, position.x, position.y);
-//     }
-//   }
-// };
+export const drawImage = (shape, ctx) => {
+  const img = new Image();
+  img.src = shape.imgSrc;
+  img.onload = () => {
+    ctx.drawImage(img, shape.x, shape.y, shape.width, shape.height);
+  };
+};
+
 export const drawText = (
   ctx,
   text,
@@ -334,6 +334,13 @@ export const isPointInShape = (ctx, point, shape) => {
         point.y >= position.y - 16 &&
         point.y <= position.y
       );
+    case "image":
+      return (
+        point.x >= shape?.x &&
+        point.x <= shape?.x + shape?.width &&
+        point.y >= shape?.y &&
+        point.y <= shape?.y + shape?.height
+      );
 
     default:
       return false;
@@ -399,6 +406,13 @@ export const moveShape = (
             x: shape.position.x + smoothedDeltaX,
             y: shape.position.y + smoothedDeltaY,
           },
+        };
+      } else if (shape.type === "image") {
+        // Move the image position
+        return {
+          ...shape,
+          x: shape.x + smoothedDeltaX,
+          y: shape.y + smoothedDeltaY,
         };
       } else {
         // Normalize the start and end points

@@ -22,6 +22,7 @@ import TextToolInput from "./canvas/TextToolInput";
 import ClearButton from "./canvas/ClearButton";
 import { v4 as uuidv4 } from "uuid";
 import DownloadButton from "./canvas/DownloadButton";
+import ImageUploader from "./canvas/ImageUploader";
 const Whiteboard = ({
   shapeType,
   setShapeType,
@@ -155,6 +156,13 @@ const Whiteboard = ({
     if (isDrawing && shapeType === "pen") {
       setCurrentPenPath([...currentPenPath, mousePos]);
       drawPen(ctx, currentPenPath);
+    } else if (isDrawing && shapeType === "image") {
+      const shape = shapes[selectedShapeIndex];
+      shape.x = mousePos.x - shape.width / 2;
+      shape.y = mousePos.y - shape.height / 2;
+      const updatedShapes = [shape, ...shapes];
+      dispatch(setShapes(updatedShapes));
+      drawAllShapes(updatedShapes);
     } else if (isDrawing && shapeType !== "eraser") {
       drawCurrentShape(ctx, startPoint, mousePos, shapeType, drawColor);
     } else if (isMoving && selectedShapeIndex !== null) {
@@ -396,6 +404,10 @@ const Whiteboard = ({
 
       {/* Clear Button */}
       <ClearButton shapes={shapes} canvasRef={canvasRef} />
+      {/* Image Uploader */}
+      <ImageUploader drawAllShapes={drawAllShapes} />
+
+      {/* Download Button */}
       <DownloadButton
         backgroundColor={backgroundColor}
         drawingTitle={drawingTitle}
