@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, IconButton } from "@mui/material";
+import { TextField, IconButton, Box } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../../slices/canvasSlice";
@@ -75,7 +75,7 @@ const TextToolInput = ({
         borderRadius: "8px",
         display: "flex",
         alignItems: "center",
-        gap: "10px",
+        gap: "5px",
         zIndex: 1000,
       }}
       onMouseDown={(e) => e.stopPropagation()}
@@ -92,19 +92,22 @@ const TextToolInput = ({
         }}
       />
 
-      <IconButton type="submit" color="success">
-        <Check />
-      </IconButton>
+      <Box display={"flex"} flexDirection={"column"}>
+        <IconButton sx={{ padding: 0 }} type="submit" color="success">
+          <Check />
+        </IconButton>
 
-      <IconButton
-        color="error"
-        onClick={() => {
-          setTextInput(null);
-          setShapeType(null);
-        }}
-      >
-        <Close />
-      </IconButton>
+        <IconButton
+          sx={{ padding: 0 }}
+          color="error"
+          onClick={() => {
+            setTextInput(null);
+            setShapeType(null);
+          }}
+        >
+          <Close />
+        </IconButton>
+      </Box>
     </form>
   );
 };
