@@ -15,8 +15,6 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
-
-import useAuth from "../customHooks/useAuth";
 import {
   useGetAllNotificationsQuery,
   useUpdateNotificationMutation,
@@ -29,7 +27,12 @@ const socket = io(URL);
 const UserInfo = () => {
   const profilePicture = useSelector((state) => state.auth.profilePicture);
   const NotificationSound = new Audio("/audio/notifications.mp3");
-  const { userName, role, isAdmin, userId } = useAuth();
+  const {
+    username: userName,
+    role,
+    _id: userId,
+  } = useSelector((state) => state.auth.user);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const [notifications, setNotifications] = useState([]);
@@ -123,7 +126,7 @@ const UserInfo = () => {
 
       {isPc && (
         <Typography variant="body1" sx={{ color: "white", fontWeight: 500 }}>
-          {userName}
+          {userName?.length > 10 ? userName.slice(0, 10) + "..." : userName}
           <Typography
             variant="body2"
             component="span"
@@ -153,6 +156,7 @@ const UserInfo = () => {
         userName={userName}
         role={role}
         onLogout={handleLogout}
+        setAnchorEl={setAnchorEl}
       />
 
       <Popover

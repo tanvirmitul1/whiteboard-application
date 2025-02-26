@@ -8,6 +8,7 @@ const {
   deleteUser,
   uploadProfilePicture,
   upload,
+  updateUser,
 } = require("../controllers/userController");
 const {
   validateCreateUser,
@@ -33,5 +34,6 @@ router.post(
   upload.single("image"),
   uploadProfilePicture
 );
+router.put("/update-user", updateUser);
 
 module.exports = router;

@@ -4,7 +4,7 @@ export const customModalStyles = {
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.85)",
     margin: "auto",
-    zIndex: 9999,
+    zIndex: 999,
   },
   content: {
     borderRadius: "16px",
@@ -16,7 +16,7 @@ export const customModalStyles = {
     padding: "0",
     background: "#2a2a2a",
     color: "#f5f5f5",
-    zIndex: 9999,
+    zIndex: 999,
     border: "1px solid #444",
     overflow: "hidden",
   },

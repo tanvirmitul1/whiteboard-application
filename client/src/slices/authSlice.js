@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   profilePicture: null,
+  user: null,
 };
 
 const authSlice = createSlice({
@@ -10,8 +11,11 @@ const authSlice = createSlice({
     setProfilePicture: (state, action) => {
       state.profilePicture = action.payload;
     },
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
 
-export const { setProfilePicture } = authSlice.actions;
+export const { setProfilePicture, setUser } = authSlice.actions;
 export default authSlice.reducer;

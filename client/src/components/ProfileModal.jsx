@@ -6,17 +6,20 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  TextField,
+  Tooltip,
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-
 import { useDispatch } from "react-redux";
-import { useProfilePictureUploadMutation } from "../Apis/userApiSlice";
-import { setProfilePicture } from "../slices/authSlice";
+import {
+  useProfilePictureUploadMutation,
+  useUpdateUserMutation,
+} from "../Apis/userApiSlice";
+import { setProfilePicture, setUser } from "../slices/authSlice";
 import CustomModal from "./modal/CustomModal";
 
 const ProfileModal = ({
@@ -31,14 +34,17 @@ const ProfileModal = ({
   const dispatch = useDispatch();
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [name, setName] = useState(userName);
+  const [isEditingName, setIsEditingName] = useState(false);
   const [uploadProfilePicture, { isLoading }] =
     useProfilePictureUploadMutation();
+  const [updateUser, { isLoading: updateLoading }] = useUpdateUserMutation();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // Set preview URL
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -53,7 +59,7 @@ const ProfileModal = ({
       const response = await uploadProfilePicture(formData).unwrap();
       dispatch(setProfilePicture(response.imageUrl));
       localStorage.setItem("imageUrl", response.imageUrl);
-      toast.success("Profile picture uploaded successfully!");
+      toast.success("Profile image uploaded successfully!");
       setImage(null);
       setPreview(null);
     } catch (error) {
@@ -65,7 +71,19 @@ const ProfileModal = ({
     setImage(null);
     setPreview(null);
   };
-
+  const handleUpdateUser = async () => {
+    setIsEditingName(false);
+    updateUser({ userId, username: name })
+      .unwrap()
+      .then((response) => {
+        toast.success("User updated successfully!");
+        localStorage.setItem("user", JSON.stringify(response.user));
+        dispatch(setUser(response.user));
+      })
+      .catch((error) => {
+        toast.error("Update failed. Please try again.");
+      });
+  };
   return (
     <CustomModal open={open} onClose={onClose} title="Profile">
       <Box sx={{ textAlign: "center", p: 3, overflowX: "hidden" }}>
@@ -82,9 +100,49 @@ const ProfileModal = ({
             src={preview || profilePicture}
           />
         </motion.div>
-        <Typography variant="h6" sx={{ mt: 2 }} fontWeight="bold">
-          {userName}
-        </Typography>
+        {isEditingName ? (
+          <TextField
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onBlur={handleUpdateUser}
+            autoFocus
+            variant="outlined"
+            size="small"
+            sx={{
+              mt: 2,
+              mb: 2,
+              fontWeight: "bold",
+              cursor: "pointer",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                  color: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                  color: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                  color: "white",
+                },
+                "& .MuiInputBase-input": {
+                  color: "white", // Ensures the text inside the TextField is white
+                },
+              },
+            }}
+          />
+        ) : (
+          <Tooltip title="Click to change" arrow>
+            <Typography
+              variant="h4"
+              sx={{ mt: 2, fontWeight: "bold", cursor: "pointer" }}
+              onClick={() => setIsEditingName(true)}
+            >
+              {name}
+            </Typography>
+          </Tooltip>
+        )}
         <Typography variant="body1">{role}</Typography>
         <Typography variant="body2" color="text.disabled">
           {email}
@@ -124,11 +182,7 @@ const ProfileModal = ({
               <Typography variant="body2">{image?.name}</Typography>
               <Box
                 mt={1}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: 1,
-                }}
+                sx={{ display: "flex", justifyContent: "center", gap: 1 }}
               >
                 <IconButton onClick={handleSkip} color="warning">
                   <CloseIcon />

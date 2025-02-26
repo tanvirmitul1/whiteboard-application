@@ -9,7 +9,7 @@ import { Box, Button, CircularProgress, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import TypingGame from "../components/TypingGame";
 import { useDispatch } from "react-redux";
-import { setProfilePicture } from "../slices/authSlice";
+import { setProfilePicture, setUser } from "../slices/authSlice";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("mitul");
@@ -38,7 +38,9 @@ const LoginPage = () => {
         localStorage.setItem("user", JSON.stringify(response.user));
         localStorage.setItem("token", response.token);
         localStorage.setItem("imageUrl", response.user?.imageUrl);
+        dispatch(setUser(response.user));
         dispatch(setProfilePicture(response.user?.imageUrl));
+
         toast.success("Login successful!");
 
         setTimeout(() => {

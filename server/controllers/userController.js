@@ -153,3 +153,27 @@ exports.uploadProfilePicture = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateUser = async (req, res) => {
+  try {
+    const { userId, username } = req.body;
+
+    // Find the user by ID and update
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { username },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating user", error });
+  }
+};

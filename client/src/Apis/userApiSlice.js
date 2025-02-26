@@ -45,6 +45,13 @@ const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    updateUser: build.mutation({
+      query: (data) => ({
+        url: `/users/update-user`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -55,4 +62,5 @@ export const {
   useGetAllUsersQuery,
   useDeleteUserMutation,
   useProfilePictureUploadMutation,
+  useUpdateUserMutation,
 } = userApiSlice;

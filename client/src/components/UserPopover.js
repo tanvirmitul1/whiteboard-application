@@ -22,9 +22,14 @@ const UserPopover = ({
   onClose,
   email,
   onLogout,
+  setAnchorEl,
 }) => {
   const profilePicture = useSelector((state) => state.auth.profilePicture);
-  const { userName, role, userId } = useAuth();
+  const {
+    username: userName,
+    role,
+    _id: userId,
+  } = useSelector((state) => state.auth.user);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
@@ -83,7 +88,10 @@ const UserPopover = ({
 
           <Box display="flex" justifyContent="space-between">
             <Button
-              onClick={() => setIsProfileOpen(true)}
+              onClick={() => {
+                setAnchorEl(null);
+                setIsProfileOpen(true);
+              }}
               variant="contained"
               color="secondary"
               size="small"
