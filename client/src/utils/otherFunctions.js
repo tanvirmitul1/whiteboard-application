@@ -67,6 +67,13 @@ export const pasteShape = (copiedShape, drawAllShapes) => {
           y: point.y, // Keep the y position the same
         })),
       };
+    } else if (copiedShape.type === "image") {
+      // Handle image shapes
+      copiedShapeToPaste = {
+        ...copiedShape,
+        x: copiedShape.x + 50, // Offset the image position
+        y: copiedShape.y + 50,
+      };
     } else {
       // Handle other shapes (e.g., rectangle, circle, etc.)
       copiedShapeToPaste = {
