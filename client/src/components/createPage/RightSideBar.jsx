@@ -87,8 +87,6 @@ const RightSideBar = ({
     [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
   };
 
-  console.log({ selectedShapeIndex });
-
   return (
     <Box
       sx={{

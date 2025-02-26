@@ -1,5 +1,6 @@
 export const resizeShape = (shape, newSize) => {
-  const { type, start, end, position, text, fontSize } = shape;
+  const { type, start, end, position, text, fontSize, width, height } = shape;
+  console.log({ width, height });
 
   switch (type) {
     case "line":
@@ -37,16 +38,16 @@ export const resizeShape = (shape, newSize) => {
       };
 
     case "rectangle":
-      // Resize only width or height, not both, to prevent it from becoming a square
-      const width = end.x - start.x;
-      const height = end.y - start.y;
+      // Rename width and height variables to avoid conflict
+      const rectWidth = end.x - start.x;
+      const rectHeight = end.y - start.y;
 
       // Adjust width and height proportionally
       return {
         ...shape,
         end: {
           x: start.x + newSize, // Update width
-          y: start.y + (height / width) * newSize, // Maintain aspect ratio
+          y: start.y + (rectHeight / rectWidth) * newSize, // Maintain aspect ratio
         },
       };
 
@@ -54,6 +55,17 @@ export const resizeShape = (shape, newSize) => {
       return {
         ...shape,
         fontSize: newSize, // Adjusting text size
+      };
+    case "image":
+      // Resize image width and height
+      const aspectRatio = width / height;
+      const newWidth = newSize;
+      const newHeight = newWidth / aspectRatio;
+
+      return {
+        ...shape,
+        width: newWidth,
+        height: newHeight,
       };
 
     case "pentagon":
@@ -75,6 +87,7 @@ export const resizeShape = (shape, newSize) => {
       return shape;
   }
 };
+
 export const getShapeSize = (shape) => {
   switch (shape?.type) {
     case "line":
@@ -90,7 +103,7 @@ export const getShapeSize = (shape) => {
     case "hexagon":
       return calculateHexagonSize(shape);
     case "text":
-      return shape.fontSize; // For text, we return the font size directly
+      return shape.fontSize;
     default:
       return 50; // Default size if no shape is matched
   }
@@ -148,15 +161,7 @@ export const calculateHexagonSize = (shape) => {
 };
 
 export const rotateShape = (shape, angle) => {
-  const {
-    type,
-    start,
-    end,
-    position,
-    path,
-    fontSize,
-    angle: currentAngle,
-  } = shape;
+  const { type, start, end, width, height, x, y } = shape;
   const angleRad = (angle * Math.PI) / 180; // Convert degrees to radians
 
   // Function to rotate a point around a center
@@ -191,29 +196,21 @@ export const rotateShape = (shape, angle) => {
         end: newEnd,
       };
 
-    // case "text":
-    //   // Handle text's rotation: add rotation angle property
-    //   const textCenter = {
-    //     x: position.x + fontSize / 2, // Adjusted for text center
-    //     y: position.y + fontSize / 2,
-    //   };
-
-    //   const newPosition = rotatePoint(position, textCenter, angleRad); // Rotate around the center
-    //   return {
-    //     ...shape,
-    //     position: newPosition,
-    //     angle: (currentAngle + angle) % 360, // Update angle for rotation (keep it in range [0, 360])
-    //   };
-
-    // case "pen":
-    //   // Rotate all path points for pen
-    //   const newPath = path.map((point) => rotatePoint(point, center, angleRad));
-    //   return {
-    //     ...shape,
-    //     path: newPath,
-    //   };
+    case "image":
+      // Calculate the center of the image
+      const imageCenter = {
+        x: x + width / 2,
+        y: y + height / 2,
+      };
+      // Rotate the image position
+      const newPosition = rotatePoint({ x, y }, imageCenter, angleRad);
+      return {
+        ...shape,
+        x: newPosition.x,
+        y: newPosition.y,
+      };
 
     default:
-      return shape; // Return unchanged if shape type is unknown
+      return shape;
   }
 };
