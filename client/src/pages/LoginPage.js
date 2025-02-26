@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom"; // Import Link
 import useAuth from "../customHooks/useAuth";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import TypingGame from "../components/TypingGame";
 import { useDispatch } from "react-redux";
 import { setProfilePicture } from "../slices/authSlice";
@@ -13,6 +14,7 @@ import { setProfilePicture } from "../slices/authSlice";
 const LoginPage = () => {
   const [username, setUsername] = useState("mitul");
   const [password, setPassword] = useState("12345678");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
   const { userId } = useAuth();
@@ -80,12 +82,17 @@ const LoginPage = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <PasswordWrapper>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </PasswordWrapper>
         <Button type="submit">
           {isLoading ? (
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -129,6 +136,7 @@ const LoginPage = () => {
 
 export const FormContainer = styled.div`
   height: ${(props) => props.height || "100vh"};
+  overflow-x: hidden;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -190,7 +198,7 @@ export const FormContainer = styled.div`
     button {
       background: linear-gradient(45deg, #ff6f61, #ffcc00);
       color: white;
-      padding: 0.8rem 1.5rem;
+      padding: 0.3rem 1.5rem;
       border: none;
       font-weight: bold;
       cursor: pointer;
@@ -209,8 +217,8 @@ export const FormContainer = styled.div`
 
 export const Error = styled.div`
   color: #ff6f61;
-  margin-top: 1rem;
   font-weight: bold;
+  text-align: center;
 `;
 
 const LoadingModal = styled.div`
@@ -244,6 +252,22 @@ const LoadingModal = styled.div`
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.7);
+  }
+`;
+export const PasswordWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    flex: 1;
+    padding-right: 2rem;
+  }
+
+  button {
+    position: absolute;
+    right: 10px;
+    color: white;
   }
 `;
 

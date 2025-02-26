@@ -1,13 +1,24 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCreateUserMutation } from "../Apis/userApiSlice";
-import { Select, MenuItem, Button, CircularProgress } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  Button,
+  CircularProgress,
+  IconButton,
+  Box,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
-import { Error, FormContainer } from "./LoginPage";
+import { Error, FormContainer, PasswordWrapper } from "./LoginPage";
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [role, setRole] = useState("User");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -16,6 +27,10 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
     try {
       const response = await createUser({ username, password, role }).unwrap();
       localStorage.setItem("user", JSON.stringify(response.user));
@@ -39,19 +54,36 @@ const RegisterPage = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Select
+        <PasswordWrapper>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </PasswordWrapper>
+
+        <PasswordWrapper>
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          <IconButton onClick={() => setShowConfirmPassword((prev) => !prev)}>
+            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </PasswordWrapper>
+        {/* <Select
           value={role}
           onChange={(e) => setRole(e.target.value)}
           fullWidth
         >
           <MenuItem value="User">User</MenuItem>
-        </Select>
+        </Select> */}
         {error && <Error>{error}</Error>}
         <Button type="submit">
           {isLoading ? (
