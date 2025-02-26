@@ -47,7 +47,7 @@ const ImageUploader = () => {
         ctx.drawImage(img, 0, 0, width, height);
 
         // Get the resized image data URL
-        const resizedImgSrc = canvas.toDataURL("image/png");
+        const resizedImgSrc = canvas.toDataURL("image/jpeg", 0.9);
 
         // Create new image shape object
         const newImageShape = {

@@ -37,9 +37,29 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
         fontStyle,
         textDecoration,
         fontFamily,
+        x,
+        y,
+        width,
+        height,
+        imgSrc,
       } = shape;
 
       switch (type) {
+        case "image":
+          if (imgSrc) {
+            const img = new Image();
+            img.src = imgSrc;
+            img.onload = () => {
+              ctx.drawImage(
+                img,
+                x * scale,
+                y * scale,
+                width * scale,
+                height * scale
+              );
+            };
+          }
+          break;
         case "line":
           if (start.x && start.y && end.x && end.y) {
             ctx.beginPath();

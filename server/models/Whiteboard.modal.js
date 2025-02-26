@@ -24,6 +24,7 @@ const whiteboardSchema = new mongoose.Schema(
             "text",
             "pen",
             "emoji",
+            "image",
           ],
           required: true,
         },
@@ -34,6 +35,12 @@ const whiteboardSchema = new mongoose.Schema(
         fontStyle: { type: String, required: false },
         textDecoration: { type: String, required: false },
         fontFamily: { type: String, required: false },
+        x: { type: Number, required: () => this.type === "image" },
+        y: { type: Number, required: () => this.type === "image" },
+        width: { type: Number, required: () => this.type === "image" },
+        height: { type: Number, required: () => this.type === "image" },
+        imgSrc: { type: String, required: () => this.type === "image" },
+
         start: {
           x: {
             type: Number,
