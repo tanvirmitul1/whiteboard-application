@@ -173,27 +173,6 @@ const Whiteboard = ({
     [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
   };
 
-  const clearCanvas = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to clear this drawing?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, clear it!",
-    });
-
-    if (result.isConfirmed) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      dispatch(setShapes([]));
-      onShapesUpdate([]);
-      localStorage.removeItem("shapes");
-    }
-  };
-
   //mobile touchevent
   const handleTouchStart = (e) => {
     const canvas = canvasRef.current;
@@ -340,19 +319,6 @@ const Whiteboard = ({
 
     return () => window.removeEventListener("resize", setCanvasSize);
   }, [shapeType, shapes, drawColor]);
-  // useEffect(() => {
-  //   if (selectedShapeIndex !== null) {
-  //     const updatedShapes = shapes.map((shape, index) => {
-  //       if (index === selectedShapeIndex) {
-  //         return { ...shape, selected: true };
-  //       }
-  //       return shape;
-  //     });
-
-  //     setShapes(updatedShapes);
-  //     drawAllShapes();
-  //   }
-  // }, [selectedShapeIndex]);
 
   const [contextMenu, setContextMenu] = useState({
     visible: false,
@@ -436,7 +402,7 @@ const Whiteboard = ({
       />
 
       {/* Clear Button */}
-      <ClearButton clearCanvas={clearCanvas} shapes={shapes} />
+      <ClearButton shapes={shapes} canvasRef={canvasRef} />
       <DownloadButton
         backgroundColor={backgroundColor}
         drawingTitle={drawingTitle}
