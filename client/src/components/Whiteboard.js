@@ -404,6 +404,25 @@ const Whiteboard = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [dispatch]);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return; // Ensure canvas exists
+
+    const preventScroll = (e) => e.preventDefault();
+
+    // Add event listeners
+    canvas.addEventListener("touchstart", preventScroll, { passive: false });
+    canvas.addEventListener("touchmove", preventScroll, { passive: false });
+    canvas.addEventListener("touchend", preventScroll, { passive: false });
+
+    // Cleanup function to remove event listeners
+    return () => {
+      canvas.removeEventListener("touchstart", preventScroll);
+      canvas.removeEventListener("touchmove", preventScroll);
+      canvas.removeEventListener("touchend", preventScroll);
+    };
+  }, [canvasRef.current]); // Depend on canvasRef.current
+
   return (
     <Box
       ref={containerRef}
