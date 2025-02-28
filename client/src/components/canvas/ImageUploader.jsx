@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { CloudUpload as UploadIcon } from "@mui/icons-material"; // Material UI icons
+import { Box, Button, IconButton, Tooltip } from "@mui/material";
+import { FaCloudUploadAlt as UploadIcon } from "react-icons/fa";
+// Material UI icons
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../../slices/canvasSlice";
 
@@ -71,14 +72,9 @@ const ImageUploader = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        gap: 1,
-        padding: "10px",
         position: "absolute",
-        top: 0,
-        left: 0,
+        top: 10,
+        right: 60,
       }}
     >
       {/* File input hidden, triggered by button */}
@@ -91,15 +87,30 @@ const ImageUploader = () => {
       />
 
       {/* Upload button with icon */}
-      <Tooltip title="Upload Image">
-        <IconButton
-          color="primary"
-          onClick={() => imageUploadRef.current.click()}
-          size="medium"
-        >
-          <UploadIcon sx={{ fontSize: 30 }} />
-        </IconButton>
-      </Tooltip>
+      <Button
+        sx={{
+          textTransform: "none",
+          width: { xs: 10, sm: 25, md: 30 }, // Responsive width
+          height: { xs: 10, sm: 25, md: 30 }, // Responsive height
+          minWidth: { xs: 10, sm: 25, md: 30 },
+          padding: 0,
+        }}
+      >
+        <Tooltip title="Upload Image">
+          <IconButton
+            color="primary"
+            onClick={() => imageUploadRef.current.click()}
+            size="medium"
+          >
+            <UploadIcon
+              color="#158CE4"
+              size={
+                window.innerWidth < 600 ? 20 : window.innerWidth < 960 ? 25 : 30
+              }
+            />
+          </IconButton>
+        </Tooltip>
+      </Button>
     </Box>
   );
 };

@@ -24,12 +24,12 @@ const DownloadButton = ({ backgroundColor, drawingTitle, shapes }) => {
     <Button
       sx={{
         position: "absolute",
-        top: 16,
+        top: 10,
         right: 16,
         textTransform: "none",
-        width: { xs: 32, sm: 36, md: 40 }, // Responsive width
-        height: { xs: 32, sm: 36, md: 40 }, // Responsive height
-        minWidth: { xs: 32, sm: 36, md: 40 },
+        width: { xs: 20, sm: 25, md: 30 }, // Responsive width
+        height: { xs: 20, sm: 25, md: 30 }, // Responsive height
+        minWidth: { xs: 20, sm: 25, md: 30 },
         padding: 0,
       }}
       variant="contained"
