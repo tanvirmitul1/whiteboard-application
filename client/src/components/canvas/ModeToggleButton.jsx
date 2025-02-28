@@ -56,13 +56,13 @@ const ModeToggleButton = () => {
         },
       }}
     >
-      <Tooltip title="Draw" arrow>
+      <Tooltip title="Draw Mode" arrow>
         <ToggleButton value="draw">
           <DrawIcon sx={{ fontSize: 16 }} />
         </ToggleButton>
       </Tooltip>
 
-      <Tooltip title="Move" arrow>
+      <Tooltip title="Move Shapes" arrow>
         <ToggleButton value="move">
           <OpenWithIcon sx={{ fontSize: 16 }} />
         </ToggleButton>

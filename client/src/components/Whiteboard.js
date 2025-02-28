@@ -50,16 +50,7 @@ const Whiteboard = ({
   const [copiedShape, setCopiedShape] = useState(null);
   const smoothingFactor = Number(process.env.REACT_APP_SMOOTH_FACTOR);
   const mode = useSelector((state) => state.canvas.mode); // Get mode from Redux
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Shift") {
-        dispatch(toggleMode());
-      }
-    };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [dispatch]);
   const drawAllShapes = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -402,6 +393,16 @@ const Whiteboard = ({
 
     return () => window.removeEventListener("resize", setCanvasSize);
   }, [shapeType, shapes, drawColor]);
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Shift") {
+        dispatch(toggleMode());
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [dispatch]);
 
   return (
     <Box
