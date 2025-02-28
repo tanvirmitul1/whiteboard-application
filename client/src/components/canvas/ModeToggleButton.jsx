@@ -4,9 +4,9 @@ import { Box, ToggleButton, Tooltip } from "@mui/material";
 import DrawIcon from "@mui/icons-material/Draw";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import { toggleMode } from "../../slices/canvasSlice";
-import { indigo } from "@mui/material/colors";
+import { FiMove } from "react-icons/fi";
+import { MdOutlineDraw } from "react-icons/md";
 
-const color = indigo["A100"];
 const ModeToggleButton = () => {
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.canvas.mode);
@@ -34,7 +34,7 @@ const ModeToggleButton = () => {
         title={
           <span>
             {isDrawMode ? "Activate Movement Mode" : "Activate Drawing Mode"}{" "}
-            <span style={{ opacity: 0.6 }}>(Press Shift)</span>
+            <span style={{ opacity: 0.6 }}>( Shift )</span>
           </span>
         }
         arrow
@@ -53,9 +53,19 @@ const ModeToggleButton = () => {
           }}
         >
           {isDrawMode ? (
-            <DrawIcon sx={{ fontSize: 20, color: "#4dd0e1" }} />
+            <MdOutlineDraw
+              color="#4dd0e1"
+              size={
+                window.innerWidth < 600 ? 12 : window.innerWidth < 960 ? 15 : 20
+              }
+            />
           ) : (
-            <OpenWithIcon sx={{ fontSize: 20, color: "#4dd0e1" }} />
+            <FiMove
+              color="#4dd0e1"
+              size={
+                window.innerWidth < 600 ? 12 : window.innerWidth < 960 ? 15 : 20
+              }
+            />
           )}
         </ToggleButton>
       </Tooltip>
