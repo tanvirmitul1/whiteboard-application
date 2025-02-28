@@ -23,7 +23,7 @@ const ModeToggleButton = () => {
         alignItems: "center",
         justifyContent: "flex-start",
         gap: 0.5,
-        padding: "4px",
+        padding: "5px",
         position: "absolute",
         top: 10,
         left: 10,
@@ -56,13 +56,13 @@ const ModeToggleButton = () => {
         },
       }}
     >
-      <Tooltip title="Draw Mode" arrow>
+      <Tooltip title="Draw" arrow>
         <ToggleButton value="draw">
           <DrawIcon sx={{ fontSize: 16 }} />
         </ToggleButton>
       </Tooltip>
 
-      <Tooltip title="Move Shapes" arrow>
+      <Tooltip title="Move" arrow>
         <ToggleButton value="move">
           <OpenWithIcon sx={{ fontSize: 16 }} />
         </ToggleButton>
