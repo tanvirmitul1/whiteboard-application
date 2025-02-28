@@ -96,7 +96,7 @@ const ImageUploader = () => {
           padding: 0,
         }}
       >
-        <Tooltip title="Upload Image">
+        <Tooltip title="Import Image into canvas">
           <IconButton
             color="primary"
             onClick={() => imageUploadRef.current.click()}

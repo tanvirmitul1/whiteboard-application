@@ -38,13 +38,15 @@ const DownloadButton = ({ backgroundColor, drawingTitle, shapes }) => {
       onClick={handleDownload}
       disabled={shapes.length === 0}
     >
-      <Tooltip title="Download" placement="top">
-        <IoMdDownload
-          color="white"
-          size={
-            window.innerWidth < 600 ? 12 : window.innerWidth < 960 ? 15 : 18
-          } // Responsive icon size
-        />
+      <Tooltip title="Download Current Drawing" arrow>
+        <IconButton>
+          <IoMdDownload
+            color="white"
+            size={
+              window.innerWidth < 600 ? 12 : window.innerWidth < 960 ? 15 : 18
+            } // Responsive icon size
+          />
+        </IconButton>
       </Tooltip>
     </Button>
   );

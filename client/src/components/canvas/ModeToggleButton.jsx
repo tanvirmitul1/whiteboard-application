@@ -1,10 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
+import { Box, ToggleButton, Tooltip } from "@mui/material";
 import DrawIcon from "@mui/icons-material/Draw";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import { toggleMode } from "../../slices/canvasSlice";
+import { indigo } from "@mui/material/colors";
 
+const color = indigo["A100"];
 const ModeToggleButton = () => {
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.canvas.mode);
@@ -13,11 +15,10 @@ const ModeToggleButton = () => {
     dispatch(toggleMode());
   };
 
+  const isDrawMode = mode === "draw";
+
   return (
-    <ToggleButtonGroup
-      value={mode}
-      exclusive
-      onChange={handleChange}
+    <Box
       sx={{
         display: "flex",
         alignItems: "center",
@@ -25,49 +26,40 @@ const ModeToggleButton = () => {
         gap: 0.5,
         padding: "5px",
         position: "absolute",
-        top: 10,
+        top: 0,
         left: 10,
-
-        // Background color for dark mode
-        backgroundColor: "#333", // Dark background for the button group in dark mode
-        borderRadius: "10px",
-        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
-
-        "& .MuiToggleButton-root": {
-          padding: "5px 10px",
-          fontSize: "10px",
-          fontWeight: "bold",
-          transition: "all 0.3s ease-in-out",
-          minWidth: "36px",
-          color: "white", // Light text for dark background
-          backgroundColor: "transparent", // Transparent background for each button
-          borderColor: "#555", // Light border for buttons
-          "&:hover": {
-            backgroundColor: "#444", // Darker background on hover
-            borderColor: "#777", // Hover border color
-          },
-        },
-        "& .Mui-selected": {
-          backgroundColor: "#1976d2", // Blue background when selected
-          color: "white", // White text when selected
-          "&:hover": {
-            backgroundColor: "#1565c0", // Darker blue on hover when selected
-          },
-        },
       }}
     >
-      <Tooltip title="Draw" arrow>
-        <ToggleButton value="draw">
-          <DrawIcon sx={{ fontSize: 16 }} />
+      <Tooltip
+        title={
+          <span>
+            {isDrawMode ? "Activate Movement Mode" : "Activate Drawing Mode"}{" "}
+            <span style={{ opacity: 0.6 }}>(Press Shift)</span>
+          </span>
+        }
+        arrow
+      >
+        <ToggleButton
+          value={mode}
+          onClick={handleChange}
+          sx={{
+            padding: "8px",
+            borderRadius: "50%",
+            backgroundColor: "#333",
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#444",
+            },
+          }}
+        >
+          {isDrawMode ? (
+            <DrawIcon sx={{ fontSize: 20, color: "#4dd0e1" }} />
+          ) : (
+            <OpenWithIcon sx={{ fontSize: 20, color: "#4dd0e1" }} />
+          )}
         </ToggleButton>
       </Tooltip>
-
-      <Tooltip title="Move" arrow>
-        <ToggleButton value="move">
-          <OpenWithIcon sx={{ fontSize: 16 }} />
-        </ToggleButton>
-      </Tooltip>
-    </ToggleButtonGroup>
+    </Box>
   );
 };
 
