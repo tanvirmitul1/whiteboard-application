@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   shapes: [],
   selectedShapeIndex: null,
+  mode: "draw",
 };
 
 const canvasSlice = createSlice({
@@ -15,8 +16,12 @@ const canvasSlice = createSlice({
     setSelectedShapeIndex: (state, action) => {
       state.selectedShapeIndex = action.payload;
     },
+    toggleMode: (state) => {
+      state.mode = state.mode === "draw" ? "move" : "draw";
+    },
   },
 });
 
-export const { setShapes, setSelectedShapeIndex } = canvasSlice.actions;
+export const { setShapes, setSelectedShapeIndex, toggleMode } =
+  canvasSlice.actions;
 export default canvasSlice.reducer;

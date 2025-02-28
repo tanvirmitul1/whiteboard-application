@@ -15,7 +15,7 @@ import {
 import { handleKeyDown } from "../utils/keyHandlers";
 import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
 import ShapeContextBar from "./context/ShapeContextBar";
-import { setShapes } from "../slices/canvasSlice";
+import { setShapes, toggleMode } from "../slices/canvasSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Watermark from "./canvas/Watermark";
 import TextToolInput from "./canvas/TextToolInput";
@@ -23,6 +23,8 @@ import ClearButton from "./canvas/ClearButton";
 import { v4 as uuidv4 } from "uuid";
 import DownloadButton from "./canvas/DownloadButton";
 import ImageUploader from "./canvas/ImageUploader";
+import { toast } from "react-toastify";
+import ModeToggleButton from "./canvas/ModeToggleButton";
 const Whiteboard = ({
   shapeType,
   setShapeType,
@@ -47,6 +49,17 @@ const Whiteboard = ({
   const [currentPenPath, setCurrentPenPath] = useState([]);
   const [copiedShape, setCopiedShape] = useState(null);
   const smoothingFactor = Number(process.env.REACT_APP_SMOOTH_FACTOR);
+  const mode = useSelector((state) => state.canvas.mode); // Get mode from Redux
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Shift") {
+        dispatch(toggleMode());
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [dispatch]);
   const drawAllShapes = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -54,35 +67,84 @@ const Whiteboard = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
   };
+
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
-    const mousePos = getMousePosition(canvas, e);
     const ctx = canvas.getContext("2d");
+    const mousePos = getMousePosition(canvas, e);
     setStartPoint(mousePos);
-
     if (shapeType === "eraser") {
       const shapeIndex = shapes.findIndex((shape) =>
         isPointInShape(ctx, mousePos, shape)
       );
-      const selectedShape = shapes[shapeIndex];
-      const updatedShapes = shapes.filter((shape) => shape !== selectedShape);
-      dispatch(setShapes(updatedShapes));
-      onShapesUpdate(updatedShapes);
+      if (shapeIndex !== -1) {
+        const updatedShapes = shapes.filter((_, index) => index !== shapeIndex);
+        dispatch(setShapes(updatedShapes));
+        onShapesUpdate(updatedShapes);
+      }
     }
 
-    if (shapeType === "pen") {
-      setIsDrawing(true);
-      setCurrentPenPath([mousePos]); // Start the pen path
-    } else {
+    if (mode === "draw") {
+      if (isDrawing && shapeType === "pen") {
+        setCurrentPenPath([...currentPenPath, mousePos]);
+        drawPen(ctx, currentPenPath);
+      } else if (shapeType === "image") {
+        setSelectedShapeIndex(
+          shapes.findIndex((shape) => isPointInShape(ctx, mousePos, shape))
+        );
+      } else {
+        setIsDrawing(true);
+      }
+    } else if (mode === "move") {
       const shapeIndex = shapes.findIndex((shape) =>
         isPointInShape(ctx, mousePos, shape)
       );
       if (shapeIndex !== -1) {
         setSelectedShapeIndex(shapeIndex);
         setIsMoving(true);
-      } else {
-        setIsDrawing(true);
       }
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (mode === "draw" && !isDrawing) return;
+    if (mode === "move" && !isMoving) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const mousePos = getMousePosition(canvas, e);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawAllShapes();
+
+    if (mode === "draw") {
+      if (isDrawing && shapeType === "pen") {
+        setCurrentPenPath([...currentPenPath, mousePos]);
+        drawPen(ctx, currentPenPath);
+      } else if (shapeType === "image" && selectedShapeIndex !== null) {
+        const updatedShapes = shapes.map((shape, index) =>
+          index === selectedShapeIndex
+            ? {
+                ...shape,
+                x: mousePos.x - shape.width / 2,
+                y: mousePos.y - shape.height / 2,
+              }
+            : shape
+        );
+        dispatch(setShapes(updatedShapes));
+        drawAllShapes(updatedShapes);
+      } else {
+        drawCurrentShape(ctx, startPoint, mousePos, shapeType, drawColor);
+      }
+    } else if (mode === "move" && selectedShapeIndex !== null) {
+      moveShape(
+        mousePos,
+        selectedShapeIndex,
+        startPoint,
+        setStartPoint,
+        onShapesUpdate,
+        smoothingFactor
+      );
     }
   };
 
@@ -143,40 +205,6 @@ const Whiteboard = ({
     setIsDrawing(false);
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDrawing && !isMoving) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const mousePos = getMousePosition(canvas, e);
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawAllShapes();
-
-    if (isDrawing && shapeType === "pen") {
-      setCurrentPenPath([...currentPenPath, mousePos]);
-      drawPen(ctx, currentPenPath);
-    } else if (isDrawing && shapeType === "image") {
-      const shape = shapes[selectedShapeIndex];
-      shape.x = mousePos.x - shape.width / 2;
-      shape.y = mousePos.y - shape.height / 2;
-      const updatedShapes = [shape, ...shapes];
-      dispatch(setShapes(updatedShapes));
-      drawAllShapes(updatedShapes);
-    } else if (isDrawing && shapeType !== "eraser") {
-      drawCurrentShape(ctx, startPoint, mousePos, shapeType, drawColor);
-    } else if (isMoving && selectedShapeIndex !== null) {
-      moveShape(
-        mousePos,
-        selectedShapeIndex,
-        startPoint,
-        setStartPoint,
-        onShapesUpdate,
-        smoothingFactor
-      );
-    }
-  };
-
   //mobile touchevent
   const handleTouchStart = (e) => {
     const canvas = canvasRef.current;
@@ -184,21 +212,39 @@ const Whiteboard = ({
     const touchPos = getTouchPosition(canvas, e);
     setStartPoint(touchPos);
 
-    if (shapeType === "pen") {
-      setIsDrawing(true);
-      setCurrentPenPath([touchPos]);
-    } else {
+    if (shapeType === "eraser") {
+      const shapeIndex = shapes.findIndex((shape) =>
+        isPointInShape(ctx, touchPos, shape)
+      );
+      if (shapeIndex !== -1) {
+        const updatedShapes = shapes.filter((_, index) => index !== shapeIndex);
+        dispatch(setShapes(updatedShapes));
+        onShapesUpdate(updatedShapes);
+      }
+    }
+
+    if (mode === "draw") {
+      if (isDrawing && shapeType === "pen") {
+        setCurrentPenPath([...currentPenPath, touchPos]);
+        drawPen(ctx, currentPenPath);
+      } else if (shapeType === "image") {
+        setSelectedShapeIndex(
+          shapes.findIndex((shape) => isPointInShape(ctx, touchPos, shape))
+        );
+      } else {
+        setIsDrawing(true);
+      }
+    } else if (mode === "move") {
       const shapeIndex = shapes.findIndex((shape) =>
         isPointInShape(ctx, touchPos, shape)
       );
       if (shapeIndex !== -1) {
         setSelectedShapeIndex(shapeIndex);
         setIsMoving(true);
-      } else {
-        setIsDrawing(true);
       }
     }
   };
+
   const handleTouchEnd = (e) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -246,7 +292,8 @@ const Whiteboard = ({
 
   const handleTouchMove = (e) => {
     e.preventDefault(); // Prevent scrolling while drawing
-    if (!isDrawing && !isMoving) return;
+    if (mode === "draw" && !isDrawing) return;
+    if (mode === "move" && !isMoving) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -255,19 +302,26 @@ const Whiteboard = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawAllShapes();
 
-    if (isDrawing && shapeType === "pen") {
-      setCurrentPenPath([...currentPenPath, touchPos]);
-      drawPen(ctx, currentPenPath);
-    } else if (isDrawing && shapeType !== "eraser") {
-      drawCurrentShape(
-        ctx,
-        startPoint,
-        touchPos,
-        shapeType,
-        drawColor,
-        fillColor
-      );
-    } else if (isMoving && selectedShapeIndex !== null) {
+    if (mode === "draw") {
+      if (isDrawing && shapeType === "pen") {
+        setCurrentPenPath([...currentPenPath, touchPos]);
+        drawPen(ctx, currentPenPath);
+      } else if (shapeType === "image" && selectedShapeIndex !== null) {
+        const updatedShapes = shapes.map((shape, index) =>
+          index === selectedShapeIndex
+            ? {
+                ...shape,
+                x: touchPos.x - shape.width / 2,
+                y: touchPos.y - shape.height / 2,
+              }
+            : shape
+        );
+        dispatch(setShapes(updatedShapes));
+        drawAllShapes(updatedShapes);
+      } else {
+        drawCurrentShape(ctx, startPoint, touchPos, shapeType, drawColor);
+      }
+    } else if (mode === "move" && selectedShapeIndex !== null) {
       moveShape(
         touchPos,
         selectedShapeIndex,
@@ -406,6 +460,8 @@ const Whiteboard = ({
       <ClearButton shapes={shapes} canvasRef={canvasRef} />
       {/* Image Uploader */}
       <ImageUploader drawAllShapes={drawAllShapes} />
+
+      <ModeToggleButton />
 
       {/* Download Button */}
       <DownloadButton
