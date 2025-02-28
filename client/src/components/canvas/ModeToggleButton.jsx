@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, ToggleButton, Tooltip } from "@mui/material";
-import DrawIcon from "@mui/icons-material/Draw";
-import OpenWithIcon from "@mui/icons-material/OpenWith";
+import { Box, ToggleButton, Tooltip, Typography } from "@mui/material";
 import { toggleMode } from "../../slices/canvasSlice";
 import { FiMove } from "react-icons/fi";
 import { MdOutlineDraw } from "react-icons/md";
@@ -10,12 +8,23 @@ import { MdOutlineDraw } from "react-icons/md";
 const ModeToggleButton = () => {
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.canvas.mode);
+  const [showText, setShowText] = useState(false); // State to control the visibility of the text
 
   const handleChange = () => {
     dispatch(toggleMode());
   };
 
   const isDrawMode = mode === "draw";
+
+  // Handle the transition effect for the text visibility
+  useEffect(() => {
+    setShowText(true); // Show the text when mode changes
+    const timer = setTimeout(() => {
+      setShowText(false); // Hide the text after a short delay
+    }, 500); // Duration of transition effect
+
+    return () => clearTimeout(timer); // Cleanup the timeout when the component unmounts
+  }, [mode]);
 
   return (
     <Box
@@ -69,6 +78,24 @@ const ModeToggleButton = () => {
           )}
         </ToggleButton>
       </Tooltip>
+
+      {showText && (
+        <Typography
+          sx={{
+            position: "absolute",
+            top: "100%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            textAlign: "center",
+            opacity: showText ? 0.4 : 0,
+            transition: "opacity 0.3s ease-in-out",
+            fontSize: "10px",
+            color: "#fff",
+          }}
+        >
+          {isDrawMode ? "Drawing Enabled" : "Movement Enabled"}
+        </Typography>
+      )}
     </Box>
   );
 };
