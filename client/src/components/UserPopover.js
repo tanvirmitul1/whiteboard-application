@@ -7,14 +7,17 @@ import {
   Divider,
   Avatar,
   Tooltip,
+  IconButton,
+  Zoom,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { toast } from "react-toastify";
-
-import useAuth from "../customHooks/useAuth";
 import { useSelector } from "react-redux";
 import ProfileModal from "./ProfileModal";
+import { useTheme } from "@mui/material/styles";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
+import ColorModeButton from "./ColorModeButton";
 
 const UserPopover = ({
   openUserPopover,
@@ -31,6 +34,7 @@ const UserPopover = ({
     _id: userId,
   } = useSelector((state) => state.auth.user);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const theme = useTheme();
 
   return (
     <>
@@ -43,7 +47,7 @@ const UserPopover = ({
           ".MuiPaper-root": {
             borderRadius: 3,
             boxShadow: 3,
-            background: "#1e1e1e",
+            background: theme.palette.background.paper, // Use background color from theme
           },
         }}
       >
@@ -56,18 +60,30 @@ const UserPopover = ({
             <Box display="flex" alignItems="center" gap={2}>
               <Avatar
                 src={profilePicture}
-                sx={{ width: 40, height: 40, boxShadow: 2 }}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  boxShadow: 2,
+                  border: `2px solid ${theme.palette.primary.main}`, // Use primary color for border
+                }}
               />
               <Box>
-                <Typography variant="h6" fontWeight="bold" color="white">
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  color={theme.palette.text.primary}
+                >
                   {userName?.length > 12
                     ? userName.slice(0, 12) + "..."
                     : userName}
                 </Typography>
-                <Typography variant="body2" color="white">
+                <Typography
+                  variant="body2"
+                  color={theme.palette.text.secondary}
+                >
                   {role}
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color={theme.palette.text.disabled}>
                   {email}
                 </Typography>
               </Box>
@@ -114,6 +130,7 @@ const UserPopover = ({
               <LogoutIcon fontSize="small" /> Logout
             </Button>
           </Box>
+          <ColorModeButton />
         </Box>
       </Popover>
 

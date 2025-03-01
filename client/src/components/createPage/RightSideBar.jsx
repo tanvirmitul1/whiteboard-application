@@ -11,6 +11,7 @@ import Tools from "../tools/Tools";
 import ShapeIcon from "../tools/ShapeIcon";
 import TextEditor from "../tools/TextEditor";
 import RotateShape from "../tools/RotateShape";
+import { useTheme } from "@mui/material/styles";
 
 const RightSideBar = ({
   shapeType,
@@ -18,6 +19,7 @@ const RightSideBar = ({
   canvasRef,
   ...props
 }) => {
+  const theme = useTheme(); // Access the theme
   const {
     drawColor,
     setDrawColor,
@@ -90,8 +92,9 @@ const RightSideBar = ({
   return (
     <Box
       sx={{
-        color: "white",
-        backgroundColor: "#131324",
+        color: theme.palette.text.primary, // Use text color from theme
+        backgroundColor: theme.palette.background.default,
+        border: `1px solid ${theme.palette.divider}`,
         p: 1,
         display: "flex",
         flexDirection: "column",
@@ -114,7 +117,6 @@ const RightSideBar = ({
                 gap: 2,
               }}
             >
-              {" "}
               <Box sx={{ mb: 0.5 }}>
                 <ShapeIcon
                   selectedShape={selectedShape}
@@ -154,13 +156,14 @@ const RightSideBar = ({
                       "& .MuiSlider-thumb": {
                         width: 12,
                         height: 12,
+                        backgroundColor: theme.palette.primary.main, // Use primary color for thumb
                       },
                     }}
                   />
                   <Box
                     sx={{
                       display: "flex",
-                      flexDirection: { xs: "column", md: "row" }, // Corrected flexDirection
+                      flexDirection: { xs: "column", md: "row" },
                       alignItems: "center",
                       justifyContent: "center",
                     }}
@@ -181,9 +184,9 @@ const RightSideBar = ({
                       sx={{
                         input: {
                           textAlign: "center",
-                          color: "white",
+                          color: theme.palette.text.primary, // Text color from theme
                           fontSize: { xs: "12px", md: "14px" },
-                          width: { xs: "60px", md: "80px" }, // Adjusted width for mobile
+                          width: { xs: "60px", md: "80px" },
                         },
                       }}
                     />

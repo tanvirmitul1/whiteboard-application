@@ -22,8 +22,11 @@ import {
 import NotificationList from "./NotificationList";
 import { useNavigate } from "react-router-dom";
 import UserPopover from "./UserPopover";
+import { useTheme } from "@mui/material/styles"; // Import useTheme to access the theme
+
 const URL = process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL;
 const socket = io(URL);
+
 const UserInfo = () => {
   const profilePicture = useSelector((state) => state.auth.profilePicture);
   const NotificationSound = new Audio("/audio/notifications.mp3");
@@ -41,6 +44,13 @@ const UserInfo = () => {
 
   const { data: allNotifications } = useGetAllNotificationsQuery();
   const [updateNotification] = useUpdateNotificationMutation();
+
+  // Access the theme
+  const theme = useTheme();
+  const textPrimary = theme.palette.text.primary;
+  const primaryColor = theme.palette.primary.main;
+  const backgroundColor = theme.palette.background.default;
+  const errorColor = theme.palette.error.main;
 
   useEffect(() => {
     if (allNotifications) {
@@ -116,6 +126,8 @@ const UserInfo = () => {
         display: "flex",
         alignItems: "center",
         gap: 2,
+        backgroundColor: backgroundColor, // Use background color from theme
+        color: textPrimary, // Use text color from theme
       }}
     >
       <Tooltip title="User Profile" arrow>
@@ -125,12 +137,12 @@ const UserInfo = () => {
       </Tooltip>
 
       {isPc && (
-        <Typography variant="body1" sx={{ color: "white", fontWeight: 500 }}>
+        <Typography variant="body1" sx={{ fontWeight: 500 }}>
           {userName?.length > 10 ? userName.slice(0, 10) + "..." : userName}
           <Typography
             variant="body2"
             component="span"
-            sx={{ color: "#ffcc80", marginLeft: 1 }}
+            sx={{ color: primaryColor, marginLeft: 1 }}
           >
             ({role})
           </Typography>
@@ -138,13 +150,16 @@ const UserInfo = () => {
       )}
 
       <Tooltip title="Notifications" arrow>
-        <IconButton onClick={handleNotificationClick} sx={{ color: "white" }}>
+        <IconButton
+          onClick={handleNotificationClick}
+          sx={{ color: textPrimary }}
+        >
           <Badge
             badgeContent={unreadCount}
             color="error"
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
           >
-            <NotificationsIcon />
+            <NotificationsIcon sx={{ color: primaryColor }} />
           </Badge>
         </IconButton>
       </Tooltip>

@@ -44,7 +44,7 @@ const ClearButton = ({ shapes, canvasRef }) => {
       <Tooltip title="Clear Canvas" arrow>
         <img
           style={{ width: "35px", height: "35px", cursor: "pointer" }}
-          src="https://i.ibb.co.com/TBwZbvMm/pngfind-com-clear-button-png-3492865.png"
+          src="https://i.ibb.co.com/tpvjGMZM/pngfind-com-clear-button-png-3492865-removebg-preview.png"
           alt="Clear"
         />
       </Tooltip>

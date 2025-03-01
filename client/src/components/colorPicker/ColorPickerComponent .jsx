@@ -1,9 +1,9 @@
-"use client";
 import React from "react";
-import { Box, IconButton, Popover, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Popover, Tooltip } from "@mui/material";
 import { HexColorPicker } from "react-colorful";
-
+import { useTheme } from "@mui/material/styles";
 const ColorPickerComponent = ({ ...props }) => {
+  const theme = useTheme(); // Access the theme object
   const {
     drawColor,
     setDrawColor,
@@ -43,9 +43,9 @@ const ColorPickerComponent = ({ ...props }) => {
 
   // Mapping color types to their current color state
   const colorMapping = {
-    draw: drawColor,
-    fill: fillColor,
-    background: backgroundColor,
+    draw: drawColor || theme.palette.primary.main, // Default to primary color if no draw color is set
+    fill: fillColor || theme.palette.secondary.main, // Default to secondary color
+    background: backgroundColor || theme.palette.background.paper, // Default to background color
   };
 
   return (
@@ -60,14 +60,14 @@ const ColorPickerComponent = ({ ...props }) => {
         <IconButton onClick={(e) => handleOpen(e, "draw")}>
           <Box
             sx={{
-              backgroundColor: drawColor,
+              backgroundColor: colorMapping.draw,
               width: "24px",
               height: "24px",
               borderRadius: "50%",
-              border: "2px solid #000",
+              border: `2px solid ${theme.palette.text.primary}`, // Use theme text color for border
               "&:hover": {
                 cursor: "pointer",
-                borderColor: "#888",
+                borderColor: theme.palette.text.secondary, // Hover border color from theme
               },
             }}
           />
@@ -79,14 +79,14 @@ const ColorPickerComponent = ({ ...props }) => {
         <IconButton onClick={(e) => handleOpen(e, "fill")}>
           <Box
             sx={{
-              backgroundColor: fillColor,
+              backgroundColor: colorMapping.fill,
               width: "24px",
               height: "24px",
               borderRadius: "50%",
-              border: "2px solid #000",
+              border: `2px solid ${theme.palette.text.primary}`,
               "&:hover": {
                 cursor: "pointer",
-                borderColor: "#888",
+                borderColor: theme.palette.text.secondary,
               },
             }}
           />
@@ -98,14 +98,14 @@ const ColorPickerComponent = ({ ...props }) => {
         <IconButton onClick={(e) => handleOpen(e, "background")}>
           <Box
             sx={{
-              backgroundColor: backgroundColor,
+              backgroundColor: colorMapping.background,
               width: "24px",
               height: "24px",
               borderRadius: "50%",
-              border: "2px solid #000",
+              border: `2px solid ${theme.palette.text.primary}`,
               "&:hover": {
                 cursor: "pointer",
-                borderColor: "#888",
+                borderColor: theme.palette.text.secondary,
               },
             }}
           />

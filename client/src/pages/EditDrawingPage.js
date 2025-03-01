@@ -17,19 +17,23 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../slices/canvasSlice";
 import RightSideBar from "../components/createPage/RightSideBar";
-
+import { useTheme } from "@mui/material/styles";
 const EditDrawingPage = () => {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
   const [drawingTitle, setDrawingTitle] = useState("");
-  const [shapeType, setShapeType] = useState("line");
+  const [shapeType, setShapeType] = useState("pen");
   const canvasRef = useRef(null);
   const [isSaved, setIsSaved] = useState(false);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
-  const [drawColor, setDrawColor] = useState("#C735BB");
-  const [backgroundColor, setBackgroundColor] = useState("#242441");
-  const [fillColor, setFillColor] = useState("#58da1d");
+  const [drawColor, setDrawColor] = useState(theme.palette.whiteBoard.draw);
+  const [backgroundColor, setBackgroundColor] = useState(
+    theme.palette.whiteBoard.background
+  );
+  const [fillColor, setFillColor] = useState(theme.palette.whiteBoard.fill);
+
   const [isFillColorActive, setIsFillColorActive] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [selectedShapeIndex, setSelectedShapeIndex] = useState(null);
@@ -136,6 +140,11 @@ const EditDrawingPage = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+  useEffect(() => {
+    setBackgroundColor(theme.palette.whiteBoard.background);
+    setDrawColor(theme.palette.whiteBoard.draw);
+    setFillColor(theme.palette.whiteBoard.fill);
+  }, [theme]);
   const handleSave = async () => {
     const validShapes = shapes.filter((shape) => shape.type?.trim());
     try {

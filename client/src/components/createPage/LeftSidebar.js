@@ -21,6 +21,7 @@ import { ChromePicker } from "react-color";
 import { useParams } from "react-router-dom";
 import useColors from "../../customHooks/useColors";
 import CreatePageButtons from "./CreatePageButtons";
+import { useTheme } from "@mui/material/styles";
 
 const shapeOptions = [
   { type: "pen", label: "Pen", icon: <PenIcon /> },
@@ -52,12 +53,10 @@ const LeftSidebar = ({
   handleSaveDrawing,
   isLoading,
 }) => {
-  const { colors } = useColors();
   const { id } = useParams();
   const inputRef = useRef(null);
-
-  useEffect(() => inputRef.current.focus(), []);
-
+  const theme = useTheme();
+  // useEffect(() => inputRef.current.focus(), []);
   const [colorPickers, setColorPickers] = useState({
     draw: null,
     bg: null,
@@ -74,7 +73,8 @@ const LeftSidebar = ({
     <div>
       <Tooltip title={title} arrow>
         <IconButton onClick={handleColorClick(type)}>
-          <IconComponent sx={{ color: colors.textColor }} />
+          <IconComponent sx={{ color: theme.palette.text.primary }} />{" "}
+          {/* Using theme color */}
         </IconButton>
       </Tooltip>
       <Box
@@ -110,19 +110,27 @@ const LeftSidebar = ({
       />
       <Box className="button-container">
         {/* Shape Selection Buttons */}
-
         {shapeOptions.map(({ type, label, icon }) => (
           <Tooltip key={type} title={label} arrow>
             <IconButton
-              sx={{ padding: "8px" }}
+              sx={{
+                padding: "8px",
+                backgroundColor:
+                  shapeType === type
+                    ? theme.palette.primary.main // Using theme color
+                    : "transparent",
+                color:
+                  shapeType === type
+                    ? theme.palette.common.white
+                    : theme.palette.text.primary,
+                transition: "color 0.3s ease",
+                fontSize: "1.2rem",
+              }}
               onClick={() => setShapeType(type)}
             >
               {React.cloneElement(icon, {
                 sx: {
-                  color:
-                    shapeType === type ? colors.buttonBg : colors.textColor,
-                  transition: "color 0.3s ease",
-                  fontSize: "1.2rem",
+                  fontSize: "1.5rem", // Adjust icon size
                 },
               })}
             </IconButton>
@@ -145,7 +153,6 @@ const LeftSidebar = ({
             DrawColorIcon,
             "Draw Color"
           )}
-
           {renderColorPicker(
             "fill",
             fillColor,
@@ -158,12 +165,12 @@ const LeftSidebar = ({
         <Box className="undo-redo-container">
           <Tooltip title="Undo" arrow>
             <IconButton onClick={handleUndo} sx={{ padding: "2px" }}>
-              <UndoIcon sx={{ color: colors.textColor }} />
+              <UndoIcon sx={{ color: theme.palette.text.primary }} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Redo" arrow>
             <IconButton onClick={handleRedo} sx={{ padding: "2px" }}>
-              <RedoIcon sx={{ color: colors.textColor }} />
+              <RedoIcon sx={{ color: theme.palette.text.primary }} />
             </IconButton>
           </Tooltip>
         </Box>

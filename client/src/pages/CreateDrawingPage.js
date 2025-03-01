@@ -12,7 +12,9 @@ import Whiteboard from "../components/Whiteboard";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../slices/canvasSlice";
 import RightSideBar from "../components/createPage/RightSideBar";
+import { useTheme } from "@mui/material/styles";
 const CreateDrawingPage = () => {
+  const theme = useTheme();
   const { data: totalDrawCount } = useGetTotalDrawCountQuery();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,10 +23,12 @@ const CreateDrawingPage = () => {
   const [drawingTitle, setDrawingTitle] = useState(
     `New Drawing ${totalDrawCount?.totalDrawCount}`
   );
-  const [shapeType, setShapeType] = useState("line");
-  const [drawColor, setDrawColor] = useState("#C735BB");
-  const [backgroundColor, setBackgroundColor] = useState("#242441");
-  const [fillColor, setFillColor] = useState("#DC0DB6");
+  const [shapeType, setShapeType] = useState("pen");
+  const [drawColor, setDrawColor] = useState(theme.palette.whiteBoard.draw);
+  const [backgroundColor, setBackgroundColor] = useState(
+    theme.palette.whiteBoard.background
+  );
+  const [fillColor, setFillColor] = useState(theme.palette.whiteBoard.fill);
 
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
@@ -187,6 +191,11 @@ const CreateDrawingPage = () => {
       setDrawingTitle(`New Drawing ${totalDrawCount?.totalDrawCount}`);
     }
   }, [totalDrawCount]);
+  useEffect(() => {
+    setBackgroundColor(theme.palette.whiteBoard.background);
+    setDrawColor(theme.palette.whiteBoard.draw);
+    setFillColor(theme.palette.whiteBoard.fill);
+  }, [theme]);
 
   return (
     <Box
@@ -201,7 +210,7 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "18%",
+            xs: "20%",
             md: "7%",
           },
         }}
@@ -249,7 +258,7 @@ const CreateDrawingPage = () => {
       <Box
         sx={{
           width: {
-            xs: "22%",
+            xs: "20%",
             md: "14%",
           },
         }}

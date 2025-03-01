@@ -6,9 +6,12 @@ import { store } from "./store";
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
 import "./index.css";
+import { ThemeProvider } from "./ThemeContext";
 const Index = () => (
   <Provider store={store}>
-    <App />
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
   </Provider>
 );
 
