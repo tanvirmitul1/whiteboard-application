@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useLoginMutation } from "../Apis/userApiSlice";
 import styled from "styled-components";
 import { toast } from "react-toastify";
-import { useNavigate, Link } from "react-router-dom"; // Import Link
+import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../customHooks/useAuth";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import { Box, Button, CircularProgress, IconButton } from "@mui/material";
@@ -10,6 +10,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import TypingGame from "../components/TypingGame";
 import { useDispatch } from "react-redux";
 import { setProfilePicture, setUser } from "../slices/authSlice";
+import { motion } from "framer-motion"; // For animations
 
 const LoginPage = () => {
   const [username, setUsername] = useState("mitul");
@@ -22,6 +23,7 @@ const LoginPage = () => {
   const [showLoading, setShowLoading] = useState(false);
   const [countdown, setCountdown] = useState(40);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (userId) {
       navigate("/create-drawing");
@@ -73,79 +75,115 @@ const LoginPage = () => {
 
   return (
     <FormContainer>
-      <form onSubmit={handleSubmit}>
-        <div className="brand">
-          <EditCalendarIcon sx={{ color: "#ff6f61", fontSize: 50 }} />
-          <h1>Color Board</h1>
-        </div>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <PasswordWrapper>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <form onSubmit={handleSubmit}>
+          <div className="brand">
+            <motion.div
+              initial={{ rotate: 0 }}
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 4 }}
+            >
+              <EditCalendarIcon sx={{ color: "#ff6f61", fontSize: 50 }} />
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              Color Board
+            </motion.h1>
+          </div>
           <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
-          <IconButton onClick={() => setShowPassword((prev) => !prev)}>
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-        </PasswordWrapper>
-        <Button type="submit">
-          {isLoading ? (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+          <PasswordWrapper>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <IconButton
+              sx={{ padding: 0, height: "30px" }}
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </PasswordWrapper>
+          <ButtonWrapper>
+            <Button type="submit">
+              {isLoading ? (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                  <span> Processing...</span>
+                </Box>
+              ) : (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <span>Login</span>
+                </Box>
+              )}
+            </Button>
+          </ButtonWrapper>
+        </form>
+        {error && <Error>{error}</Error>}
+        <div style={{ marginTop: "1rem", textAlign: "center" }}>
+          <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+            No account?{" "}
+            <Link
+              to="/register"
+              style={{ color: "#ff6f61", textDecoration: "none" }}
+            >
+              Go to register page
+            </Link>
+          </span>
+        </div>
+        {showLoading && (
+          <LoadingModal>
+            <h2>
               <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
               <span> Processing...</span>
-            </Box>
-          ) : (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <span>Login</span>
-            </Box>
-          )}
-        </Button>
-      </form>
-      {error && <Error>{error}</Error>}
-      <div style={{ marginTop: "1rem", textAlign: "center" }}>
-        <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          No account?{" "}
-          <Link
-            to="/register"
-            style={{ color: "#ff6f61", textDecoration: "none" }}
-          >
-            Go to register page
-          </Link>
-        </span>
-      </div>
-      {showLoading && (
-        <LoadingModal>
-          <h2>
-            {" "}
-            <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
-            <span> Processing...</span>
-          </h2>
-          <h5>Please wait for Server to process your request</h5>
-          <p>Estimated wait time: {countdown}s</p>
-          <TypingGame />
-        </LoadingModal>
-      )}
+            </h2>
+            <h5>Please wait for Server to process your request</h5>
+            <p>Estimated wait time: {countdown}s</p>
+            <TypingGame />
+          </LoadingModal>
+        )}
+      </motion.div>
     </FormContainer>
   );
 };
 
 export const FormContainer = styled.div`
-  height: ${(props) => props.height || "100vh"};
-  overflow-x: hidden;
-  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #1e3c72, #2a5298);
   color: white;
+  position: relative;
+  overflow: hidden;
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+
+  @keyframes gradientBG {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 
   .brand {
     display: flex;
@@ -153,68 +191,91 @@ export const FormContainer = styled.div`
     gap: 1rem;
     justify-content: center;
     margin-bottom: 2rem;
+    animation: fadeIn 1s ease-in-out;
+  }
 
-    h1 {
-      color: white;
-      text-transform: uppercase;
-      font-size: 2.5rem;
-      font-weight: bold;
-      background: linear-gradient(45deg, #ff6f61, #ffcc00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  h1 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    background: linear-gradient(45deg, #ff6f61, #ffcc00);
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
   form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 1rem;
-    padding: 1rem;
-    backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    backdrop-filter: blur(15px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     width: 80%;
     max-width: 400px;
     margin: 10px;
+    animation: slideIn 1s ease-out;
+  }
 
-    input {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 0.8rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 0.5rem;
-      color: white;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
+  input {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 1.1rem;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 1rem;
+    width: 100%;
 
-      &:focus {
-        border-color: #ff6f61;
-        outline: none;
-      }
-
-      &::placeholder {
-        color: rgba(255, 255, 255, 0.7);
-      }
+    &:focus {
+      border-color: #ff6f61;
+      outline: none;
+      transform: scale(1.05);
     }
 
-    button {
-      background: linear-gradient(45deg, #ff6f61, #ffcc00);
-      color: white;
-      padding: 0.3rem 1.5rem;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      text-transform: uppercase;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4);
-      }
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.7);
     }
   }
+
+  button {
+    background: linear-gradient(45deg, #ff6f61, #ffcc00);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 111, 97, 0.4);
+    }
+  }
+`;
+
+export const PasswordWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  input {
+    width: 100%;
+  }
+
+  button {
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    color: white;
+  }
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 `;
 
 export const Error = styled.div`
@@ -228,7 +289,7 @@ const LoadingModal = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 2rem;
   border-radius: 1rem;
@@ -254,22 +315,6 @@ const LoadingModal = styled.div`
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.7);
-  }
-`;
-export const PasswordWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  input {
-    flex: 1;
-    padding-right: 2rem;
-  }
-
-  button {
-    position: absolute;
-    right: 10px;
-    color: white;
   }
 `;
 
