@@ -11,9 +11,6 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmojiPicker from "emoji-picker-react";
 import io from "socket.io-client";
-
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-
 import {
   useGetAllCommentsQuery,
   useStoreCommentsMutation,
@@ -21,13 +18,15 @@ import {
 import useAuth from "../../customHooks/useAuth";
 import CommentList from "./CommentLish";
 import Reactions from "../viewPage/Reactions";
-import { AddCircle, PlusOneOutlined, PlusOneSharp } from "@mui/icons-material";
+import { AddCircle } from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles"; // Import useTheme hook
 
 const socket = io(process.env.REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL, {
   reconnectionAttempts: 5,
 });
 
 const CommentsSection = ({ whiteboard }) => {
+  const theme = useTheme();
   const { drawingId } = useParams();
   const [storeComments, { isLoading: isCommentPosting }] =
     useStoreCommentsMutation();
@@ -114,7 +113,7 @@ const CommentsSection = ({ whiteboard }) => {
           sx={{
             "& .MuiInputBase-input": {
               textAlign: "center",
-              color: "white",
+              color: theme.palette.text.primary,
               borderRadius: "20px",
             },
             "& .MuiOutlinedInput-root": {

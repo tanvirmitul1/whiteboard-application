@@ -6,20 +6,17 @@ import {
 } from "../Apis/whiteboardApiSlice";
 import { useGetAllUsersQuery } from "../Apis/userApiSlice";
 import {
-  Container,
   Typography,
   Box,
   Grid,
   Pagination,
-  Paper,
-  Button,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Avatar,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { drawShapes } from "../components/DrawShapes";
 import DrawPageLoader from "../components/DrawPageLoader";
 import Swal from "sweetalert2";
@@ -27,16 +24,14 @@ import DrawingFilters from "../components/viewPage/DrawingFilters";
 import useAuth from "../customHooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import ActionButton from "../components/viewPage/ActionButton";
-import useColors from "../customHooks/useColors";
 import Reactions from "../components/viewPage/Reactions";
-import Logo from "../files/dp.jpg";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { toast } from "react-toastify";
+import { useTheme } from "@mui/material/styles";
 
 const ViewDrawingPage = () => {
+  const theme = useTheme();
   const [whiteboards, setWhiteboards] = useState([]);
   const { user } = useAuth();
-  const { colors } = useColors();
   const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState(null);
   const [filterTitle, setFilterTitle] = useState("");
@@ -58,6 +53,7 @@ const ViewDrawingPage = () => {
       page,
       limit: itemsPerPage,
     });
+
   useEffect(() => {
     if (data?.whiteboards) {
       setWhiteboards(data.whiteboards);
@@ -79,6 +75,7 @@ const ViewDrawingPage = () => {
       console.log("You do not have permission to edit this whiteboard.");
     }
   };
+
   const handleDownload = (whiteboard, canvasId) => {
     const canvas = document.getElementById(canvasId);
     const link = document.createElement("a");
@@ -95,7 +92,8 @@ const ViewDrawingPage = () => {
     ctx.imageSmoothingEnabled = false;
 
     // Set background color if necessary (e.g., #242526)
-    ctx.fillStyle = whiteboard.backgroundColor || "#242526";
+    ctx.fillStyle =
+      whiteboard.backgroundColor || theme.palette.background.default;
     ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
 
     // Scale the canvas drawing
@@ -114,8 +112,8 @@ const ViewDrawingPage = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: theme.palette.primary.main,
+      cancelButtonColor: theme.palette.error.main,
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -142,7 +140,10 @@ const ViewDrawingPage = () => {
   };
 
   return (
-    <Box className="page-container">
+    <Box
+      className="page-container"
+      sx={{ backgroundColor: theme.palette.background.paper }}
+    >
       <DrawingFilters
         selectedUser={selectedUser}
         onUserChange={handleUserChange}
@@ -151,27 +152,31 @@ const ViewDrawingPage = () => {
         users={usersData || []}
       />
 
-      {data?.whiteboards?.length === 0 ? (
-        <Typography align="center" className="drawing-title">
-          No drawings found
-        </Typography>
+      {isLoading || isFetching ? (
+        <DrawPageLoader />
       ) : (
         <>
-          {/* <Typography variant="h5" align="center" className="drawing-title">
-            Total Drawings: {data?.totalDrawings}
-          </Typography> */}
-
-          {isLoading || isFetching ? (
-            <DrawPageLoader />
+          {data?.whiteboards?.length === 0 ? (
+            <Typography
+              align="center"
+              className="drawing-title"
+              sx={{ color: theme.palette.text.primary }}
+            >
+              No drawings found
+            </Typography>
           ) : (
             <Grid container spacing={3} justifyContent="center">
               {whiteboards?.map((whiteboard, index) => (
                 <Grid item xs={12} sm={6} md={4} key={whiteboard._id}>
-                  <Box className="drawing-card">
+                  <Box
+                    className="drawing-card"
+                    sx={{ backgroundColor: theme.palette.background.default }}
+                  >
                     <Typography
                       variant="h6"
                       gutterBottom
                       className="drawing-title"
+                      sx={{ color: theme.palette.text.primary }}
                     >
                       {whiteboard.drawingTitle}
                     </Typography>
@@ -203,7 +208,8 @@ const ViewDrawingPage = () => {
                           className="canvas-style"
                           style={{
                             backgroundColor:
-                              whiteboard?.backgroundColor || "#242441",
+                              whiteboard?.backgroundColor ||
+                              theme.palette.background.default,
                           }}
                         />
                       </Box>
@@ -233,15 +239,13 @@ const ViewDrawingPage = () => {
                         <div
                           style={{
                             fontSize: "12px",
-                            color: "gray",
+                            color: theme.palette.text.secondary,
                             opacity: 0.5,
                           }}
                         >
                           {formatDistanceToNow(
                             new Date(whiteboard?.createdAt),
-                            {
-                              addSuffix: true,
-                            }
+                            { addSuffix: true }
                           )}
                         </div>
                       </div>
@@ -262,92 +266,8 @@ const ViewDrawingPage = () => {
               ))}
             </Grid>
           )}
-
-          <Box className="pagination-container">
-            <FormControl>
-              <InputLabel sx={{ color: "white" }}>Items Per Page</InputLabel>
-              <Select
-                value={itemsPerPage}
-                onChange={handleItemsPerPageChange}
-                label="Items per Page"
-                size="small"
-                sx={{
-                  width: 120,
-                  "& .MuiSelect-select": {
-                    color: "gray",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "gray",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "gray",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "gray",
-                  },
-                }}
-                MenuProps={{
-                  PaperProps: {
-                    sx: {
-                      bgcolor: "#333",
-                      "& .MuiMenuItem-root": {
-                        color: "gray",
-                      },
-                      "& .Mui-selected": {
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        color: "gray",
-                      },
-                    },
-                  },
-                }}
-              >
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={30}>30</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-              </Select>
-            </FormControl>
-
-            <Pagination
-              count={data?.totalPages || 0}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-              siblingCount={1}
-              boundaryCount={2}
-              showFirstButton
-              showLastButton
-              sx={{
-                "& .MuiPaginationItem-root": {
-                  color: "white",
-                },
-                "& .MuiPaginationItem-previousNext": {
-                  color: "white",
-                },
-                "& .Mui-selected": {
-                  backgroundColor: "white",
-                  color: "black",
-                },
-                "& .MuiPaginationItem-ellipsis": {
-                  color: "white",
-                },
-              }}
-            />
-          </Box>
         </>
       )}
-
-      <Box className="back-button-container">
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => navigate(-1)}
-        >
-          <IoMdArrowRoundBack size={20} style={{ marginRight: "10px" }} />
-          Go Back
-        </Button>
-      </Box>
     </Box>
   );
 };

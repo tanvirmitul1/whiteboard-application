@@ -1,4 +1,3 @@
-// components/DrawingFilters.js
 import React from "react";
 import {
   TextField,
@@ -9,6 +8,7 @@ import {
   Grid,
 } from "@mui/material";
 import useAuth from "../../customHooks/useAuth";
+import { useTheme } from "@mui/material/styles";
 
 const DrawingFilters = ({
   selectedUser,
@@ -18,29 +18,54 @@ const DrawingFilters = ({
   users,
 }) => {
   const { userId } = useAuth();
+  const theme = useTheme(); // Accessing theme colors
+
   return (
     <Grid container spacing={2} mb={2}>
       <Grid item xs={12} sm={6}>
         <FormControl fullWidth>
-          <InputLabel sx={{ color: "white" }}>User</InputLabel>
+          <InputLabel sx={{ color: theme.palette.text.primary }}>
+            User
+          </InputLabel>{" "}
+          {/* Dynamic text color */}
           <Select
             value={selectedUser}
             onChange={onUserChange}
             label="User"
             className="filter-user-select"
+            sx={{
+              backgroundColor: theme.palette.background.default, // Dynamic background color
+              color: theme.palette.text.primary, // Dynamic text color
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.primary.main, // Dynamic border color
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.primary.dark, // Hover border color
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.primary.main, // Focused border color
+              },
+            }}
           >
-            <MenuItem value="" className="filter-user-list">
+            <MenuItem value="" sx={{ color: theme.palette.text.primary }}>
               <em>All</em>
             </MenuItem>
             {users.map((user) => (
               <MenuItem
                 key={user._id}
                 value={user._id}
-                className="filter-user-list"
+                sx={{
+                  color: theme.palette.text.primary, // Dynamic text color
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover, // Dynamic hover color
+                  },
+                }}
               >
-                <span> {user.username}</span>{" "}
+                <span>{user.username}</span>
                 {user._id === userId && (
-                  <span style={{ color: "blue" }}>(Myself)</span>
+                  <span style={{ color: theme.palette.info.main }}>
+                    (Myself)
+                  </span> // Dynamic "Myself" color
                 )}
               </MenuItem>
             ))}
@@ -50,9 +75,24 @@ const DrawingFilters = ({
       <Grid item xs={12} sm={6}>
         <TextField
           className="filter-user-select"
-          sx={{ color: "white", label: { color: "white" } }}
+          sx={{
+            color: theme.palette.text.primary, // Dynamic text color
+            label: { color: theme.palette.text.primary }, // Label color
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: theme.palette.background.default, // Background color
+              "& fieldset": {
+                borderColor: theme.palette.primary.main, // Border color
+              },
+              "&:hover fieldset": {
+                borderColor: theme.palette.primary.dark, // Hover border color
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: theme.palette.primary.main, // Focused border color
+              },
+            },
+          }}
           InputProps={{
-            style: { color: "white" },
+            style: { color: theme.palette.text.primary }, // Input text color
           }}
           label="Filter by Title"
           variant="outlined"

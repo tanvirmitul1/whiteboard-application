@@ -10,12 +10,15 @@ import { formatDistanceToNow } from "date-fns";
 import EditIcon from "@mui/icons-material/Edit";
 import useAuth from "../customHooks/useAuth";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useTheme } from "@mui/material/styles"; // Import useTheme hook
+
 const ViewSingleDrawingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { drawingId } = useParams();
   const [resolution, setResolution] = useState(1);
   const { data: drawing, error, isLoading } = useGetDrawingByIdQuery(drawingId);
+  const theme = useTheme(); // Accessing theme
 
   useEffect(() => {
     const canvas = document.getElementById("drawingCanvas");
@@ -56,7 +59,7 @@ const ViewSingleDrawingPage = () => {
     scaledCanvas.width = canvas.width * resolution;
     scaledCanvas.height = canvas.height * resolution;
     const ctx = scaledCanvas.getContext("2d");
-    ctx.fillStyle = drawing.backgroundColor || "#242526";
+    ctx.fillStyle = drawing.backgroundColor || theme.palette.background.default; // Use theme's background color
     ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
     ctx.scale(resolution, resolution);
     ctx.drawImage(canvas, 0, 0);
@@ -94,6 +97,7 @@ const ViewSingleDrawingPage = () => {
         paddingX: { xs: "10px", md: "100px" },
         paddingY: "20px",
         overflowX: "hidden",
+        backgroundColor: theme.palette.background.paper, // Apply background color from theme
       }}
     >
       {/* Drawing Section */}
@@ -109,7 +113,8 @@ const ViewSingleDrawingPage = () => {
           id="drawingCanvas"
           className="canvas-style-single-draw"
           style={{
-            backgroundColor: drawing?.backgroundColor || "#242441",
+            backgroundColor:
+              drawing?.backgroundColor || theme.palette.background.default, // Apply theme's background color
             width: "100%",
             height: "auto",
             maxHeight: "80vh",
@@ -138,11 +143,13 @@ const ViewSingleDrawingPage = () => {
             className="user-link"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ fontSize: "14px" }}
+            style={{ fontSize: "14px", color: theme.palette.text.primary }} // Apply text color from theme
           >
             {drawing?.user?.username}
           </a>
-          <Typography sx={{ fontSize: "12px", color: "gray", opacity: 0.7 }}>
+          <Typography
+            sx={{ fontSize: "12px", color: theme.palette.text.secondary }}
+          >
             {formatDistanceToNow(new Date(drawing?.createdAt), {
               addSuffix: true,
             })}

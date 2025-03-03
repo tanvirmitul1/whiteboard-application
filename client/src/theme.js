@@ -137,8 +137,8 @@ export const lightTheme = createTheme({
           "--canvas-draw-color": "#ff3be5",
           "--drawing-card-background": "#242526",
           "--title-text-color": "#ffcc80",
-          "--background-read": "#292828",
-          "--background-unread": "#444647",
+          "--background-read": "#f5f5f5",
+          "--background-unread": "#e0e0e0",
           "--button-bg": "#90caf9",
           "--button-text": "#000000",
           "--popover-bg": "#1e1e1e",
@@ -153,7 +153,7 @@ export const darkTheme = createTheme({
     mode: "dark",
 
     primary: {
-      main: "#bb86fc",
+      main: "#06D69B",
       contrastText: "#000000",
     },
     secondary: {

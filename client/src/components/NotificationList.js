@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
-
+import { useTheme } from "@mui/material/styles";
 const NotificationList = ({
   notifications,
   onNotificationClick,
@@ -20,6 +20,7 @@ const NotificationList = ({
   const [page, setPage] = useState(1);
 
   const notificationsPerPage = 5;
+  const theme = useTheme(); // Get the theme
 
   useEffect(() => {
     // Load the initial notifications
@@ -45,7 +46,9 @@ const NotificationList = ({
       <List className="notification-list">
         {visibleNotifications.length === 0 ? (
           <ListItem>
-            <Typography sx={{ color: "gray" }}>No notifications</Typography>
+            <Typography sx={{ color: theme.palette.text.secondary }}>
+              No notifications
+            </Typography>
           </ListItem>
         ) : (
           visibleNotifications.map((notification, index) => (
@@ -58,13 +61,23 @@ const NotificationList = ({
                   onNotificationClick(notification);
                   if (!notification.read) markAsRead(notification._id);
                 }}
+                sx={{
+                  backgroundColor: notification.read
+                    ? theme.palette.background.paper
+                    : theme.palette.action.hover,
+                  padding: theme.spacing(2),
+                  borderRadius: theme.shape.borderRadius,
+                }}
               >
                 <div
                   className="notification-item-text"
                   dangerouslySetInnerHTML={{ __html: notification.message }}
                 />
 
-                <Typography variant="caption" sx={{ color: "gray" }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: theme.palette.text.secondary }}
+                >
                   {formatDistanceToNow(new Date(notification.createdAt), {
                     addSuffix: true,
                   })}
@@ -72,7 +85,14 @@ const NotificationList = ({
                 <Button
                   variant="contained"
                   size="small"
-                  sx={{ textTransform: "none", border: "none" }}
+                  sx={{
+                    textTransform: "none",
+                    border: "none",
+                    backgroundColor: theme.palette.primary.main,
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.dark,
+                    },
+                  }}
                   href={notification.redirectUrl}
                 >
                   View
@@ -90,11 +110,14 @@ const NotificationList = ({
             onClick={loadMoreNotifications}
             sx={{
               cursor: "pointer",
-              color: "white",
-              padding: "5px",
-              marginBottom: "10px",
-              borderRadius: "5px",
-              backgroundColor: "#007acc",
+              color: theme.palette.common.white,
+              padding: theme.spacing(1),
+              marginBottom: theme.spacing(2),
+              borderRadius: theme.shape.borderRadius,
+              backgroundColor: theme.palette.primary.main,
+              "&:hover": {
+                backgroundColor: theme.palette.primary.dark,
+              },
             }}
           >
             {loading ? (

@@ -176,21 +176,20 @@ border-radius: 10px;
   border-radius: 5px;
 }
 
-.filter-user-list{
-  color: #332c2c !important;
-  background-color: #4b4646;
-  border-radius: 5px;
-}
 
 
 /* notification */
 
 .notification-container {
-  max-height: 70vh;
   overflow-y: auto;
-  width: 330px;
-  background-color:var(--primary-bg-color);
+  width: 310px;
+  background-color:var(--background-default);
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
   
 }
 
@@ -204,27 +203,26 @@ border-radius: 10px;
   width: 100%;
   margin-bottom: 2px;
   border-radius: 5px;
- padding: 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: start;
-  background-color: var(--background-unread);
+  background-color: var(--background-unread); /* Change this to use the --background-unread */
 }
 
 .notification-item.read {
-  background-color: var(--background-read);
+  background-color: var(--background-read); /* Change this to use the --background-read */
 }
 
 .notification-item-text {
-  color: var(--text-color);
+  color: var(--text-color); /* Change this to use the --text-color */
 }
-
-
 
 .notification-button:hover {
-  background-color: var(--button-bg-hover);
+  background-color: var(--button-bg); /* Change this to use the --button-bg */
 }
+
 
 /* comments */
 
@@ -233,7 +231,7 @@ border-radius: 10px;
   overflow-y: auto;
   border-radius: 8px;
 
-  background-color: var(--secondary-bg-color);
+  background-color: var(--background-default);
   position: relative;
   display: flex;
   flex-direction: column;
