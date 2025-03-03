@@ -81,7 +81,7 @@ export const lightTheme = createTheme({
     whiteBoard: {
       background: "#ffffff",
       border: "#bdbdbd",
-      fill: "#e0e0e0",
+      fill: "#ff5722",
       draw: "#ff5722",
     },
   },
@@ -127,7 +127,7 @@ export const lightTheme = createTheme({
           "--input-placeholder": "#9e9e9e",
           "--whiteboard-background": "#ffffff",
           "--whiteboard-border": "#bdbdbd",
-          "--whiteboard-fill": "#e0e0e0",
+          "--whiteboard-fill": "#ff5722",
           "--whiteboard-draw": "#ff5722",
           "--primary-bg-color": "#0A0A13",
           "--secondary-bg-color": "#131324",
@@ -164,7 +164,7 @@ export const darkTheme = createTheme({
     background: {
       default: "#121212",
       paper: "#1e1e1e",
-      toolbar: "#282828",
+      toolbar: "#ffffff",
       button: "#424242",
     },
 
@@ -221,7 +221,7 @@ export const darkTheme = createTheme({
     whiteBoard: {
       background: "#242441",
       border: "#424242",
-      fill: "#333333",
+      fill: "#4dd0e1",
       draw: "#4dd0e1",
     },
   },
@@ -267,7 +267,7 @@ export const darkTheme = createTheme({
           "--input-placeholder": "#9e9e9e",
           "--whiteboard-background": "#242441",
           "--whiteboard-border": "#424242",
-          "--whiteboard-fill": "#333333",
+          "--whiteboard-fill": "#4dd0e1",
           "--whiteboard-draw": "#4dd0e1",
           "--primary-bg-color": "#0A0A13",
           "--secondary-bg-color": "#131324",
