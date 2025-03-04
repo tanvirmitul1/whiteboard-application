@@ -123,11 +123,13 @@ const Whiteboard = ({
         drawPen(ctx, currentPenPath);
       } else if (isDrawing && shapeType === "brush") {
         setCurrentPenPath((prevPath) => {
+          // Apply smoothing or interpolation here
           const newPath = [...prevPath, mousePos];
 
+          // Call the function to draw the brush stroke smoothly
           drawBrush(ctx, newPath, currentBrush);
 
-          return newPath; // Update path
+          return newPath; // Keep appending new mouse positions
         });
       } else if (shapeType === "image" && selectedShapeIndex !== null) {
         const updatedShapes = shapes.map((shape, index) =>
