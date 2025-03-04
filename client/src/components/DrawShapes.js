@@ -42,6 +42,7 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
         width,
         height,
         imgSrc,
+        brush,
       } = shape;
 
       switch (type) {
@@ -66,6 +67,25 @@ export const drawShapes = (canvas, shapes, canvasSize) => {
             ctx.moveTo(start.x * scale, start.y * scale);
             ctx.lineTo(end.x * scale, end.y * scale);
             ctx.strokeStyle = color || "#C735BB";
+            ctx.stroke();
+          }
+          break;
+        case "brush": // Handling the brush type
+          if (path.length && brush) {
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            ctx.strokeStyle = brush.color || "#ac117b"; // Brush color
+            ctx.lineWidth = brush.size * scale; // Brush size
+            ctx.globalAlpha = brush.hardness || 1; // Brush hardness (opacity)
+
+            ctx.beginPath();
+            const scaledPath = path.map(({ x, y }) => ({
+              x: x * scale,
+              y: y * scale,
+            }));
+            const firstPoint = scaledPath[0];
+            ctx.moveTo(firstPoint.x, firstPoint.y);
+            scaledPath.forEach(({ x, y }) => ctx.lineTo(x, y));
             ctx.stroke();
           }
           break;

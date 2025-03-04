@@ -4,7 +4,10 @@ import { Box } from "@mui/material";
 import "../index.css";
 import Swal from "sweetalert2";
 import {
+  drawAirbrush,
+  drawBrush,
   drawCurrentShape,
+  drawMarker,
   drawPen,
   drawShape,
   getMousePosition,
@@ -23,7 +26,6 @@ import ClearButton from "./canvas/ClearButton";
 import { v4 as uuidv4 } from "uuid";
 import DownloadButton from "./canvas/DownloadButton";
 import ImageUploader from "./canvas/ImageUploader";
-import { toast } from "react-toastify";
 import ModeToggleButton from "./canvas/ModeToggleButton";
 const Whiteboard = ({
   shapeType,
@@ -39,6 +41,7 @@ const Whiteboard = ({
 }) => {
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
+  const currentBrush = useSelector((state) => state.brush.currentBrush);
   console.log({ shapes });
   const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -58,12 +61,15 @@ const Whiteboard = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     [...shapes].reverse().forEach((shape) => drawShape(ctx, shape));
   };
-
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const mousePos = getMousePosition(canvas, e);
     setStartPoint(mousePos);
+    if (shapeType === "brush") {
+      setIsDrawing(true);
+      setCurrentPenPath([mousePos]); // Start a new path
+    }
     if (shapeType === "eraser") {
       const shapeIndex = shapes.findIndex((shape) =>
         isPointInShape(ctx, mousePos, shape)
@@ -79,6 +85,9 @@ const Whiteboard = ({
       if (isDrawing && shapeType === "pen") {
         setCurrentPenPath([...currentPenPath, mousePos]);
         drawPen(ctx, currentPenPath);
+      } else if (shapeType === "brush") {
+        setCurrentPenPath([...currentPenPath, mousePos]);
+        drawBrush(ctx, currentPenPath, currentBrush);
       } else if (shapeType === "image") {
         setSelectedShapeIndex(
           shapes.findIndex((shape) => isPointInShape(ctx, mousePos, shape))
@@ -112,6 +121,14 @@ const Whiteboard = ({
       if (isDrawing && shapeType === "pen") {
         setCurrentPenPath([...currentPenPath, mousePos]);
         drawPen(ctx, currentPenPath);
+      } else if (isDrawing && shapeType === "brush") {
+        setCurrentPenPath((prevPath) => {
+          const newPath = [...prevPath, mousePos];
+
+          drawBrush(ctx, newPath, currentBrush);
+
+          return newPath; // Update path
+        });
       } else if (shapeType === "image" && selectedShapeIndex !== null) {
         const updatedShapes = shapes.map((shape, index) =>
           index === selectedShapeIndex
@@ -143,7 +160,6 @@ const Whiteboard = ({
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const mousePos = getMousePosition(canvas, e);
-
     if (isMoving && selectedShapeIndex !== null) {
       setIsMoving(false);
     } else if (shapeType === "eraser") {
@@ -153,15 +169,27 @@ const Whiteboard = ({
 
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
-    } else if (shapeType === "pen") {
-      const newPenShape = {
-        uuid: uuidv4(),
-        type: "pen",
-        path: currentPenPath,
-        color: drawColor,
-        fill: fillColor,
-      };
-      const updatedShapes = [newPenShape, ...shapes];
+    } else if (shapeType === "pen" || shapeType === "brush") {
+      let newShape;
+
+      if (shapeType === "pen") {
+        newShape = {
+          uuid: uuidv4(),
+          type: "pen",
+          path: currentPenPath,
+          color: drawColor,
+          fill: fillColor,
+        };
+      } else {
+        newShape = {
+          uuid: uuidv4(),
+          type: "brush",
+          path: currentPenPath,
+          brush: currentBrush,
+        };
+      }
+
+      const updatedShapes = [newShape, ...shapes];
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
       setIsDrawing(false);

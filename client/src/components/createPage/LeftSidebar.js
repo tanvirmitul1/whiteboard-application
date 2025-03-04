@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, IconButton, Tooltip, Popover } from "@mui/material";
+import { Box, IconButton, Tooltip, Popover, Typography } from "@mui/material";
 import {
   GestureTwoTone as PenIcon,
   DriveFileRenameOutlineTwoTone as LineIcon,
@@ -15,16 +15,18 @@ import {
   FormatColorText as DrawColorIcon,
   FormatColorFill as FillColorIcon,
   DeleteOutline as EraserIcon,
-  Padding,
+  BrushOutlined as BrushIcon,
 } from "@mui/icons-material";
 import { ChromePicker } from "react-color";
 import { useParams } from "react-router-dom";
 import useColors from "../../customHooks/useColors";
 import CreatePageButtons from "./CreatePageButtons";
 import { useTheme } from "@mui/material/styles";
+import PopoverBrushSelector from "../canvas/PopoverBrushSelector";
 
 const shapeOptions = [
   { type: "pen", label: "Pen", icon: <PenIcon /> },
+  { type: "brush", label: "Brush", icon: <BrushIcon /> },
   { type: "line", label: "Line", icon: <LineIcon /> },
   { type: "circle", label: "Circle", icon: <CircleIcon /> },
   { type: "rectangle", label: "Rectangle", icon: <RectangleIcon /> },
@@ -99,6 +101,20 @@ const LeftSidebar = ({
     </div>
   );
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const popoverId = open ? "simple-popover" : undefined;
+  const handleIconClick = (event, type) => {
+    setShapeType(type);
+    if (type === "brush") {
+      setAnchorEl(event.currentTarget);
+    }
+  };
+
   return (
     <Box className="left-sidebar-container">
       <input
@@ -113,6 +129,7 @@ const LeftSidebar = ({
         {shapeOptions.map(({ type, label, icon }) => (
           <Tooltip key={type} title={label} arrow>
             <IconButton
+              aria-describedby={popoverId}
               sx={{
                 padding: "8px",
                 backgroundColor:
@@ -126,7 +143,7 @@ const LeftSidebar = ({
                 transition: "color 0.3s ease",
                 fontSize: "1.2rem",
               }}
-              onClick={() => setShapeType(type)}
+              onClick={(e) => handleIconClick(e, type)}
             >
               {React.cloneElement(icon, {
                 sx: {
@@ -136,6 +153,12 @@ const LeftSidebar = ({
             </IconButton>
           </Tooltip>
         ))}
+
+        <PopoverBrushSelector
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          handleClose={handleClose}
+        />
 
         <Box className="color-pickers-container">
           {/* Color Pickers */}

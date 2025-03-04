@@ -25,6 +25,7 @@ const whiteboardSchema = new mongoose.Schema(
             "pen",
             "emoji",
             "image",
+            "brush",
           ],
           required: true,
         },
@@ -40,6 +41,33 @@ const whiteboardSchema = new mongoose.Schema(
         width: { type: Number, required: () => this.type === "image" },
         height: { type: Number, required: () => this.type === "image" },
         imgSrc: { type: String, required: () => this.type === "image" },
+        brush: {
+          type: {
+            type: String,
+            enum: ["pencil", "airbrush", "marker"],
+            required: function () {
+              return this.type === "brush";
+            },
+          },
+          size: {
+            type: Number,
+            required: function () {
+              return this.type === "brush";
+            },
+          },
+          hardness: {
+            type: Number,
+            required: function () {
+              return this.type === "brush";
+            },
+          },
+          color: {
+            type: String,
+            required: function () {
+              return this.type === "brush";
+            },
+          },
+        },
 
         start: {
           x: {
@@ -99,13 +127,13 @@ const whiteboardSchema = new mongoose.Schema(
             x: {
               type: Number,
               required: function () {
-                return this.type === "pen";
+                return this.type === "pen" || this.type === "brush";
               },
             },
             y: {
               type: Number,
               required: function () {
-                return this.type === "pen";
+                return this.type === "pen" || this.type === "brush";
               },
             },
           },

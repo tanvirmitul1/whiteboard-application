@@ -44,6 +44,10 @@ export const drawShape = (ctx, shape) => {
     case "pen":
       drawPen(ctx, path, color, selected);
       break;
+    case "brush":
+      drawBrush(ctx, shape.path, shape.brush);
+
+      break;
     case "text":
       drawText(
         ctx,
@@ -95,6 +99,7 @@ export const drawLine = (ctx, start, end, color, isSelected) => {
   ctx.moveTo(start.x, start.y);
   ctx.lineTo(end.x, end.y);
   ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
   ctx.stroke();
   if (isSelected) {
     ctx.lineWidth = selectionLineWidth;
@@ -109,6 +114,7 @@ export const drawRectangle = (ctx, start, end, color, fill, isSelected) => {
 
   if (fill) {
     ctx.fillStyle = fill;
+    ctx.lineWidth = 1;
     ctx.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
   }
   if (isSelected) {
@@ -126,6 +132,7 @@ export const drawPen = (ctx, path, color, isSelected) => {
       ctx.lineTo(path[i].x, path[i].y);
     }
     ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     if (isSelected) {
@@ -149,6 +156,7 @@ export const drawTriangle = (ctx, start, end, color, fill, isSelected) => {
   // Set stroke color and draw the outline
   if (color) {
     ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
     ctx.stroke();
   }
 
@@ -183,6 +191,7 @@ export const drawPentagon = (ctx, start, end, color, fill, isSelected) => {
 
   if (color) {
     ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
     ctx.stroke();
   }
 
@@ -218,6 +227,7 @@ export const drawHexagon = (ctx, start, end, color, fill, isSelected) => {
 
   if (color) {
     ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
     ctx.stroke();
   }
 
@@ -238,6 +248,7 @@ export const drawCircle = (ctx, start, end, color, fill, isSelected) => {
   ctx.beginPath();
   ctx.arc(start.x, start.y, radius, 0, Math.PI * 2);
   ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
   ctx.stroke();
   ctx.fillStyle = fill;
   ctx.fill();
@@ -325,6 +336,8 @@ export const isPointInShape = (ctx, point, shape) => {
 
     case "pen":
       return path?.some((penPoint) => distance(penPoint, point) < 5);
+    case "brush":
+      return path?.some((brushPoint) => distance(brushPoint, point) < 5);
 
     case "text":
       return (
@@ -398,6 +411,13 @@ export const moveShape = (
           y: point.y + smoothedDeltaY,
         }));
         return { ...shape, path: newPath };
+      } else if (shape.type === "brush") {
+        // Move the entire brush path
+        const newPath = shape.path.map((point) => ({
+          x: point.x + smoothedDeltaX,
+          y: point.y + smoothedDeltaY,
+        }));
+        return { ...shape, path: newPath };
       } else if (shape.type === "text") {
         // Move the text position
         return {
@@ -444,4 +464,38 @@ export const moveShape = (
   if (canvasElement) {
     canvasElement.style.cursor = "move"; // Optional: Update cursor style to indicate movement
   }
+};
+
+// Example brush drawing function
+export const drawBrush = (ctx, path, brush) => {
+  if (path.length < 2) return; // Ensure at least two points to draw
+
+  // Ensure brush properties have fallback values
+  const { size = 5, color = "#000", hardness = 1 } = brush;
+
+  // Set the brush properties
+  ctx.beginPath();
+  ctx.lineWidth = size;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.strokeStyle = color;
+
+  // Set globalAlpha based on the hardness
+  ctx.globalAlpha = Math.min(Math.max(hardness, 0), 1); // Clamping hardness between 0 and 1
+
+  // Start drawing from the first point
+  ctx.moveTo(path[0].x, path[0].y);
+
+  // Draw the line through all the points in the path
+  path.forEach((point) => {
+    ctx.lineTo(point.x, point.y);
+  });
+
+  // Apply the stroke
+  ctx.stroke();
+
+  // Reset the globalAlpha to 1 to avoid affecting other drawing operations
+  ctx.globalAlpha = 1;
+
+  ctx.closePath();
 };

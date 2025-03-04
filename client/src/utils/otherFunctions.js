@@ -67,6 +67,15 @@ export const pasteShape = (copiedShape, drawAllShapes) => {
           y: point.y, // Keep the y position the same
         })),
       };
+    } else if (copiedShape.type === "brush") {
+      // Handle brush shapes
+      copiedShapeToPaste = {
+        ...copiedShape,
+        path: copiedShape.path.map((point) => ({
+          x: point.x + 50, // Adjust the x position of each point in the path
+          y: point.y, // Keep the y position the same
+        })),
+      };
     } else if (copiedShape.type === "image") {
       // Handle image shapes
       copiedShapeToPaste = {
@@ -187,6 +196,13 @@ export const moveShapeByKeys = (dx, dy, selectedShapeIndex) => {
     if (index === selectedShapeIndex) {
       if (shape.type === "pen") {
         // Move the entire pen path (for lines)
+        const newPath = shape.path.map((point) => ({
+          x: point.x + dx,
+          y: point.y + dy,
+        }));
+        return { ...shape, path: newPath };
+      } else if (shape.type === "brush") {
+        // Move the entire brush path (for lines)
         const newPath = shape.path.map((point) => ({
           x: point.x + dx,
           y: point.y + dy,
