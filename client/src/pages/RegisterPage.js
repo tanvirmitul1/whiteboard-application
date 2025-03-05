@@ -14,7 +14,9 @@ import { toast } from "react-toastify";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import { Error, FormContainer, PasswordWrapper } from "./LoginPage";
 import { motion } from "framer-motion"; // For animations
+import { useTheme } from "@mui/material/styles";
 const RegisterPage = () => {
+  const theme = useTheme(); // Access the theme
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -48,7 +50,7 @@ const RegisterPage = () => {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1 }}
     >
-      <FormContainer height="100vh">
+      <FormContainer theme={theme} height="100vh">
         <form onSubmit={handleSubmit}>
           <div className="brand">
             <EditCalendarIcon sx={{ color: "#ff6f61", fontSize: 50 }} />
@@ -60,7 +62,7 @@ const RegisterPage = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <PasswordWrapper>
+          <PasswordWrapper theme={theme}>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
@@ -75,7 +77,7 @@ const RegisterPage = () => {
             </IconButton>
           </PasswordWrapper>
 
-          <PasswordWrapper>
+          <PasswordWrapper theme={theme}>
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
@@ -107,9 +109,15 @@ const RegisterPage = () => {
         </form>
 
         <div style={{ marginTop: "1rem", textAlign: "center" }}>
-          <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+          <span style={{ color: theme.palette.text.secondary }}>
             Already have an account?{" "}
-            <Link to="/" style={{ color: "#ff6f61", textDecoration: "none" }}>
+            <Link
+              to="/"
+              style={{
+                color: theme.palette.primary.main,
+                textDecoration: "none",
+              }}
+            >
               Go to Login
             </Link>
           </span>

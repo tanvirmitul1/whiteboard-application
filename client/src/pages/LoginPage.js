@@ -11,8 +11,9 @@ import TypingGame from "../components/TypingGame";
 import { useDispatch } from "react-redux";
 import { setProfilePicture, setUser } from "../slices/authSlice";
 import { motion } from "framer-motion"; // For animations
-
+import { useTheme } from "@mui/material/styles";
 const LoginPage = () => {
+  const theme = useTheme(); // Access the theme
   const [username, setUsername] = useState("mitul");
   const [password, setPassword] = useState("12345678");
   const [showPassword, setShowPassword] = useState(false);
@@ -79,7 +80,7 @@ const LoginPage = () => {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1 }}
     >
-      <FormContainer>
+      <FormContainer theme={theme}>
         <form onSubmit={handleSubmit}>
           <div className="brand">
             <motion.div
@@ -87,7 +88,9 @@ const LoginPage = () => {
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 4 }}
             >
-              <EditCalendarIcon sx={{ color: "#ff6f61", fontSize: 50 }} />
+              <EditCalendarIcon
+                sx={{ color: theme.palette.primary.main, fontSize: 50 }}
+              />
             </motion.div>
             <motion.h1
               initial={{ opacity: 0 }}
@@ -103,7 +106,7 @@ const LoginPage = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <PasswordWrapper>
+          <PasswordWrapper theme={theme}>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
@@ -114,7 +117,11 @@ const LoginPage = () => {
               sx={{ padding: 0, height: "30px" }}
               onClick={() => setShowPassword((prev) => !prev)}
             >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
+              {showPassword ? (
+                <VisibilityOff color={`${theme.palette.primary.main}`} />
+              ) : (
+                <Visibility color={`${theme.palette.primary.main}`} />
+              )}
             </IconButton>
           </PasswordWrapper>
           <ButtonWrapper>
@@ -132,20 +139,23 @@ const LoginPage = () => {
             </Button>
           </ButtonWrapper>
         </form>
-        {error && <Error>{error}</Error>}
+        {error && <Error theme={theme}>{error}</Error>}
         <div style={{ marginTop: "1rem", textAlign: "center" }}>
-          <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+          <span style={{ color: theme.palette.text.secondary }}>
             No account?{" "}
             <Link
               to="/register"
-              style={{ color: "#ff6f61", textDecoration: "none" }}
+              style={{
+                color: theme.palette.primary.main,
+                textDecoration: "none",
+              }}
             >
               Go to register page
             </Link>
           </span>
         </div>
         {showLoading && (
-          <LoadingModal>
+          <LoadingModal theme={theme}>
             <h2>
               <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
               <span> Processing...</span>
@@ -166,8 +176,7 @@ export const FormContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: white;
+  color: ${({ theme }) => theme.palette.text.primary};
   position: relative;
   overflow: hidden;
   background-size: 400% 400%;
@@ -198,7 +207,7 @@ export const FormContainer = styled.div`
     font-size: 3rem;
     text-transform: uppercase;
     font-weight: 700;
-    background: linear-gradient(45deg, #ff6f61, #ffcc00);
+    background: ${({ theme }) => theme.palette.primary.main};
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -218,28 +227,28 @@ export const FormContainer = styled.div`
   input {
     background: rgba(255, 255, 255, 0.2);
     padding: 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid ${({ theme }) => theme.palette.input.border};
     border-radius: 0.5rem;
-    color: white;
+    color: ${({ theme }) => theme.palette.text.primary};
     font-size: 1.1rem;
     transition: border-color 0.3s ease, transform 0.3s ease;
     margin-bottom: 1rem;
     width: 100%;
 
     &:focus {
-      border-color: #ff6f61;
+      border-color: ${({ theme }) => theme.palette.primary.main};
       outline: none;
       transform: scale(1.05);
     }
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.7);
+      color: ${({ theme }) => theme.palette.text.secondary};
     }
   }
 
   button {
-    background: linear-gradient(45deg, #ff6f61, #ffcc00);
-    color: white;
+    background: ${({ theme }) => theme.palette.primary.main};
+    color: ${({ theme }) => theme.palette.primary.contrastText};
     padding: 0.8rem 1.5rem;
     border: none;
     font-weight: bold;
@@ -251,7 +260,7 @@ export const FormContainer = styled.div`
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 111, 97, 0.4);
+      box-shadow: 0 6px 20px ${({ theme }) => theme.palette.primary.main};
     }
   }
 `;
@@ -268,7 +277,7 @@ export const PasswordWrapper = styled.div`
     position: absolute;
     right: 10px;
     top: 9px;
-    color: white;
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
 
@@ -279,7 +288,7 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const Error = styled.div`
-  color: #ff6f61;
+  color: ${({ theme }) => theme.palette.error.main};
   font-weight: bold;
   text-align: center;
 `;
@@ -289,8 +298,8 @@ const LoadingModal = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
+  background: ${({ theme }) => theme.palette.background.paper};
+  color: ${({ theme }) => theme.palette.text.primary};
   padding: 2rem;
   border-radius: 1rem;
   text-align: center;
@@ -302,19 +311,19 @@ const LoadingModal = styled.div`
   h2 {
     margin-bottom: 1rem;
     font-size: 1.5rem;
-    color: #ff6f61;
+    color: ${({ theme }) => theme.palette.primary.main};
   }
 
   h5 {
     margin-bottom: 1rem;
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 
   p {
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 `;
 
