@@ -12,6 +12,7 @@ import ShapeIcon from "../tools/ShapeIcon";
 import TextEditor from "../tools/TextEditor";
 import RotateShape from "../tools/RotateShape";
 import { useTheme } from "@mui/material/styles";
+import Mode from "../rightSideBar/Mode";
 
 const RightSideBar = ({
   shapeType,
@@ -103,6 +104,7 @@ const RightSideBar = ({
       }}
     >
       <ColorPickerComponent {...props} />
+      <Mode />
 
       {selectedShapeIndex !== null && (
         <>
