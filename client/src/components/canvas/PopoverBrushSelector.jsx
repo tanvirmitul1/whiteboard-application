@@ -31,7 +31,7 @@ const PopoverBrushSelector = ({ open, anchorEl, handleClose }) => {
         <Slider
           value={currentBrush.size}
           min={1}
-          max={50}
+          max={100}
           onChange={(e, newValue) => handlePropertyChange("size", newValue)}
         />
 
@@ -43,7 +43,7 @@ const PopoverBrushSelector = ({ open, anchorEl, handleClose }) => {
           value={currentBrush.hardness}
           min={0}
           max={1}
-          step={0.1}
+          step={0.01}
           onChange={(e, newValue) => handlePropertyChange("hardness", newValue)}
         />
 

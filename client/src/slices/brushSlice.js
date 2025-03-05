@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialBrush = {
   type: "pencil",
-  size: 5,
-  hardness: 1,
-  color: "#000000",
+  size: 20,
+  hardness: 0.4,
+  color: "#F01461",
 };
 
 const brushSlice = createSlice({

@@ -46,7 +46,7 @@ const NavBar = () => {
             </IconButton>
             {isPc && (
               <Typography variant="h7" sx={{ fontWeight: "bold" }}>
-                Color Board App
+                Drawing Board
               </Typography>
             )}
           </Box>

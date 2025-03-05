@@ -54,7 +54,7 @@ const RegisterPage = () => {
         <form onSubmit={handleSubmit}>
           <div className="brand">
             <EditCalendarIcon sx={{ color: "#ff6f61", fontSize: 50 }} />
-            <h1>Color Board</h1>
+            <h1>Drawing Board</h1>
           </div>
           <input
             type="text"

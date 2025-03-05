@@ -248,6 +248,9 @@ const Whiteboard = ({
       if (isDrawing && shapeType === "pen") {
         setCurrentPenPath([...currentPenPath, touchPos]);
         drawPen(ctx, currentPenPath);
+      } else if (isDrawing && shapeType === "brush") {
+        setCurrentPenPath([...currentPenPath, touchPos]);
+        drawBrush(ctx, currentPenPath, currentBrush);
       } else if (shapeType === "image") {
         setSelectedShapeIndex(
           shapes.findIndex((shape) => isPointInShape(ctx, touchPos, shape))
@@ -279,15 +282,27 @@ const Whiteboard = ({
       );
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
-    } else if (shapeType === "pen") {
-      const newPenShape = {
-        uuid: uuidv4(),
-        type: "pen",
-        path: currentPenPath,
-        color: drawColor,
-        fill: fillColor,
-      };
-      const updatedShapes = [...shapes, newPenShape];
+    } else if (shapeType === "pen" || shapeType === "brush") {
+      let newShape;
+
+      if (shapeType === "pen") {
+        newShape = {
+          uuid: uuidv4(),
+          type: "pen",
+          path: currentPenPath,
+          color: drawColor,
+          fill: fillColor,
+        };
+      } else {
+        newShape = {
+          uuid: uuidv4(),
+          type: "brush",
+          path: currentPenPath,
+          brush: currentBrush,
+        };
+      }
+
+      const updatedShapes = [...shapes, newShape];
       dispatch(setShapes(updatedShapes));
       onShapesUpdate(updatedShapes);
       setIsDrawing(false);
@@ -327,6 +342,9 @@ const Whiteboard = ({
       if (isDrawing && shapeType === "pen") {
         setCurrentPenPath([...currentPenPath, touchPos]);
         drawPen(ctx, currentPenPath);
+      } else if (isDrawing && shapeType === "brush") {
+        setCurrentPenPath([...currentPenPath, touchPos]);
+        drawBrush(ctx, currentPenPath, currentBrush);
       } else if (shapeType === "image" && selectedShapeIndex !== null) {
         const updatedShapes = shapes.map((shape, index) =>
           index === selectedShapeIndex

@@ -467,8 +467,8 @@ export const moveShape = (
 };
 
 // Example brush drawing function
-export const drawBrush = (ctx, path, brush) => {
-  if (path.length < 2) return; // Ensure at least two points to draw
+export const drawBrush = (ctx, path = [], brush = {}) => {
+  if (!Array.isArray(path) || path.length < 2) return; // Ensure path is an array and has at least two points
 
   // Ensure brush properties have fallback values
   const { size = 5, color = "#000", hardness = 1 } = brush;
@@ -484,11 +484,13 @@ export const drawBrush = (ctx, path, brush) => {
   ctx.globalAlpha = Math.min(Math.max(hardness, 0), 1); // Clamping hardness between 0 and 1
 
   // Start drawing from the first point
-  ctx.moveTo(path[0].x, path[0].y);
+  ctx.moveTo(path[0]?.x || 0, path[0]?.y || 0); // Ensure safe access
 
   // Draw the line through all the points in the path
   path.forEach((point) => {
-    ctx.lineTo(point.x, point.y);
+    if (point?.x !== undefined && point?.y !== undefined) {
+      ctx.lineTo(point.x, point.y);
+    }
   });
 
   // Apply the stroke
