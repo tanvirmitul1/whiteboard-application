@@ -44,25 +44,7 @@ body {
   max-height: 95vh;
 }
 
-/* For Chrome, Edge, and Safari */
-::-webkit-scrollbar {
-  width: 4px;
-}
 
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1); 
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #4a90e2; /* Blue scrollbar */
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #3572b0; /* Darker blue on hover */
-}
 .left-sidebar-title{
   color: var(--white)!important;
 
@@ -279,5 +261,25 @@ border-radius: 10px;
   text-decoration: none;
 }
 
+/* For Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: 8px;
+}
 
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-bg); 
+  border-radius: 10px;
+}
 
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-bg); 
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-bg);
+}
+::-webkit-scrollbar-thumb:active {
+  cursor: grabbing;
+}
