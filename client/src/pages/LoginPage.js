@@ -74,12 +74,12 @@ const LoginPage = () => {
   }, [showLoading, countdown]);
 
   return (
-    <FormContainer>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-      >
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+    >
+      <FormContainer>
         <form onSubmit={handleSubmit}>
           <div className="brand">
             <motion.div
@@ -155,8 +155,8 @@ const LoginPage = () => {
             <TypingGame />
           </LoadingModal>
         )}
-      </motion.div>
-    </FormContainer>
+      </FormContainer>
+    </motion.div>
   );
 };
 

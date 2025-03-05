@@ -43,12 +43,12 @@ const RegisterPage = () => {
   };
 
   return (
-    <FormContainer height="100vh">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-      >
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+    >
+      <FormContainer height="100vh">
         <form onSubmit={handleSubmit}>
           <div className="brand">
             <EditCalendarIcon sx={{ color: "#ff6f61", fontSize: 50 }} />
@@ -105,16 +105,17 @@ const RegisterPage = () => {
             )}
           </Button>
         </form>
-      </motion.div>
-      <div style={{ marginTop: "1rem", textAlign: "center" }}>
-        <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          Already have an account?{" "}
-          <Link to="/" style={{ color: "#ff6f61", textDecoration: "none" }}>
-            Go to Login
-          </Link>
-        </span>
-      </div>
-    </FormContainer>
+
+        <div style={{ marginTop: "1rem", textAlign: "center" }}>
+          <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+            Already have an account?{" "}
+            <Link to="/" style={{ color: "#ff6f61", textDecoration: "none" }}>
+              Go to Login
+            </Link>
+          </span>
+        </div>
+      </FormContainer>
+    </motion.div>
   );
 };
 
