@@ -4,6 +4,7 @@ import { Check, Close } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setShapes } from "../../slices/canvasSlice";
 import { v4 as uuidv4 } from "uuid";
+import { useTheme } from "@mui/material/styles";
 const TextToolInput = ({
   canvasRef,
   textInput,
@@ -14,6 +15,7 @@ const TextToolInput = ({
   fillColor,
   setShapeType,
 }) => {
+  const theme = useTheme(); // Access the theme
   const dispatch = useDispatch();
   const shapes = useSelector((state) => state.canvas.shapes);
   const [fontSize, setFontSize] = useState(20);
@@ -69,8 +71,8 @@ const TextToolInput = ({
         top: `${safeY}px`,
         left: `${safeX}px`,
         transform: "translate(-50%, -50%)",
-        backgroundColor: "#ffffff",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        backgroundColor: theme.palette.background.paper, // Use theme background color
+        boxShadow: theme.shadows[4], // Use theme shadow
         padding: "10px",
         borderRadius: "8px",
         display: "flex",
@@ -87,8 +89,22 @@ const TextToolInput = ({
         onChange={(e) => setTextInput({ ...textInput, value: e.target.value })}
         sx={{
           flexGrow: 1,
-          backgroundColor: "white",
+          backgroundColor: theme.palette.background.default, // Use theme background color
           borderRadius: "5px",
+          "& .MuiInputBase-input": {
+            color: theme.palette.text.primary, // Use theme text color
+          },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: theme.palette.divider, // Use theme border color
+            },
+            "&:hover fieldset": {
+              borderColor: theme.palette.primary.main, // Use theme primary color on hover
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: theme.palette.primary.main, // Use theme primary color on focus
+            },
+          },
         }}
       />
 
