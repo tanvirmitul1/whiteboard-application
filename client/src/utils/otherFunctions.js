@@ -9,6 +9,10 @@ export const setCanvasCursor = (canvas, shapeType) => {
     case "circle":
     case "triangle":
     case "rectangle":
+    case "pentagon":
+    case "hexagon":
+    case "pen":
+    case "brush":
       canvas.style.cursor = "crosshair";
       break;
     case "eraser":
