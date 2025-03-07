@@ -8,6 +8,7 @@ import {
   IconButton,
   TextField,
   Tooltip,
+  useTheme,
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -31,6 +32,7 @@ const ProfileModal = ({
   profilePicture,
   userId,
 }) => {
+  const theme = useTheme(); // Get theme from MUI
   const dispatch = useDispatch();
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -71,6 +73,7 @@ const ProfileModal = ({
     setImage(null);
     setPreview(null);
   };
+
   const handleUpdateUser = async () => {
     setIsEditingName(false);
     updateUser({ userId, username: name })
@@ -80,10 +83,11 @@ const ProfileModal = ({
         localStorage.setItem("user", JSON.stringify(response.user));
         dispatch(setUser(response.user));
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Update failed. Please try again.");
       });
   };
+
   return (
     <CustomModal open={open} onClose={onClose} title="Profile">
       <Box sx={{ textAlign: "center", p: 3, overflowX: "hidden" }}>
@@ -93,13 +97,14 @@ const ProfileModal = ({
               width: 100,
               height: 100,
               m: "auto",
-              border: "4px solid #1976d2",
+              border: `4px solid ${theme.palette.primary.main}`,
               transition: "0.3s",
-              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+              boxShadow: `0px 4px 10px ${theme.palette.grey[800]}`,
             }}
             src={preview || profilePicture}
           />
         </motion.div>
+
         {isEditingName ? (
           <TextField
             value={name}
@@ -115,19 +120,16 @@ const ProfileModal = ({
               cursor: "pointer",
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  borderColor: "white",
-                  color: "white",
+                  borderColor: theme.palette.text.primary,
                 },
                 "&:hover fieldset": {
-                  borderColor: "white",
-                  color: "white",
+                  borderColor: theme.palette.text.primary,
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "white",
-                  color: "white",
+                  borderColor: theme.palette.text.primary,
                 },
                 "& .MuiInputBase-input": {
-                  color: "white", // Ensures the text inside the TextField is white
+                  color: theme.palette.text.primary,
                 },
               },
             }}
@@ -143,8 +145,9 @@ const ProfileModal = ({
             </Typography>
           </Tooltip>
         )}
+
         <Typography variant="body1">{role}</Typography>
-        <Typography variant="body2" color="text.disabled">
+        <Typography variant="body2" color="text.secondary">
           {email}
         </Typography>
 

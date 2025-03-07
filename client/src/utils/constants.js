@@ -1,3 +1,137 @@
+import {
+  MdUndo,
+  MdRedo,
+  MdContentCopy,
+  MdDelete,
+  MdFormatColorFill,
+  MdMoveToInbox,
+  MdTextFields,
+  MdGesture,
+  MdBrush,
+  MdColorLens,
+  MdDownload,
+  MdEdit,
+  MdSearch,
+  MdOutlineFormatSize,
+  MdLayers,
+  MdFileDownload,
+} from "react-icons/md";
+
+export const activityInstructions = [
+  {
+    activity: "Draw Pencil/Pen",
+    icon: <MdBrush />,
+    details: [
+      "Use the pencil for freehand sketching.",
+      "The pen tool allows smoother, controlled strokes.",
+    ],
+  },
+  {
+    activity: "Shapes",
+    icon: <MdGesture />,
+    details: [
+      "Draw rectangles, circles, and other shapes.",
+      "Use the fill option to color inside shapes.",
+    ],
+  },
+  {
+    activity: "Move Shapes",
+    icon: <MdMoveToInbox />,
+    details: [
+      "Drag shapes to reposition them.",
+      "Right-click for additional options like bring to front or send to back.",
+    ],
+  },
+  {
+    activity: "Change Color",
+    icon: <MdFormatColorFill />,
+    details: [
+      "Click the shape to change its color.",
+      "Use the background color tool to set a canvas background.",
+    ],
+  },
+  {
+    activity: "Copy & Paste",
+    icon: <MdContentCopy />,
+    details: [
+      "Press Ctrl + C to copy a shape.",
+      "Press Ctrl + V to paste the copied shape beside the original.",
+    ],
+  },
+  {
+    activity: "Undo/Redo",
+    icon: <MdUndo />,
+    details: [
+      "Press Ctrl + Z to undo the last action.",
+      "Press Ctrl + Y to redo the last undone action.",
+    ],
+  },
+  {
+    activity: "Delete",
+    icon: <MdDelete />,
+    details: [
+      "Press Delete to remove the selected shape.",
+      "Click the 'Clear' button to remove all shapes on the canvas.",
+    ],
+  },
+  {
+    activity: "Text",
+    icon: <MdTextFields />,
+    details: [
+      "Click to add text anywhere on the canvas.",
+      "Right-click to change font size and color.",
+    ],
+  },
+  {
+    activity: "Download/Save",
+    icon: <MdDownload />,
+    details: [
+      "Save your drawing to your account.",
+      "Download your work as an image file.",
+    ],
+  },
+  {
+    activity: "Search & Filter Drawings",
+    icon: <MdSearch />,
+    details: [
+      "Search drawings based on user.",
+      "Filter drawings by type, date, or creator.",
+    ],
+  },
+  {
+    activity: "Edit Drawings",
+    icon: <MdEdit />,
+    details: [
+      "Modify existing drawings easily.",
+      "Use selection tools to adjust properties of a shape.",
+    ],
+  },
+  {
+    activity: "Context Menu",
+    icon: <MdOutlineFormatSize />,
+    details: [
+      "Right-click a text to change font size.",
+      "Right-click a shape to adjust color or layer positioning.",
+    ],
+  },
+  {
+    activity: "Layering",
+    icon: <MdLayers />,
+    details: [
+      "Move shapes forward or backward in the layer stack.",
+      "Use right-click options for fine control.",
+    ],
+  },
+  {
+    activity: "File Download",
+    icon: <MdFileDownload />,
+    details: [
+      "Save your drawing as PNG or JPG.",
+      "Option to keep high-quality resolution.",
+    ],
+  },
+];
+
 export const words = [
   "React",
   "Node",

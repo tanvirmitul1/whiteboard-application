@@ -1,19 +1,22 @@
 import React from "react";
 import ReactModal from "react-modal";
-import { customModalStyles, ModalBody, ModalHeader } from "./ModalUI";
+import { getCustomModalStyles, ModalBody, ModalHeader } from "./ModalUI";
+import { useTheme } from "@mui/material";
 
 const CustomModal = ({
   children,
   open,
   onClose,
-  customStyle = customModalStyles,
+  customStyle,
   title = "Modal Title",
 }) => {
+  const theme = useTheme();
+
   return (
     <ReactModal
       isOpen={open}
       onRequestClose={onClose}
-      style={customStyle}
+      style={customStyle || getCustomModalStyles(theme)}
       ariaHideApp={false}
       shouldCloseOnOverlayClick={false}
       shouldCloseOnEsc={false}
