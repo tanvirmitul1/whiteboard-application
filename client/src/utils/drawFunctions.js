@@ -471,7 +471,7 @@ export const drawBrush = (ctx, path = [], brush = {}) => {
   if (!Array.isArray(path) || path.length < 2) return; // Ensure path is an array and has at least two points
 
   // Ensure brush properties have fallback values
-  const { size = 5, color = "#000", hardness = 1 } = brush;
+  const { size = 5, color = "#000", hardness = 1, type = "round" } = brush;
 
   // Set the brush properties
   ctx.beginPath();
@@ -483,21 +483,270 @@ export const drawBrush = (ctx, path = [], brush = {}) => {
   // Set globalAlpha based on the hardness
   ctx.globalAlpha = Math.min(Math.max(hardness, 0), 1); // Clamping hardness between 0 and 1
 
-  // Start drawing from the first point
-  ctx.moveTo(path[0]?.x || 0, path[0]?.y || 0); // Ensure safe access
+  // Handle different brush types
+  switch (type) {
+    case "round":
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      break;
+    case "square":
+      ctx.lineJoin = "miter";
+      ctx.lineCap = "butt";
+      break;
+    case "star":
+      drawStar(ctx, path, size);
+      return;
+    case "diamond":
+      drawDiamond(ctx, path, size);
+      return;
+    case "spray":
+      drawSpray(ctx, path, size);
+      return;
+    case "airbrush":
+      drawAirbrush(ctx, path, size);
+      return;
+    case "calligraphy":
+      drawCalligraphy(ctx, path, size);
+      return;
+    case "texture":
+      drawTexture(ctx, path, size);
+      return;
+    case "wet":
+      drawWetBrush(ctx, path, size);
+      return;
+    case "pixel":
+      drawPixelBrush(ctx, path, size);
+      return;
+    case "nature":
+      drawNatureBrush(ctx, path, size);
+      return;
+    default:
+      break;
+  }
 
-  // Draw the line through all the points in the path
+  // Default line drawing behavior
+  ctx.moveTo(path[0]?.x || 0, path[0]?.y || 0);
+
   path.forEach((point) => {
     if (point?.x !== undefined && point?.y !== undefined) {
       ctx.lineTo(point.x, point.y);
     }
   });
 
-  // Apply the stroke
   ctx.stroke();
-
-  // Reset the globalAlpha to 1 to avoid affecting other drawing operations
-  ctx.globalAlpha = 1;
-
+  ctx.globalAlpha = 1; // Reset the globalAlpha to avoid affecting other drawing operations
   ctx.closePath();
+};
+
+// Function to draw a star shape
+const drawStar = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const numPoints = 5; // Number of points in the star
+      const radius = size;
+      const innerRadius = size / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(
+        point.x + radius * Math.cos(0),
+        point.y + radius * Math.sin(0)
+      );
+
+      for (let i = 1; i < 2 * numPoints; i++) {
+        const angle = (i * Math.PI) / numPoints;
+        const rad = i % 2 === 0 ? radius : innerRadius;
+        ctx.lineTo(
+          point.x + rad * Math.cos(angle),
+          point.y + rad * Math.sin(angle)
+        );
+      }
+
+      ctx.closePath();
+      ctx.fillStyle = ctx.strokeStyle; // Use the same color
+      ctx.fill();
+    }
+  });
+};
+
+// Function to draw a diamond shape
+const drawDiamond = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const halfSize = size / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(point.x, point.y - halfSize); // Top point
+      ctx.lineTo(point.x + halfSize, point.y); // Right point
+      ctx.lineTo(point.x, point.y + halfSize); // Bottom point
+      ctx.lineTo(point.x - halfSize, point.y); // Left point
+      ctx.closePath();
+
+      ctx.fillStyle = ctx.strokeStyle; // Use the same color
+      ctx.fill();
+    }
+  });
+};
+
+// Function to create a spray effect
+const drawSpray = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const numParticles = 20; // Number of spray particles
+      for (let i = 0; i < numParticles; i++) {
+        const angle = point?.angle;
+        const distance = point?.distance;
+
+        const x = point.x + Math.cos(angle) * distance;
+        const y = point.y + Math.sin(angle) * distance;
+
+        ctx.beginPath();
+        ctx.arc(x, y, 1, 0, Math.PI * 2); // Tiny circle for spray particle
+        ctx.closePath();
+        ctx.fillStyle = ctx.strokeStyle; // Use the same color
+        ctx.fill();
+      }
+    }
+  });
+};
+// Function for Airbrush effect
+const drawAirbrush = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const numParticles = 30; // Number of spray particles
+      for (let i = 0; i < numParticles; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * size * 0.7;
+        const alpha = Math.random() * 0.2 + 0.1; // Set random opacity for particles
+
+        const x = point.x + Math.cos(angle) * distance;
+        const y = point.y + Math.sin(angle) * distance;
+
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 1.5, 0, Math.PI * 2); // Tiny circle with randomness
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${parseInt(
+          ctx.strokeStyle.slice(1, 3),
+          16
+        )}, ${parseInt(ctx.strokeStyle.slice(3, 5), 16)}, ${parseInt(
+          ctx.strokeStyle.slice(5, 7),
+          16
+        )}, ${alpha})`;
+        ctx.fill();
+      }
+    }
+  });
+};
+
+// Function for Calligraphy Brush
+const drawCalligraphy = (ctx, path, size) => {
+  path.forEach((point, idx) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const angle = idx === 0 ? Math.PI / 4 : point.angle || Math.PI / 4;
+      const thickness = size * Math.cos(angle); // Change thickness based on angle
+
+      ctx.lineWidth = thickness;
+      ctx.beginPath();
+      ctx.moveTo(point.x, point.y);
+      ctx.lineTo(
+        point.x + Math.cos(angle) * size,
+        point.y + Math.sin(angle) * size
+      );
+      ctx.closePath();
+      ctx.stroke();
+    }
+  });
+};
+
+// Function for Texture Brush (Random Texture Effect)
+const drawTexture = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const textureSize = size;
+      const numTextures = 10;
+
+      for (let i = 0; i < numTextures; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * textureSize;
+        const x = point.x + Math.cos(angle) * distance;
+        const y = point.y + Math.sin(angle) * distance;
+
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 3, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.fill();
+      }
+    }
+  });
+};
+
+// Function for Wet Brush (Simulate blending of wet paint)
+const drawWetBrush = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const numberOfWetStrokes = 5;
+      for (let i = 0; i < numberOfWetStrokes; i++) {
+        const randomOffsetX = Math.random() * size * 0.5;
+        const randomOffsetY = Math.random() * size * 0.5;
+        const angle = Math.random() * Math.PI * 2;
+
+        ctx.beginPath();
+        ctx.arc(
+          point.x + randomOffsetX,
+          point.y + randomOffsetY,
+          size / 2,
+          0,
+          Math.PI * 2
+        );
+        ctx.closePath();
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.fill();
+      }
+    }
+  });
+};
+
+// Function for Pixel Brush (Pixelated Effect)
+const drawPixelBrush = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const numPixels = 10; // Number of pixels per stroke
+      for (let i = 0; i < numPixels; i++) {
+        const offsetX = Math.random() * size;
+        const offsetY = Math.random() * size;
+
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.fillRect(point.x + offsetX, point.y + offsetY, 1, 1); // Draw tiny squares
+      }
+    }
+  });
+};
+
+// Function for Nature Brush (Leaf or Flower shapes)
+const drawNatureBrush = (ctx, path, size) => {
+  path.forEach((point) => {
+    if (point?.x !== undefined && point?.y !== undefined) {
+      const numNatureParticles = 5;
+      for (let i = 0; i < numNatureParticles; i++) {
+        const angle = path[i]?.angle;
+        const distance = path[i]?.distance * 0.5;
+
+        const x = point.x + Math.cos(angle) * distance;
+        const y = point.y + Math.sin(angle) * distance;
+
+        drawLeafShape(ctx, x, y, path[i]?.size);
+      }
+    }
+  });
+};
+
+// Draw a leaf shape
+const drawLeafShape = (ctx, x, y, size) => {
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.quadraticCurveTo(x + size / 2, y - size, x, y - size / 2);
+  ctx.quadraticCurveTo(x - size / 2, y - size, x, y);
+  ctx.closePath();
+  ctx.fillStyle = ctx.strokeStyle;
+  ctx.fill();
 };

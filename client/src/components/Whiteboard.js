@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import "../index.css";
 import Swal from "sweetalert2";
 import {
+  distance,
   drawAirbrush,
   drawBrush,
   drawCurrentShape,
@@ -14,7 +15,7 @@ import {
   getTouchPosition,
   isPointInShape,
   moveShape,
-} from "../utils/drawFunctions";
+} from "../utils/drawFunctions.js";
 import { handleKeyDown } from "../utils/keyHandlers";
 import { getShapeCoordinates, setCanvasCursor } from "../utils/otherFunctions";
 import ShapeContextBar from "./context/ShapeContextBar";
@@ -68,7 +69,14 @@ const Whiteboard = ({
     setStartPoint(mousePos);
     if (shapeType === "brush") {
       setIsDrawing(true);
-      setCurrentPenPath([mousePos]); // Start a new path
+      setCurrentPenPath([
+        {
+          ...mousePos,
+          angle: Math.random() * Math.PI * 2,
+          size: currentBrush.size,
+          distance: Math.random() * currentBrush?.size,
+        },
+      ]);
     }
     if (shapeType === "eraser") {
       const shapeIndex = shapes.findIndex((shape) =>
@@ -122,7 +130,15 @@ const Whiteboard = ({
         setCurrentPenPath([...currentPenPath, mousePos]);
         drawPen(ctx, currentPenPath);
       } else if (isDrawing && shapeType === "brush") {
-        setCurrentPenPath([...currentPenPath, mousePos]);
+        setCurrentPenPath([
+          ...currentPenPath,
+          {
+            ...mousePos,
+            angle: Math.random() * Math.PI * 2,
+            size: currentBrush.size,
+            distance: Math.random() * currentBrush?.size,
+          },
+        ]);
         drawBrush(ctx, currentPenPath, currentBrush);
       } else if (shapeType === "image" && selectedShapeIndex !== null) {
         const updatedShapes = shapes.map((shape, index) =>
@@ -180,6 +196,7 @@ const Whiteboard = ({
           uuid: uuidv4(),
           type: "brush",
           path: currentPenPath,
+          color: currentBrush.color,
           brush: currentBrush,
         };
       }
@@ -291,6 +308,7 @@ const Whiteboard = ({
           uuid: uuidv4(),
           type: "brush",
           path: currentPenPath,
+          color: currentBrush.color,
           brush: currentBrush,
         };
       }

@@ -8,14 +8,47 @@ import {
   Slider,
   Input,
   Box,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import { setBrush, updateBrushProperty } from "../../slices/brushSlice";
+import { FaPencilAlt, FaStar, FaDiceD20 } from "react-icons/fa";
+import { IoIosBrush } from "react-icons/io";
+import { BiSprayCan } from "react-icons/bi";
+import { GiWaterDrop, GiTreeBranch } from "react-icons/gi";
+
+import { BsTextCenter } from "react-icons/bs";
+import {
+  setBrush,
+  updateBrushProperty,
+  setBrushType,
+} from "../../slices/brushSlice";
 
 const PopoverBrushSelector = ({ open, anchorEl, handleClose }) => {
   const dispatch = useDispatch();
   const currentBrush = useSelector((state) => state.brush.currentBrush);
+  const brushTypes = useSelector((state) => state.brush.brushTypes);
+
   const handlePropertyChange = (key, value) => {
     dispatch(updateBrushProperty({ key, value }));
+  };
+
+  const handleBrushTypeChange = (event) => {
+    dispatch(setBrushType(event.target.value));
+  };
+
+  // Define icon mapping for brush types
+  const brushIcons = {
+    pencil: <FaPencilAlt />,
+    star: <FaStar />,
+    diamond: <FaDiceD20 />,
+    spray: <BiSprayCan />,
+    wet: <GiWaterDrop />,
+    nature: <GiTreeBranch />,
+    pixel: <FaPencilAlt />,
+    texture: <IoIosBrush />,
+    calligraphy: <BsTextCenter />,
+    airbrush: <BiSprayCan />,
   };
 
   return (
@@ -25,7 +58,28 @@ const PopoverBrushSelector = ({ open, anchorEl, handleClose }) => {
       onClose={handleClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
     >
-      <Box sx={{ p: 2, width: 200 }}>
+      <Box sx={{ p: 2, width: 250 }}>
+        {/* Brush Type Selector */}
+        <Typography variant="subtitle2">Brush Type</Typography>
+        <FormControl fullWidth>
+          <Select
+            value={currentBrush.type}
+            onChange={handleBrushTypeChange}
+            label="Brush Type"
+          >
+            {brushTypes.map((type) => (
+              <MenuItem key={type} value={type}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  {brushIcons[type]} {/* Display corresponding icon */}
+                  <Typography sx={{ marginLeft: 1 }}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </Typography>
+                </Box>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         {/* Size Slider */}
         <Typography variant="subtitle2">Size: {currentBrush.size}</Typography>
         <Slider

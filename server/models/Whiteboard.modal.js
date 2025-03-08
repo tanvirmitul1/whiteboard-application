@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const whiteboardSchema = new mongoose.Schema(
   {
     drawingTitle: { type: String, required: true },
@@ -44,7 +43,23 @@ const whiteboardSchema = new mongoose.Schema(
         brush: {
           type: {
             type: String,
-            enum: ["pencil", "airbrush", "marker"],
+            enum: [
+              "pencil",
+              "airbrush",
+              "marker",
+              "pencil",
+              "star",
+              "diamond",
+              "spray",
+              "wet",
+              "nature",
+              "pixel",
+              "texture",
+              "calligraphy",
+              "airbrush",
+              "round",
+              "square",
+            ],
             required: function () {
               return this.type === "brush";
             },
@@ -135,6 +150,18 @@ const whiteboardSchema = new mongoose.Schema(
               required: function () {
                 return this.type === "pen" || this.type === "brush";
               },
+            },
+            angle: {
+              type: Number,
+              required: false,
+            },
+            distance: {
+              type: Number,
+              required: false,
+            },
+            size: {
+              type: Number,
+              required: false,
             },
           },
         ],
