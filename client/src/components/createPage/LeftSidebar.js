@@ -23,6 +23,8 @@ import useColors from "../../customHooks/useColors";
 import CreatePageButtons from "./CreatePageButtons";
 import { useTheme } from "@mui/material/styles";
 import PopoverBrushSelector from "../canvas/PopoverBrushSelector";
+import { useDispatch } from "react-redux";
+import { setDrawingMode } from "../../slices/canvasSlice";
 
 const shapeOptions = [
   { type: "pen", label: "Pen", icon: <PenIcon /> },
@@ -64,6 +66,7 @@ const LeftSidebar = ({
     bg: null,
     fill: null,
   });
+  const dispatch = useDispatch();
 
   const handleColorClick = (type) => (event) =>
     setColorPickers({ ...colorPickers, [type]: event.currentTarget });
@@ -113,6 +116,7 @@ const LeftSidebar = ({
     if (type === "brush") {
       setAnchorEl(event.currentTarget);
     }
+    dispatch(setDrawingMode("draw"));
   };
 
   return (

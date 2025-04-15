@@ -19,9 +19,12 @@ const canvasSlice = createSlice({
     toggleMode: (state) => {
       state.mode = state.mode === "draw" ? "move" : "draw";
     },
+    setDrawingMode: (state, action) => {
+      state.mode = action.payload;
+    },
   },
 });
 
-export const { setShapes, setSelectedShapeIndex, toggleMode } =
+export const { setShapes, setSelectedShapeIndex, toggleMode, setDrawingMode } =
   canvasSlice.actions;
 export default canvasSlice.reducer;
