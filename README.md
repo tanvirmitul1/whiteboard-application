@@ -21,7 +21,7 @@ The root directory includes a `package.json` with a `concurrently` script to run
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/tanvirmitul1/whiteboard-application
 cd whiteboard-application
 ```
 
