@@ -56,12 +56,10 @@ npm install
 Create a `.env` file in the `server` folder with the following content:
 ```
 JWT_SECRET=secret_key_mitul
-MONGO_URI=<your-mongodb-uri>
+MONGO_URI=mongodb+srv://tanvirimruet:Wpy7rUYTYdPJVKVP@cluster0.gynoovb.mongodb.net/drawApp
 PORT=5000
 IMGBB_API_KEY=36837f90ad4bc026c064d7f18e837604
 ```
-
-**Note**: Replace `<your-mongodb-uri>` with your own MongoDB connection string (e.g., `mongodb+srv://tanvirimruet:Wpy7rUYTYdPJVKVP@cluster0.gynoovb.mongodb.net/drawApp`). You can set up a free MongoDB Atlas cluster or use a local MongoDB instance.
 
 ### 5. Running the Application
 
@@ -97,25 +95,6 @@ http://localhost:3000
 ```
 
 You can now use the drawing app, create drawings.
-## Environment Variables
-
-### Client (.env)
-- `REACT_APP_API_BASE_URL`: The base URL for API requests (default: `http://localhost:5000/api`).
-- `REACT_APP_AUTH_TOKEN_KEY`: Key for storing JWT tokens in the browser.(default: `secret_key_mitul`).
-- `REACT_APP_SOCKET_CONNECTION_BACKEND_BASE_URL`: WebSocket connection URL (default: `http://localhost:5000/`).
-- `REACT_APP_SMOOTH_FACTOR`: Smoothing factor for drawing (default: `0.5`).
-
-### Server (.env)
-- `JWT_SECRET`: Secret key for signing JWT tokens.(default: `secret_key_mitul`).
-- `MONGO_URI`: MongoDB connection string (example: `mongodb+srv://tanvirimruet:Wpy7rUYTYdPJVKVP@cluster0.gynoovb.mongodb.net/drawApp`)..
-- `PORT`: Server port (default: `5000`).
-- `IMGBB_API_KEY`: API key for image hosting on ImgBB.(default: `36837f90ad4bc026c064d7f18e837604`).
-
-## Troubleshooting
-
-- **MongoDB Connection Issues**: Ensure your MongoDB URI is correct and that your IP is whitelisted in MongoDB Atlas (if using Atlas).
-- **Port Conflicts**: If port `5000` or `3000` is in use, update the `PORT` in the server `.env` or let React choose a different port.
-- **CORS Errors**: Verify that the `REACT_APP_API_BASE_URL` matches the server’s running URL.
 
 ## Contributing
 To contribute to this project:
