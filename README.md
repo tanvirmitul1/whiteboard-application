@@ -61,7 +61,7 @@ PORT=5000
 IMGBB_API_KEY=36837f90ad4bc026c064d7f18e837604
 ```
 
-**Note**: Replace `<your-mongodb-uri>` with your own MongoDB connection string (e.g., `mongodb+srv://<username>:<password>@cluster0.mongodb.net/drawApp`). You can set up a free MongoDB Atlas cluster or use a local MongoDB instance.
+**Note**: Replace `<your-mongodb-uri>` with your own MongoDB connection string (e.g., `mongodb+srv://tanvirimruet:Wpy7rUYTYdPJVKVP@cluster0.gynoovb.mongodb.net/drawApp`). You can set up a free MongoDB Atlas cluster or use a local MongoDB instance.
 
 ### 5. Running the Application
 
@@ -107,7 +107,7 @@ You can now use the drawing app, create drawings.
 
 ### Server (.env)
 - `JWT_SECRET`: Secret key for signing JWT tokens.(default: `secret_key_mitul`).
-- `MONGO_URI`: MongoDB connection string (example: `mongodb+srv://<username>:<secret key>@cluster0.gynoovb.mongodb.net/drawApp`)..
+- `MONGO_URI`: MongoDB connection string (example: `mongodb+srv://tanvirimruet:Wpy7rUYTYdPJVKVP@cluster0.gynoovb.mongodb.net/drawApp`)..
 - `PORT`: Server port (default: `5000`).
 - `IMGBB_API_KEY`: API key for image hosting on ImgBB.(default: `36837f90ad4bc026c064d7f18e837604`).
 
